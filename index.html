@@ -23,7 +23,7 @@
 </head>
 <body id="screenBody" class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden" onclick="handleFirstUserInteraction()">
 
-  <!-- الشريط العلوي مع الشعار وشاشات البث -->
+  <!-- الشريط العلوي النظيف -->
   <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-md px-6 py-2.5 flex items-center justify-between border-b border-slate-900 shadow-xl">
     
     <!-- يمين الشريط: أنماط العرض وقنوات البث المباشر -->
@@ -73,7 +73,7 @@
       </div>
     </div>
 
-    <!-- يسار الشريط: الرادار + المقاسات + تحدث مع البائع + نداء + مواقيت الصلاة -->
+    <!-- يسار الشريط: الرادار + المقاسات + تحدث مع البائع + نداء المشرف + مواقيت الصلاة -->
     <div class="flex items-center gap-2">
       <!-- زر الرادار -->
       <button onclick="togglePresenceRadar()" id="btnRadarToggle" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-2 shadow">
@@ -93,7 +93,7 @@
         <span>تحدث مع البائع (V)</span>
       </button>
 
-      <!-- نداء الطاقم البشري -->
+      <!-- نداء المشرف -->
       <button onclick="triggerCallStaffModal()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
         <i class="fa-solid fa-bell text-[11px] text-rose-400"></i>
         <span>نداء (C)</span>
@@ -120,62 +120,82 @@
   <!-- مساحة العرض الرئيسية -->
   <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-12 fade-transition">
 
-    <!-- 1. قسم الكتالوج وبوابة المنتجات -->
-    <section id="productSection" class="w-1/2 h-full p-6 lg:p-8 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition overflow-y-auto">
+    <!-- 1. قسم الكتالوج والمنتج المعروض بحجم كبير وواضح -->
+    <section id="productSection" class="w-1/2 h-full p-5 lg:p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition overflow-y-auto">
       
       <!-- ترويسة المتجر مع الشعار الرسمي logo.jpeg -->
-      <div class="flex items-center justify-between border-b border-slate-900 pb-3">
+      <div class="flex items-center justify-between border-b border-slate-900 pb-2.5">
         <div class="flex items-center gap-3">
-          <img src="./logo.jpeg" alt="EZWA Logo" class="w-10 h-10 object-contain rounded-xl border border-amber-500/20 bg-slate-900 p-0.5 shadow-md">
+          <img src="./logo.jpeg" alt="EZWA Logo" class="w-9 h-9 object-contain rounded-xl border border-amber-500/20 bg-slate-900 p-0.5 shadow-md">
           <div>
-            <h1 class="text-xl font-black text-white">عِـزوة • EZWA</h1>
+            <h1 class="text-lg font-black text-white leading-tight">عِـزوة • EZWA</h1>
             <span class="text-amber-400 text-[10px] font-bold tracking-widest uppercase">أزياء الشارع الراقية المبتكرة</span>
           </div>
         </div>
-        <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold flex items-center gap-1">
-          <i class="fa-solid fa-user-tie text-[9px]"></i>
-          مستشارك الرقمي بالخدمة
+        <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold flex items-center gap-1.5">
+          <i class="fa-solid fa-user-tie text-[10px]"></i>
+          مستشارك الرقمي المعتمد بالخدمة
         </span>
       </div>
 
-      <!-- منطقة عرض المنتج والصور -->
+      <!-- مساحة عرض المنتج الكبيرة (صورة ضخمة + معلومات متناسقة بجانبها) -->
       <div class="my-auto py-2">
-        <div class="grid grid-cols-12 gap-4 items-center">
+        <div class="grid grid-cols-12 gap-5 items-stretch">
           
-          <!-- استعراض صور المنتج (model-front.png و model-back.png) -->
-          <div class="col-span-5 relative group">
-            <div class="w-full h-56 lg:h-64 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-center p-2 relative overflow-hidden shadow-inner">
-              <img id="mainProductImage" src="./model-front.png" alt="Product View" class="w-full h-full object-contain fade-transition">
-              <span id="viewAngleBadge" class="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/60 text-[9px] font-bold text-amber-300 border border-amber-500/20">
+          <!-- صورة المنتج الضخمة والواضحة -->
+          <div class="col-span-6 flex flex-col items-center">
+            <div class="w-full h-[380px] lg:h-[430px] rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-center p-2 relative overflow-hidden shadow-2xl">
+              <img id="mainProductImage" src="./model-front.png" alt="Product View" class="w-full h-full object-contain rounded-xl fade-transition">
+              
+              <span id="viewAngleBadge" class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-black/80 backdrop-blur-md text-[10px] font-bold text-amber-300 border border-amber-500/30 shadow-md">
                 الواجهة الأمامية
               </span>
             </div>
 
-            <!-- أزرار التبديل السريع بين الأمام والخلف -->
-            <div class="flex gap-1.5 mt-2 justify-center">
-              <button onclick="switchProductView('front')" id="btnFrontView" class="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 text-[10px] font-bold shadow transition">
-                الأمام
+            <!-- أزرار التبديل بين الواجهة الأمامية والخلفية -->
+            <div class="flex gap-2 mt-2.5 w-full justify-center">
+              <button onclick="switchProductView('front')" id="btnFrontView" class="flex-1 py-1.5 rounded-xl bg-amber-500 text-slate-950 text-xs font-black shadow-md transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-shirt text-[11px]"></i>
+                <span>الأمام</span>
               </button>
-              <button onclick="switchProductView('back')" id="btnBackView" class="px-2.5 py-1 rounded-lg bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-[10px] font-bold transition">
-                الخلف
+              <button onclick="switchProductView('back')" id="btnBackView" class="flex-1 py-1.5 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-rotate text-[11px]"></i>
+                <span>الخلف</span>
               </button>
             </div>
           </div>
 
-          <!-- تفاصيل القطعة والسعر -->
-          <div class="col-span-7">
-            <span id="productTag" class="text-[11px] font-bold text-amber-400/90">الإصدار الأكثر طلباً</span>
-            <h2 id="productTitle" class="text-xl lg:text-2xl font-black text-white mt-0.5 leading-snug">تيشيرت بوكس فيت - قصر المصمك</h2>
-            
-            <div class="flex items-baseline gap-2 mt-2">
-              <span id="productPrice" class="text-2xl lg:text-3xl font-black text-amber-400">185</span>
-              <span class="text-xs text-slate-400 font-bold">ريال سعودي</span>
-              <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded font-bold mr-1">دفع فوري Apple Pay / مدى</span>
+          <!-- تفاصيل القطعة والمعلومات الأساسية بجانبها -->
+          <div class="col-span-6 flex flex-col justify-between py-1">
+            <div>
+              <span id="productTag" class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md inline-block">الإصدار الأكثر طلباً</span>
+              <h2 id="productTitle" class="text-2xl lg:text-3xl font-black text-white mt-2 leading-tight">تيشيرت بوكس فيت - قصر المصمك</h2>
+              
+              <div class="flex items-baseline gap-2 mt-3">
+                <span id="productPrice" class="text-3xl lg:text-4xl font-black text-amber-400">185</span>
+                <span class="text-xs text-slate-400 font-bold">ريال سعودي</span>
+              </div>
+
+              <div class="mt-2 inline-flex items-center gap-1.5 text-[11px] text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-lg font-bold border border-emerald-500/20">
+                <i class="fa-solid fa-shield-check"></i>
+                <span>دفع فوري بـ Apple Pay ومدى</span>
+              </div>
+
+              <p class="text-slate-300 text-xs mt-4 leading-relaxed bg-slate-900/60 p-3 rounded-xl border border-slate-800/80">
+                خامة قطنية فاخرة ثقيلة، ياقة محبوكة بغرزة مزدوجة لا ترتخي بعد الغسيل، وقصة بوكس فيت عريضة الصدر متزنة الطول مع رقاقة NFC مشفرة مدمجة داخل حاشية السدو السفلية.
+              </p>
             </div>
 
-            <p class="text-slate-400 text-xs mt-2.5 leading-relaxed">
-              خامة قطنية ثقيلة، ياقة مزدوجة الغرزة لا ترتخي مع الغسيل، وقصة أوفر سايز متزنة مع رقاقة NFC مدمجة باحترافية في حاشية السدو السفلية.
-            </p>
+            <!-- ميزة السدو التراثي المدمج -->
+            <div class="mt-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-3">
+              <div class="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-base shrink-0">
+                <i class="fa-solid fa-wifi rotate-90"></i>
+              </div>
+              <div class="text-[11px] text-slate-300 leading-snug">
+                <strong class="text-amber-300 block mb-0.5">شريحة السدو الذكية (NFC):</strong>
+                المس طرف التيشيرت السفلي بجوالك للتحقق الفوري وتوثيق الملكية.
+              </div>
+            </div>
           </div>
         </div>
 
@@ -358,7 +378,7 @@
         <span class="text-amber-400 text-[10px] font-bold uppercase tracking-widest block">EZWA Order Reservation</span>
         <h3 class="text-lg font-black text-white mt-1">حجز القطعة وتجهيز الفاتورة</h3>
         <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-          أدخل اسمك ورقم جوالك وسيقوم البائع الرقمي بتجنيب مقاسك في المستودع لمدة ساعتين وإرسال تفاصيل الفاتورة لك:
+          أدخل اسمك ورقم جوالك ليتم إرسال طلب الحجز للبائع مباشرة عبر واتساب لحفظ مقاسك لمدة ساعتين:
         </p>
         <div class="space-y-3 my-4 text-xs">
           <div>
@@ -371,13 +391,13 @@
           </div>
         </div>
         <button onclick="submitReservation()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg flex items-center justify-center gap-2">
-          <i class="fa-solid fa-check"></i>
-          <span>تأكيد الحجز فوراً</span>
+          <i class="fa-brands fa-whatsapp text-sm"></i>
+          <span>تأكيد الحجز وإرسال للبائع</span>
         </button>
       </div>
     </div>
 
-    <!-- ==================== نافذة نداء الطاقم ==================== -->
+    <!-- ==================== نافذة نداء المشرف ==================== -->
     <div id="callStaffModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-sm w-full border border-rose-500/40 text-center relative shadow-2xl">
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
@@ -388,8 +408,9 @@
         </div>
         <h3 class="text-lg font-black text-white">نداء المشرف بالمعرض</h3>
         <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">فريق عِـزوة حاضر في المعرض لمساعدتك فوراً</p>
-        <button onclick="playGreetingSequence(); alert('تم إشعار المشرف وسيكون معك خلال لحظات!'); closeAllModals();" class="w-full mt-4 p-3 rounded-2xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg">
-          تنبيه المشرف الآن
+        <button onclick="notifySupervisor()" class="w-full mt-4 p-3 rounded-2xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg flex items-center justify-center gap-2">
+          <i class="fa-brands fa-whatsapp text-sm"></i>
+          <span>إرسال إشعار للمشرف الآن</span>
         </button>
       </div>
     </div>
@@ -430,6 +451,11 @@
 
   <!-- ==================== المحرك البرمجي ==================== -->
   <script>
+    const CONTACTS = {
+      supervisor: "966502777884",
+      seller: "966510205330"
+    };
+
     const CHANNELS = {
       quran: { name: "القرآن الكريم", short: "القرآن", type: "hls", url: "https://win.holol.com/live/quran/playlist.m3u8" },
       sunnah: { name: "السنة النبوية", short: "السنة", type: "hls", url: "https://win.holol.com/live/sunnah/playlist.m3u8" },
@@ -439,15 +465,6 @@
 
     const PRODUCTS = [
       {
-        tag: "الإصدار الأكثر طلباً",
-        title: "تيشيرت بوكس فيت - قصر المصمك",
-        price: "185",
-        originalPrice: "185",
-        frontImg: "./model-front.png",
-        backImg: "./model-back.png",
-        qrUrl: "https://ezwa-store.com/p/almasmak"
-      },
-      {
         tag: "إصدار شموخ نجد",
         title: "تيشيرت بوكس فيت - جبل طويق",
         price: "195",
@@ -455,6 +472,15 @@
         frontImg: "./model-front.png",
         backImg: "./model-back.png",
         qrUrl: "https://ezwa-store.com/p/tuwaiq"
+      },
+      {
+        tag: "الإصدار الأكثر طلباً",
+        title: "تيشيرت بوكس فيت - قصر المصمك",
+        price: "185",
+        originalPrice: "185",
+        frontImg: "./model-front.png",
+        backImg: "./model-back.png",
+        qrUrl: "https://ezwa-store.com/p/almasmak"
       },
       {
         tag: "خامات مبتكرة",
@@ -487,7 +513,15 @@
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    // التبديل بين صورة الأمام والخلف للتيشيرت
+    function notifySupervisor() {
+      playGreetingSequence();
+      const msg = encodeURIComponent("السلام عليكم، مطلوب مساعدة مشرف المعرض عند شاشة العرض التفاعلية الآن.");
+      const waUrl = `https://api.whatsapp.com/send?phone=${CONTACTS.supervisor}&text=${msg}`;
+      window.open(waUrl, '_blank');
+      alert('تم إشعار المشرف بنجاح!');
+      closeAllModals();
+    }
+
     function switchProductView(angle) {
       currentViewAngle = angle;
       const img = document.getElementById('mainProductImage');
@@ -499,17 +533,16 @@
       if (angle === 'front') {
         img.src = currentP.frontImg;
         badge.textContent = "الواجهة الأمامية";
-        btnF.className = "px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 text-[10px] font-bold shadow transition";
-        btnB.className = "px-2.5 py-1 rounded-lg bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-[10px] font-bold transition";
+        btnF.className = "flex-1 py-1.5 rounded-xl bg-amber-500 text-slate-950 text-xs font-black shadow-md transition flex items-center justify-center gap-1.5";
+        btnB.className = "flex-1 py-1.5 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5";
       } else {
         img.src = currentP.backImg;
         badge.textContent = "الواجهة الخلفية";
-        btnB.className = "px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 text-[10px] font-bold shadow transition";
-        btnF.className = "px-2.5 py-1 rounded-lg bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-[10px] font-bold transition";
+        btnB.className = "flex-1 py-1.5 rounded-xl bg-amber-500 text-slate-950 text-xs font-black shadow-md transition flex items-center justify-center gap-1.5";
+        btnF.className = "flex-1 py-1.5 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5";
       }
     }
 
-    // 1. عزف نغمة الشايم الفاخرة أولاً
     function playLuxuryChime() {
       unlockAudioContext();
       try {
@@ -531,7 +564,6 @@
       } catch (e) {}
     }
 
-    // 2. تتابع النغمة ثم الرسالة الترحيبية
     function playGreetingSequence() {
       playLuxuryChime();
       setTimeout(() => {
@@ -674,6 +706,7 @@
     function submitReservation() {
       const name = document.getElementById('reserveName').value.trim();
       const phone = document.getElementById('reservePhone').value.trim();
+      const currentP = PRODUCTS[currentProductIndex];
 
       if (!name || !phone) {
         alert("يرجى إدخال الاسم ورقم الجوال لتأكيد الحجز.");
@@ -681,8 +714,12 @@
       }
 
       closeAllModals();
-      speakSalesmanText(`تم يا ${name}! تم حجز مقاسك بنجاح في المعرض لمدة ساعتين، وتم إرسال تفاصيل الفاتورة لرقمك. خذ راحتك في التجول ويسعدنا خدمتك!`);
-      alert(`تم حجز القطعة باسم: ${name} ورقم: ${phone}`);
+      speakSalesmanText(`تم يا ${name}! تم إرسال طلب حجز مقاسك للبائع مباشرة لمدة ساعتين. خذ راحتك في التجول ويسعدنا خدمتك!`);
+
+      const text = encodeURIComponent(`طلب حجز جديد من الشاشة التفاعلية:\n• اسم العميل: ${name}\n• رقم الجوال: ${phone}\n• القطعة: ${currentP.title}\n• السعر: ${currentP.price} ريال`);
+      const waUrl = `https://api.whatsapp.com/send?phone=${CONTACTS.seller}&text=${text}`;
+      window.open(waUrl, '_blank');
+      alert(`تم إرسال طلب الحجز للبائع بنجاح باسم: ${name}`);
     }
 
     function salesmanExplainNFC() {
@@ -836,7 +873,7 @@
         iframe.src = "about:blank";
       } else if (mode === 'split') {
         btnSplit.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
-        prodSec.className = "w-1/2 h-full p-6 lg:p-8 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100 overflow-y-auto";
+        prodSec.className = "w-1/2 h-full p-5 lg:p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100 overflow-y-auto";
         tvSec.className = "w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition opacity-100";
         playStream(CHANNELS[activeChannelKey]);
       } else if (mode === 'tv') {
@@ -868,7 +905,6 @@
       document.getElementById('productTitle').textContent = p.title;
       document.getElementById('productPrice').textContent = p.price;
 
-      // تحديث صورة المنتج
       switchProductView('front');
 
       const qrBox = document.getElementById('qrcodeBox');
