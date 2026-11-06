@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>عِزوة • Smart Digital Signage</title>
+  <title>عِـزوة • Smart Signage OS</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
@@ -12,124 +12,95 @@
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <!-- QRCode.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <!-- خط Cairo -->
+  <!-- PeerJS -->
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <!-- Cairo Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      font-family: 'Cairo', sans-serif;
-      background-color: #030712;
-      color: #f3f4f6;
-      overflow: hidden;
-      user-select: none;
-      width: 100vw;
-      height: 100vh;
-    }
-    .fade-transition {
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    /* إخفاء شريط التحكم حتى يقترب الماوس */
-    #topControlBar {
-      transform: translateY(-90%);
-      opacity: 0.15;
-      transition: all 0.4s ease;
-    }
-    #topControlBar:hover {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    .gold-gradient-text {
-      background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .timer-ring {
-      transform: rotate(-90deg);
-      transform-origin: 50% 50%;
-    }
-    .glass-clean {
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Cairo', sans-serif; background-color: #030712; color: #f3f4f6; overflow: hidden; user-select: none; width: 100vw; height: 100vh; }
+    .fade-transition { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .timer-ring { transform: rotate(-90deg); transform-origin: 50% 50%; }
+    .glass-card { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .gold-gradient { background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   </style>
 </head>
 <body class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden">
 
-  <!-- ==================== شريط التحكم المخفي التلقائي (يظهر فقط بالماوس) ==================== -->
-  <header id="topControlBar" class="fixed top-0 left-0 right-0 z-50 glass-clean px-6 py-2.5 flex items-center justify-between shadow-2xl">
-    <div class="flex items-center gap-2">
-      <button onclick="setScreenLayout('split')" id="btnSplit" class="px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950">المزدوج (3)</button>
-      <button onclick="setScreenLayout('tv')" id="btnTV" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300">البث كامل (2)</button>
-      <button onclick="setScreenLayout('lounge')" id="btnLounge" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-800 text-amber-300">اللاونج (L)</button>
-    </div>
-
-    <!-- أزرار القنوات -->
+  <!-- ==================== شريط خدمات علوي أنيق وهادئ ==================== -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/80 backdrop-blur-md px-6 py-2.5 flex items-center justify-between border-b border-slate-900">
+    <!-- الأوضاع والقنوات -->
     <div class="flex items-center gap-1.5">
+      <button onclick="setScreenLayout('split')" id="btnSplit" class="px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950">المزدوج (3)</button>
+      <button onclick="setScreenLayout('tv')" id="btnTV" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300">البث (2)</button>
+      <button onclick="setScreenLayout('lounge')" id="btnLounge" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-900 text-amber-300">اللاونج (L)</button>
+      <span class="text-slate-700 mx-1">|</span>
       <button onclick="changeChannel('quran')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن (Q)</button>
-      <button onclick="changeChannel('sunnah')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300" data-ch="sunnah">السنة (S)</button>
-      <button onclick="changeChannel('alarabiya')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300" data-ch="alarabiya">العربية (A)</button>
-      <button onclick="changeChannel('aljazeera')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300" data-ch="aljazeera">الجزيرة (J)</button>
+      <button onclick="changeChannel('sunnah')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300" data-ch="sunnah">السنة (S)</button>
+      <button onclick="changeChannel('alarabiya')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300" data-ch="alarabiya">العربية (A)</button>
     </div>
 
-    <div class="flex items-center gap-3">
-      <button onclick="toggleFullScreen()" title="ملء الشاشة وإخفاء حواف المتصفح (F)" class="px-3 py-1 rounded-lg bg-amber-500/20 text-amber-400 text-xs font-bold">
-        <i class="fa-solid fa-expand ml-1"></i> ملء الشاشة (F)
+    <!-- مركز الخدمات الذكية -->
+    <div class="flex items-center gap-2.5">
+      <!-- زر تشغيل الرادار -->
+      <button id="radarBtn" onclick="togglePresenceRadar()" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+        <span id="radarDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+        <span>الرادار (R)</span>
+      </button>
+
+      <!-- زر نافذة المقاسات والتنسيق -->
+      <button onclick="toggleFitAdvisorModal()" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+        <i class="fa-solid fa-ruler-combined text-amber-400"></i>
+        <span>المقاسات (M)</span>
+      </button>
+
+      <!-- الساعة وملء الشاشة -->
+      <div id="liveClock" class="font-mono text-xs font-bold text-slate-400 px-2 border-r border-slate-800">--:--</div>
+      <button onclick="toggleFullScreen()" title="ملء الشاشة (F)" class="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 text-xs">
+        <i class="fa-solid fa-expand"></i>
       </button>
     </div>
   </header>
 
-  <!-- ==================== مساحة العرض المزدوجة النظيفة ==================== -->
-  <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex">
+  <!-- ==================== مساحة العرض الرئيسية ==================== -->
+  <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-11">
 
-    <!-- 1. قسم المنتج البسيط والفخم (نصف الشاشة الأيمن) -->
-    <section id="productSection" class="w-1/2 h-full p-10 lg:p-14 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition">
-      
-      <!-- شعار البراند الهادئ -->
-      <div class="flex justify-between items-center">
-        <div>
-          <span class="text-amber-400 text-[11px] font-bold tracking-widest uppercase block">مجموعة أزياء الشارع الفاخرة</span>
-          <h1 class="text-2xl font-black text-white tracking-wide mt-0.5">عِـزوة • EZWA</h1>
-        </div>
-        <div class="text-left font-mono">
-          <span id="liveClock" class="text-sm font-bold text-slate-400">--:--</span>
-        </div>
+    <!-- 1. قسم الكتالوج والعرض الفاخر -->
+    <section id="productSection" class="w-1/2 h-full p-10 lg:p-12 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition">
+      <div>
+        <span class="text-amber-400 text-[11px] font-bold tracking-widest uppercase">أزياء الشارع الراقية المبتكرة</span>
+        <h1 class="text-2xl font-black text-white mt-0.5">عِـزوة • EZWA</h1>
       </div>
 
-      <!-- بطاقة المنتج المعروض حالياً بتصميم نقي -->
-      <div class="my-auto py-6">
-        <span id="productTag" class="text-xs font-bold text-amber-400/90 tracking-wider">الإصدار الأكثر طلباً</span>
-        <h2 id="productTitle" class="text-3xl lg:text-4xl font-black text-white mt-2 leading-tight">تيشيرت بوكس فيت - قصر المصمك</h2>
+      <!-- محتوى القطعة النشطة -->
+      <div class="my-auto py-4">
+        <span id="productTag" class="text-xs font-bold text-amber-400/90">الإصدار الأكثر طلباً</span>
+        <h2 id="productTitle" class="text-3xl font-black text-white mt-1.5">تيشيرت بوكس فيت - قصر المصمك</h2>
         
-        <div class="flex items-baseline gap-3 mt-4">
-          <span id="productPrice" class="text-4xl font-black text-amber-400">185</span>
-          <span class="text-sm text-slate-400 font-bold">ريال سعودي</span>
+        <div class="flex items-baseline gap-2.5 mt-3">
+          <span id="productPrice" class="text-3xl font-black text-amber-400">185</span>
+          <span class="text-xs text-slate-400">ر.س</span>
         </div>
 
-        <p class="text-slate-400 text-sm mt-4 leading-relaxed max-w-lg">
-          خامة قطنية نقية 100% بوزن ثقيل متماسك (Heavyweight). قصة أوفر سايز متزنة، ومدمج بشريحة NFC الذكية بحاشية السدو السفلية.
+        <p class="text-slate-400 text-xs mt-3 leading-relaxed max-w-md">
+          خامة قطنية ثقيلة، ياقة مزدوجة الغرزة لا ترتخي، مع رقاقة NFC مدمجة في حاشية السدو السفلية.
         </p>
 
-        <!-- مستشار المقاس السريع المقتضب -->
-        <div class="mt-6 flex items-center gap-3 text-xs text-slate-300">
-          <span class="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-amber-400 font-bold">دليل المقاس</span>
-          <span>قصة بوكس فيت مريحة • خذ مقاسك المعتاد لمظهر منسدل متوازن.</span>
+        <!-- اقتراح التنسيق الهادئ -->
+        <div class="mt-4 p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-300">
+          <span class="text-amber-400 font-bold block mb-0.5">التنسيق الموصى به:</span>
+          <span id="stylingText">كارجو بلون بيج رملي أو فحمي، مع سنيكرز أبيض.</span>
         </div>
       </div>
 
-      <!-- الباركود الصغير النظيف مع العداد الدائري الهادئ والتنقل -->
-      <div class="flex items-center justify-between border-t border-slate-900 pt-6">
-        <div class="flex items-center gap-4">
-          <div class="relative p-1.5 bg-white rounded-xl shadow-lg shrink-0">
+      <!-- الباركود المزدوج (طلب + ريموت تحكم الجوال) -->
+      <div class="flex items-center justify-between border-t border-slate-900 pt-4">
+        <div class="flex items-center gap-3.5">
+          <div class="relative p-1 bg-white rounded-xl shadow-md shrink-0">
             <div id="qrcodeBox"></div>
-            <!-- المؤقت الدائري النحيف -->
             <div class="absolute -top-1.5 -right-1.5 w-5 h-5">
               <svg class="w-full h-full timer-ring" viewBox="0 0 36 36">
                 <path class="text-slate-800" stroke-width="4" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
@@ -138,59 +109,92 @@
             </div>
           </div>
           <div class="text-right">
-            <span class="text-xs font-bold text-white block">امسح للطلب أو المعاينة</span>
-            <span class="text-[11px] text-slate-500">يتغير العرض تلقائياً كل 15 ثانية</span>
+            <span class="text-xs font-bold text-white block">امسح للطلب أو للتحكم بهاتفك</span>
+            <span class="text-[10px] text-slate-500">يتغير العرض تلقائياً • متصل بالريموت</span>
           </div>
         </div>
 
-        <!-- أزرار تنقل صغيرة وأنيقة للموظف أو الزائر -->
         <div class="flex gap-2">
-          <button onclick="prevProduct()" class="w-9 h-9 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
+          <button onclick="prevProduct()" class="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
             <i class="fa-solid fa-arrow-right text-xs"></i>
           </button>
-          <button onclick="nextProduct()" class="w-9 h-9 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
+          <button onclick="nextProduct()" class="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
             <i class="fa-solid fa-arrow-left text-xs"></i>
           </button>
         </div>
       </div>
-
     </section>
 
-    <!-- 2. قسم البث المباشر النظيف (نصف الشاشة الأيسر) -->
+    <!-- 2. قسم البث الحي التلفزيوني -->
     <section id="tvSection" class="w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition">
       <video id="hlsVideo" class="w-full h-full max-h-full max-w-full object-contain" autoplay playsinline muted controls></video>
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
 
-    <!-- 3. وضع اللاونج البسيط (Lounge) -->
-    <div id="loungeOverlay" class="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between p-12 fade-transition opacity-0">
-      <div class="glass-clean p-6 rounded-2xl max-w-sm pointer-events-auto">
-        <span class="text-amber-400 text-xs font-bold tracking-widest block uppercase">عِـزوة • الرياض</span>
-        <h2 class="text-2xl font-black gold-gradient-text mt-1">أصالة نجد برؤية عصرية</h2>
-      </div>
-      <div class="text-xs text-slate-400 glass-clean px-4 py-2 rounded-xl self-start pointer-events-auto">
-        اضغط مفتاح (3) للعودة للوضع المزدوج
+    <!-- 3. نافذة مستشار المقاسات المنبثقة الذكية (تفتح بـ M) -->
+    <div id="fitModal" class="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/30 text-right">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-black text-white flex items-center gap-2">
+            <i class="fa-solid fa-ruler-combined text-amber-400"></i>
+            مستشار المقاسات الحاسم
+          </h3>
+          <button onclick="toggleFitAdvisorModal()" class="text-slate-400 hover:text-white text-sm">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="space-y-3 text-xs">
+          <div>
+            <label class="text-slate-400 block mb-1">حدد طولك التقريبي:</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button onclick="calcFit('short', currentW)" class="p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800">160-172</button>
+              <button onclick="calcFit('med', currentW)" class="p-2 rounded-xl bg-amber-500 text-slate-950 font-bold">173-182</button>
+              <button onclick="calcFit('tall', currentW)" class="p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800">183+</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-slate-400 block mb-1">حدد وزنك التقريبي:</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button onclick="calcFit(currentH, 'slim')" class="p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800">60-72</button>
+              <button onclick="calcFit(currentH, 'fit')" class="p-2 rounded-xl bg-amber-500 text-slate-950 font-bold">73-85</button>
+              <button onclick="calcFit(currentH, 'plus')" class="p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800">86+</button>
+            </div>
+          </div>
+
+          <div class="p-3 bg-amber-500/10 rounded-2xl border border-amber-500/20 mt-4">
+            <span class="text-[11px] text-amber-400 font-bold block">النتيجة الموصى بها:</span>
+            <div id="modalFitResult" class="text-xl font-black text-white mt-0.5">المقاس المثالي: L</div>
+            <p id="modalFitNote" class="text-[11px] text-slate-300 mt-1">يعطيك قصة بوكس فيت مضبوطة وكتف منسدل متزن.</p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- نافذة أوقات الصلاة الصامتة بالرياض -->
-    <div id="prayerOverlay" class="absolute inset-0 bg-slate-950/95 z-40 backdrop-blur-md flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none">
-      <div class="text-center p-8 glass-clean rounded-3xl border border-amber-500/30 max-w-sm mx-4">
-        <i class="fa-solid fa-mosque text-3xl text-amber-400 mb-3"></i>
-        <h2 id="prayerOverlayTitle" class="text-xl font-bold text-white">حان الآن موعد الصلاة</h2>
-        <p class="text-slate-400 text-xs mt-1">حسب التوقيت المحلي لمدينة الرياض</p>
+    <!-- وضع اللاونج الفاخر -->
+    <div id="loungeOverlay" class="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between p-12 fade-transition opacity-0">
+      <div class="glass-card p-6 rounded-3xl max-w-sm pointer-events-auto border border-amber-500/20">
+        <span class="text-amber-400 text-xs font-bold tracking-widest uppercase">عِـزوة • الرياض</span>
+        <h2 class="text-2xl font-black gold-gradient mt-1">أصالة نجد برؤية عصرية</h2>
+      </div>
+      <div class="text-xs text-slate-400 glass-card px-4 py-2 rounded-xl self-start pointer-events-auto">
+        اضغط مفتاح (3) للعودة للوضع المزدوج
       </div>
     </div>
 
   </main>
 
-  <!-- ==================== المحرك والمنطق ==================== -->
+  <!-- كاميرا ورادار الحضور المخفي محلياً -->
+  <video id="radarCamera" class="hidden" autoplay playsinline muted></video>
+  <canvas id="radarCanvas" class="hidden" width="64" height="48"></canvas>
+
+  <!-- ==================== البرمجة والمنطق ==================== -->
   <script>
     const CHANNELS = {
       quran: { name: "القرآن الكريم", type: "hls", url: "https://win.holol.com/live/quran/playlist.m3u8" },
       sunnah: { name: "السنة النبوية", type: "hls", url: "https://win.holol.com/live/sunnah/playlist.m3u8" },
-      alarabiya: { name: "العربية", type: "hls", url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8" },
-      aljazeera: { name: "الجزيرة", type: "iframe", url: "https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&mute=1&playsinline=1" }
+      alarabiya: { name: "العربية", type: "hls", url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8" }
     };
 
     const PRODUCTS = [
@@ -198,25 +202,22 @@
         tag: "الإصدار الأكثر طلباً",
         title: "تيشيرت بوكس فيت - قصر المصمك",
         price: "185",
+        styling: "كارجو بيج رملي أو فحمي، مع سنيكرز أبيض.",
         qrUrl: "https://ezwa-store.com/p/almasmak"
       },
       {
         tag: "إصدار شموخ نجد",
         title: "تيشيرت بوكس فيت - جبل طويق",
         price: "195",
+        styling: "جينز أسود مغسول أو شورت رمادي ثقيل.",
         qrUrl: "https://ezwa-store.com/p/tuwaiq"
       },
       {
-        tag: "الخامات الرياضية",
-        title: "التشكيلة الرياضية العصرية (Top Giving)",
+        tag: "خامات مبتكرة",
+        title: "التشكيلة الرياضية (Top Giving)",
         price: "140",
+        styling: "شورت رياضي تقني داكن للتمارين.",
         qrUrl: "https://ezwa-store.com/p/sports-top"
-      },
-      {
-        tag: "إصدار النخبة VIP",
-        title: "بطاقة العضوية الذكية (NFC vCard)",
-        price: "120",
-        qrUrl: "https://ezwa-store.com/p/smart-card"
       }
     ];
 
@@ -225,7 +226,8 @@
     let activeChannelKey = 'quran';
     let hlsInstance = null;
     let timerElapsed = 0;
-    const switchInterval = 15; // ثواني التبديل التلقائي
+    let currentH = 'med';
+    let currentW = 'fit';
 
     function playStream(channel) {
       const video = document.getElementById('hlsVideo');
@@ -234,9 +236,7 @@
 
       if (channel.type === 'hls') {
         iframe.classList.add('hidden');
-        iframe.src = 'about:blank';
         video.classList.remove('hidden');
-
         if (Hls.isSupported()) {
           hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
           hlsInstance.loadSource(channel.url);
@@ -246,11 +246,6 @@
           video.src = channel.url;
           video.addEventListener('loadedmetadata', () => video.play().catch(() => {}));
         }
-      } else {
-        video.classList.add('hidden');
-        video.pause();
-        iframe.classList.remove('hidden');
-        iframe.src = channel.url;
       }
     }
 
@@ -265,17 +260,15 @@
       if (mode === 'tv') {
         tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-100 z-20 bg-black flex items-center justify-center";
         prodSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
-        playStream(CHANNELS[activeChannelKey]);
       } else if (mode === 'split') {
-        prodSec.className = "w-1/2 h-full p-10 lg:p-14 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100";
+        prodSec.className = "w-1/2 h-full p-10 lg:p-12 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100";
         tvSec.className = "w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition opacity-100";
-        playStream(CHANNELS[activeChannelKey]);
       } else if (mode === 'lounge') {
         tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-100 z-20 bg-black flex items-center justify-center";
         prodSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
         loungeOverlay.classList.remove('opacity-0', 'pointer-events-none');
-        playStream(CHANNELS[activeChannelKey]);
       }
+      playStream(CHANNELS[activeChannelKey]);
     }
 
     function changeChannel(key) {
@@ -284,7 +277,7 @@
       document.querySelectorAll('.ch-btn').forEach(btn => {
         btn.className = (btn.getAttribute('data-ch') === key) 
           ? "ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950" 
-          : "ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300";
+          : "ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300";
       });
       playStream(CHANNELS[key]);
     }
@@ -294,17 +287,11 @@
       document.getElementById('productTag').textContent = p.tag;
       document.getElementById('productTitle').textContent = p.title;
       document.getElementById('productPrice').textContent = p.price;
+      document.getElementById('stylingText').textContent = p.styling;
 
       const qrBox = document.getElementById('qrcodeBox');
       qrBox.innerHTML = '';
-      new QRCode(qrBox, {
-        text: p.qrUrl,
-        width: 64,
-        height: 64,
-        colorDark: "#020617",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.M
-      });
+      new QRCode(qrBox, { text: p.qrUrl, width: 64, height: 64, colorDark: "#020617", colorLight: "#ffffff" });
     }
 
     function nextProduct() {
@@ -323,43 +310,75 @@
       updateProduct(currentProductIndex);
       setInterval(() => {
         timerElapsed++;
-        const percent = ((switchInterval - timerElapsed) / switchInterval) * 100;
+        const percent = ((15 - timerElapsed) / 15) * 100;
         document.getElementById('timerPath').setAttribute('stroke-dasharray', `${percent}, 100`);
-
-        if (timerElapsed >= switchInterval) {
-          nextProduct();
-        }
+        if (timerElapsed >= 15) nextProduct();
       }, 1000);
     }
 
-    // مواقيت الصلاة في الرياض
-    const prayerTimesRiyadh = [
-      { name: "الفجر", time: "04:55" },
-      { name: "الظهر", time: "11:42" },
-      { name: "العصر", time: "14:58" },
-      { name: "المغرب", time: "17:15" },
-      { name: "العشاء", time: "18:45" }
-    ];
-
-    function checkPrayer() {
-      const now = new Date();
-      const cur = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      
-      let activePrayer = prayerTimesRiyadh.find(p => {
-        const [h, m] = p.time.split(':').map(Number);
-        const pTotal = h * 60 + m;
-        const curTotal = now.getHours() * 60 + now.getMinutes();
-        return curTotal >= pTotal && curTotal <= (pTotal + 20);
-      });
-
-      const overlay = document.getElementById('prayerOverlay');
-      if (activePrayer) {
-        document.getElementById('prayerOverlayTitle').textContent = `حان الآن موعد صلاة ${activePrayer.name}`;
-        overlay.classList.remove('opacity-0', 'pointer-events-none');
-        if (activeChannelKey !== 'quran') changeChannel('quran');
+    // نافذة المقاسات المنبثقة
+    function toggleFitAdvisorModal() {
+      const modal = document.getElementById('fitModal');
+      const isVisible = !modal.classList.contains('opacity-0');
+      if (isVisible) {
+        modal.classList.add('opacity-0', 'pointer-events-none');
       } else {
-        overlay.classList.add('opacity-0', 'pointer-events-none');
+        modal.classList.remove('opacity-0', 'pointer-events-none');
       }
+    }
+
+    function calcFit(h, w) {
+      currentH = h;
+      currentW = w;
+      let res = "L";
+      let desc = "كتف منسدل وقصة بوكس فيت متزنة.";
+      if (h === 'short' && w === 'slim') { res = "S"; desc = "قصة مضبوطة بدون زيادة في الطول."; }
+      else if (h === 'short' || w === 'slim') { res = "M"; desc = "مظهر أوفر سايز رزين وعصري."; }
+      else if (h === 'tall' || w === 'plus') { res = "XL"; desc = "اتساع انسيابي مع راحة كاملة."; }
+
+      document.getElementById('modalFitResult').textContent = `المقاس المثالي: ${res}`;
+      document.getElementById('modalFitNote').textContent = desc;
+    }
+
+    // رادار الحضور البصري
+    let isRadarOn = false;
+    let radarStream = null;
+    let radarTimer = null;
+    let lastFrame = null;
+
+    async function togglePresenceRadar() {
+      const dot = document.getElementById('radarDot');
+      if (!isRadarOn) {
+        try {
+          radarStream = await navigator.mediaDevices.getUserMedia({ video: { width: 64, height: 48 } });
+          document.getElementById('radarCamera').srcObject = radarStream;
+          isRadarOn = true;
+          dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-ping";
+          startRadarDetect();
+        } catch (e) { alert("يتطلب إذن الكاميرا لتشغيل الرادار."); }
+      } else {
+        if (radarStream) radarStream.getTracks().forEach(t => t.stop());
+        clearInterval(radarTimer);
+        isRadarOn = false;
+        dot.className = "w-2 h-2 rounded-full bg-slate-500";
+      }
+    }
+
+    function startRadarDetect() {
+      const v = document.getElementById('radarCamera');
+      const c = document.getElementById('radarCanvas');
+      const ctx = c.getContext('2d');
+      radarTimer = setInterval(() => {
+        if (!isRadarOn || v.readyState !== 4) return;
+        ctx.drawImage(v, 0, 0, 64, 48);
+        const frame = ctx.getImageData(0, 0, 64, 48);
+        if (lastFrame) {
+          let diff = 0;
+          for (let i = 0; i < frame.data.length; i += 4) diff += Math.abs(frame.data[i] - lastFrame.data[i]);
+          if (diff > 45000 && currentLayout === 'lounge') setScreenLayout('split');
+        }
+        lastFrame = frame;
+      }, 1000);
     }
 
     function toggleFullScreen() {
@@ -370,25 +389,26 @@
     function updateClock() {
       const now = new Date();
       document.getElementById('liveClock').textContent = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
-      checkPrayer();
     }
     setInterval(updateClock, 1000);
     updateClock();
 
-    // اختصارات سريعة
     window.addEventListener('keydown', (e) => {
       const k = e.key.toLowerCase();
       if (k === '2') setScreenLayout('tv');
       if (k === '3') setScreenLayout('split');
       if (k === 'l') setScreenLayout('lounge');
+      if (k === 'm') toggleFitAdvisorModal();
+      if (k === 'r') togglePresenceRadar();
       if (k === 'f') toggleFullScreen();
       if (k === 'q') changeChannel('quran');
       if (k === 's') changeChannel('sunnah');
       if (k === 'a') changeChannel('alarabiya');
-      if (k === 'j') changeChannel('aljazeera');
+      if (e.key === 'Escape') {
+        document.getElementById('fitModal').classList.add('opacity-0', 'pointer-events-none');
+      }
     });
 
-    // بدء التشغيل
     startTimerLoop();
     setScreenLayout('split');
   </script>
