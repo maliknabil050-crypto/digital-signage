@@ -25,7 +25,6 @@
     .glass-card { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
     .gold-gradient { background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     
-    /* رادار تقنية NFC */
     @keyframes radarWave {
       0% { transform: scale(0.9); opacity: 1; }
       100% { transform: scale(2.2); opacity: 0; }
@@ -53,10 +52,18 @@
       <button onclick="changeChannel('quran')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن (Q)</button>
       <button onclick="changeChannel('sunnah')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300" data-ch="sunnah">السنة (S)</button>
       <button onclick="changeChannel('alarabiya')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300" data-ch="alarabiya">العربية (A)</button>
+      <button onclick="changeChannel('aljazeera')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300" data-ch="aljazeera">الجزيرة (J)</button>
     </div>
 
     <!-- مركز الأوضاع الخاصة والخدمات -->
     <div class="flex items-center gap-2">
+      <!-- موعد الصلاة القادمة بالرياض -->
+      <div class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[11px] text-slate-300">
+        <i class="fa-solid fa-mosque text-amber-400"></i>
+        <span id="nextPrayerName">الصلاة:</span>
+        <span id="nextPrayerTime" class="text-amber-400 font-bold font-mono">--:--</span>
+      </div>
+
       <!-- زر النمط السري VIP -->
       <button onclick="triggerVIPModal()" title="عرض عضوية النخبة (V)" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500/10 border border-amber-500/30 text-amber-300 hover:bg-amber-500/20 transition flex items-center gap-1.5">
         <i class="fa-solid fa-crown text-[11px]"></i>
@@ -280,6 +287,20 @@
       </div>
     </div>
 
+    <!-- 4. شاشة أوقات الصلاة المؤتمتة بالرياض -->
+    <div id="prayerOverlay" class="absolute inset-0 bg-slate-950/95 z-50 backdrop-blur-md flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none">
+      <div class="text-center p-8 glass-card rounded-3xl border border-amber-500/30 max-w-sm mx-4 shadow-2xl">
+        <div class="w-16 h-16 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+          <i class="fa-solid fa-mosque"></i>
+        </div>
+        <h2 id="prayerOverlayTitle" class="text-xl font-bold text-white">حان الآن موعد الصلاة</h2>
+        <p class="text-slate-400 text-xs mt-1.5 leading-relaxed">حسب التوقيت المحلي لمدينة الرياض • تقبل الله طاعتكم</p>
+        <div class="mt-5 pt-3 border-t border-slate-800 text-amber-400 text-xs font-semibold">
+          تم التحويل تلقائياً إلى بث الحرم المكي الشريف
+        </div>
+      </div>
+    </div>
+
     <!-- وضع اللاونج الفاخر -->
     <div id="loungeOverlay" class="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between p-12 fade-transition opacity-0">
       <div class="glass-card p-6 rounded-3xl max-w-sm pointer-events-auto border border-amber-500/20">
@@ -303,7 +324,8 @@
     const CHANNELS = {
       quran: { name: "القرآن الكريم", type: "hls", url: "https://win.holol.com/live/quran/playlist.m3u8" },
       sunnah: { name: "السنة النبوية", type: "hls", url: "https://win.holol.com/live/sunnah/playlist.m3u8" },
-      alarabiya: { name: "العربية", type: "hls", url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8" }
+      alarabiya: { name: "العربية", type: "hls", url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8" },
+      aljazeera: { name: "الجزيرة", type: "iframe", url: "https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&mute=1&playsinline=1" }
     };
 
     const PRODUCTS = [
@@ -345,7 +367,9 @@
 
       if (channel.type === 'hls') {
         iframe.classList.add('hidden');
+        iframe.src = 'about:blank';
         video.classList.remove('hidden');
+
         if (Hls.isSupported()) {
           hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
           hlsInstance.loadSource(channel.url);
@@ -355,6 +379,11 @@
           video.src = channel.url;
           video.addEventListener('loadedmetadata', () => video.play().catch(() => {}));
         }
+      } else {
+        video.classList.add('hidden');
+        video.pause();
+        iframe.classList.remove('hidden');
+        iframe.src = channel.url;
       }
     }
 
@@ -431,6 +460,46 @@
         document.getElementById('timerPath').setAttribute('stroke-dasharray', `${percent}, 100`);
         if (timerElapsed >= 15) nextProduct();
       }, 1000);
+    }
+
+    // مواقيت الصلاة في الرياض
+    const prayerTimesRiyadh = [
+      { name: "الفجر", time: "04:55" },
+      { name: "الظهر", time: "11:42" },
+      { name: "العصر", time: "14:58" },
+      { name: "المغرب", time: "17:15" },
+      { name: "العشاء", time: "18:45" }
+    ];
+
+    function checkPrayer() {
+      const now = new Date();
+      const currentHours = String(now.getHours()).padStart(2, '0');
+      const currentMinutes = String(now.getMinutes()).padStart(2, '0');
+      const currentTimeStr = `${currentHours}:${currentMinutes}`;
+
+      let next = prayerTimesRiyadh.find(p => p.time > currentTimeStr) || prayerTimesRiyadh[0];
+      const nextNameEl = document.getElementById('nextPrayerName');
+      const nextTimeEl = document.getElementById('nextPrayerTime');
+      if (nextNameEl && nextTimeEl) {
+        nextNameEl.textContent = `صلاة ${next.name}:`;
+        nextTimeEl.textContent = next.time;
+      }
+
+      let activePrayer = prayerTimesRiyadh.find(p => {
+        const [h, m] = p.time.split(':').map(Number);
+        const pTotal = h * 60 + m;
+        const curTotal = now.getHours() * 60 + now.getMinutes();
+        return curTotal >= pTotal && curTotal <= (pTotal + 20);
+      });
+
+      const overlay = document.getElementById('prayerOverlay');
+      if (activePrayer) {
+        document.getElementById('prayerOverlayTitle').textContent = `حان الآن موعد صلاة ${activePrayer.name}`;
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        if (activeChannelKey !== 'quran') changeChannel('quran');
+      } else {
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+      }
     }
 
     // إدارة النوافذ المنبثقة
@@ -516,14 +585,12 @@
             diff += Math.abs(frame.data[i] - lastFrame.data[i]);
           }
 
-          // عند رصد حركة اقتراب زائر (حساسية ناعمة وسريعة)
           if (diff > 12000) {
             idleSec = 0;
             if (currentLayout === 'lounge') {
               setScreenLayout('split');
             }
           } else {
-            // عند هدوء المكان لمدة 25 ثانية، تعود الشاشة تلقائياً لوضع اللاونج الفاخر
             idleSec++;
             if (idleSec >= 25 && currentLayout === 'split') {
               setScreenLayout('lounge');
@@ -542,6 +609,7 @@
     function updateClock() {
       const now = new Date();
       document.getElementById('liveClock').textContent = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+      checkPrayer();
     }
     setInterval(updateClock, 1000);
     updateClock();
@@ -562,6 +630,7 @@
       if (k === 'q') changeChannel('quran');
       if (k === 's') changeChannel('sunnah');
       if (k === 'a') changeChannel('alarabiya');
+      if (k === 'j') changeChannel('aljazeera');
     });
 
     startTimerLoop();
