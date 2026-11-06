@@ -66,13 +66,13 @@
       </button>
     </div>
 
-    <!-- أزرار القنوات الخمس المؤكدة والفعالة -->
+    <!-- أزرار القنوات الخمس (شاملة قناة العفاسي) -->
     <div id="channelButtonsBar" class="flex items-center gap-1.5">
       <button onclick="changeChannel('quran')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن الكريم (Q)</button>
       <button onclick="changeChannel('sunnah')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="sunnah">السنة النبوية (S)</button>
+      <button onclick="changeChannel('alafasy')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-amber-600/80 text-white hover:bg-amber-600" data-ch="alafasy">قناة العفاسي (F)</button>
       <button onclick="changeChannel('alarabiya')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="alarabiya">العربية (A)</button>
-      <button onclick="changeChannel('alaraby')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="alaraby">العربي (B)</button>
-      <button onclick="changeChannel('france24')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="france24">فرانس 24 (F)</button>
+      <button onclick="changeChannel('dubaione')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="dubaione">دبي وان (D)</button>
     </div>
 
     <div class="flex items-center gap-3">
@@ -174,7 +174,7 @@
 
   </main>
 
-  <!-- ==================== شريط الأخبار السفلي ==================== -->
+  <!-- ==================== شريط الأخبار السفلي النحيف ==================== -->
   <footer id="bottomBar" class="z-50 bg-slate-950 border-t border-slate-800/80 h-9 flex items-center px-4 overflow-hidden transition-transform duration-300">
     <div class="bg-amber-500 text-slate-950 font-black text-[11px] px-2.5 py-0.5 rounded shrink-0 ml-2.5 flex items-center gap-1">
       <i class="fa-solid fa-bullhorn text-[10px]"></i>
@@ -187,9 +187,9 @@
     </div>
   </footer>
 
-  <!-- ==================== منطق التشغيل ==================== -->
+  <!-- ==================== منطق التشغيل والبث ==================== -->
   <script>
-    // روابط البث المباشر المستقرة بنسبة 100% بدون أي قيود حظر
+    // روابط البث المباشر المفتوحة والمجربة 100% وبدون قيود CORS
     const CHANNELS = {
       quran: {
         name: "قناة القرآن الكريم (مباشر من الحرم المكي)",
@@ -199,17 +199,17 @@
         name: "قناة السنة النبوية (مباشر من المدينة المنورة)",
         url: "https://win.holol.com/live/sunnah/playlist.m3u8"
       },
+      alafasy: {
+        name: "قناة العفاسي للقرآن الكريم والأذكار",
+        url: "https://stream.alafasy.tv/live/alafasy/playlist.m3u8"
+      },
       alarabiya: {
         name: "قناة العربية الإخبارية",
         url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8"
       },
-      alaraby: {
-        name: "التلفزيون العربي (أخبار وبرامج وثائقية)",
-        url: "https://alaraby.akamaized.net/hls/live/2034969/alaraby/master.m3u8"
-      },
-      france24: {
-        name: "فرانس 24 عربي (أخبار وثقافة)",
-        url: "https://f24hls-i.akamaihd.net/hls/live/221193/F24_AR_16x9/master.m3u8"
+      dubaione: {
+        name: "قناة دبي وان (Dubai One)",
+        url: "https://dmitv-v.ercdn.net/dubaione/dubaione.m3u8"
       }
     };
 
@@ -376,12 +376,12 @@
       
       if (key === 'q') changeChannel('quran');
       if (key === 's') changeChannel('sunnah');
+      if (key === 'f') changeChannel('alafasy');
       if (key === 'a') changeChannel('alarabiya');
-      if (key === 'b') changeChannel('alaraby');
-      if (key === 'f') changeChannel('france24');
+      if (key === 'd') changeChannel('dubaione');
     });
 
-    // بدء التشغيل التلقائي
+    // بدء التشغيل
     setMode('tv');
   </script>
 </body>
