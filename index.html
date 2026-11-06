@@ -66,13 +66,13 @@
       </button>
     </div>
 
-    <!-- أزرار القنوات الخمس المؤكدة والمفتوحة -->
+    <!-- أزرار القنوات الخمس -->
     <div id="channelButtonsBar" class="flex items-center gap-1.5">
-      <button onclick="changeChannel('quran')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن (Q)</button>
-      <button onclick="changeChannel('sunnah')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="sunnah">السنة (S)</button>
+      <button onclick="changeChannel('quran')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن الكريم (Q)</button>
+      <button onclick="changeChannel('sunnah')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="sunnah">السنة النبوية (S)</button>
       <button onclick="changeChannel('alarabiya')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="alarabiya">العربية (A)</button>
-      <button onclick="changeChannel('nature')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-600/80 text-white hover:bg-emerald-600" data-ch="nature">طبيعة (N)</button>
-      <button onclick="changeChannel('dw')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="dw">DW علوم (D)</button>
+      <button onclick="changeChannel('aljazeera')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="aljazeera">الجزيرة (J)</button>
+      <button onclick="changeChannel('dw')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="dw">DW وثائقيات (D)</button>
     </div>
 
     <div class="flex items-center gap-3">
@@ -160,16 +160,18 @@
       </div>
     </section>
 
-    <!-- 2. شاشة البث المباشر -->
+    <!-- 2. شاشة البث المباشر المزدوجة (فيديو أصلي + إطار محمي) -->
     <section id="tvSection" class="w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10 bg-black flex items-center justify-center">
-      <div id="liveBadge" class="absolute top-3 right-4 z-20 bg-slate-950/70 backdrop-blur-md px-3 py-1 rounded-full border border-slate-800 flex items-center gap-2 pointer-events-none">
+      <div id="liveBadge" class="absolute top-3 right-4 z-30 bg-slate-950/70 backdrop-blur-md px-3 py-1 rounded-full border border-slate-800 flex items-center gap-2 pointer-events-none">
         <span class="w-2 h-2 bg-red-600 rounded-full animate-ping"></span>
         <span id="currentChannelName" class="text-xs font-bold text-amber-400">قناة القرآن الكريم</span>
       </div>
 
-      <div class="w-full h-full flex items-center justify-center bg-black">
-        <video id="hlsVideo" class="w-full h-full max-h-full max-w-full object-contain" autoplay playsinline muted controls></video>
-      </div>
+      <!-- مشغل الفيديو للقنوات المفتوحة (HLS) -->
+      <video id="hlsVideo" class="w-full h-full max-h-full max-w-full object-contain" autoplay playsinline muted controls></video>
+
+      <!-- إطار العرض للقنوات المحمية (يتجاوز قيود CORS بالكامل) -->
+      <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
     </section>
 
   </main>
@@ -187,29 +189,33 @@
     </div>
   </footer>
 
-  <!-- ==================== البرمجة وتشغيل البث المباشر ==================== -->
+  <!-- ==================== منطق المشغل المزدوج ==================== -->
   <script>
-    // 5 قنوات مستقرة ومفتوحة بدون حظر CORS
     const CHANNELS = {
       quran: {
         name: "قناة القرآن الكريم (مباشر من الحرم المكي)",
+        type: "hls",
         url: "https://win.holol.com/live/quran/playlist.m3u8"
       },
       sunnah: {
         name: "قناة السنة النبوية (مباشر من المدينة المنورة)",
+        type: "hls",
         url: "https://win.holol.com/live/sunnah/playlist.m3u8"
       },
       alarabiya: {
         name: "قناة العربية الإخبارية",
+        type: "hls",
         url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8"
       },
-      nature: {
-        name: "بث الطبيعة والاسترخاء (Nature Relax HD)",
-        url: "https://stream.ecable.tv/nature-relax/tracks-v1a1/mono.m3u8"
+      aljazeera: {
+        name: "قناة الجزيرة الإخبارية (بث مباشر)",
+        type: "iframe",
+        url: "https://www.aljazeera.net/live"
       },
       dw: {
-        name: "قناة DW عربية للعلوم والثقافة",
-        url: "https://dwamdstream104.akamaized.net/hls/live/2015530/dlhls01/index.m3u8"
+        name: "قناة DW وثائقيات وثقافة (بث مباشر)",
+        type: "iframe",
+        url: "https://www.dw.com/ar/%D8%A7%D9%84%D8%A8%D8%AB-%D8%A7%D9%84%D9%85%D8%A8%D8%A7%D8%B4%D8%B1/s-100806"
       }
     };
 
@@ -222,46 +228,37 @@
 
     function playStream(channel) {
       const video = document.getElementById('hlsVideo');
+      const iframe = document.getElementById('iframeVideo');
 
       if (hlsInstance) {
         hlsInstance.destroy();
         hlsInstance = null;
       }
 
-      if (Hls.isSupported()) {
-        hlsInstance = new Hls({
-          enableWorker: true,
-          lowLatencyMode: true,
-          backBufferLength: 90
-        });
+      if (channel.type === 'hls') {
+        iframe.classList.add('hidden');
+        iframe.src = 'about:blank';
+        video.classList.remove('hidden');
 
-        hlsInstance.loadSource(channel.url);
-        hlsInstance.attachMedia(video);
-
-        hlsInstance.on(Hls.Events.MANIFEST_PARSED, function () {
-          video.play().catch(() => {});
-        });
-
-        hlsInstance.on(Hls.Events.ERROR, function (event, data) {
-          if (data.fatal) {
-            switch (data.type) {
-              case Hls.ErrorTypes.NETWORK_ERROR:
-                hlsInstance.startLoad();
-                break;
-              case Hls.ErrorTypes.MEDIA_ERROR:
-                hlsInstance.recoverMediaError();
-                break;
-              default:
-                hlsInstance.destroy();
-                break;
-            }
-          }
-        });
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = channel.url;
-        video.addEventListener('loadedmetadata', function () {
-          video.play().catch(() => {});
-        });
+        if (Hls.isSupported()) {
+          hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
+          hlsInstance.loadSource(channel.url);
+          hlsInstance.attachMedia(video);
+          hlsInstance.on(Hls.Events.MANIFEST_PARSED, function () {
+            video.play().catch(() => {});
+          });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = channel.url;
+          video.addEventListener('loadedmetadata', function () {
+            video.play().catch(() => {});
+          });
+        }
+      } else {
+        // تشغيل عبر إطار التضمين لتخطي حظر CORS تماماً
+        video.classList.add('hidden');
+        video.pause();
+        iframe.classList.remove('hidden');
+        iframe.src = channel.url;
       }
     }
 
@@ -377,11 +374,11 @@
       if (key === 'q') changeChannel('quran');
       if (key === 's') changeChannel('sunnah');
       if (key === 'a') changeChannel('alarabiya');
-      if (key === 'n') changeChannel('nature');
+      if (key === 'j') changeChannel('aljazeera');
       if (key === 'd') changeChannel('dw');
     });
 
-    // تشغيل القناة الأولى عند فتح الصفحة
+    // بدء التشغيل
     setMode('tv');
   </script>
 </body>
