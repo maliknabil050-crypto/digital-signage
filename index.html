@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>عِـزوة • Smart Signage OS</title>
+  <title>عِـزوة • Autonomous Smart Signage OS</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
@@ -22,7 +22,7 @@
     body { font-family: 'Cairo', sans-serif; background-color: #030712; color: #f3f4f6; overflow: hidden; user-select: none; width: 100vw; height: 100vh; }
     .fade-transition { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
     .timer-ring { transform: rotate(-90deg); transform-origin: 50% 50%; }
-    .glass-card { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .glass-card { background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
     .gold-gradient { background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     
     @keyframes goldFlash {
@@ -45,7 +45,6 @@
       animation: radarWave 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
     }
     
-    /* شاشة توفير الطاقة الذكية */
     .eco-dimmed { filter: brightness(0.18) grayscale(0.6); }
   </style>
 </head>
@@ -54,7 +53,7 @@
   <!-- ==================== شريط علوي بنظام التبويبات المنسدلة ==================== -->
   <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-md px-6 py-2 flex items-center justify-between border-b border-slate-900 shadow-xl">
     
-    <!-- يمين الشريط: أنماط الشاشة والتبويبات المنسدلة -->
+    <!-- يمين الشريط: أنماط العرض -->
     <div class="flex items-center gap-2">
       <button onclick="setScreenLayout('catalog')" id="btnCatalog" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-1.5">
         <i class="fa-solid fa-shirt text-[11px]"></i>
@@ -66,7 +65,7 @@
         <span>المزدوج (2)</span>
       </button>
 
-      <!-- تبويب البث المباشر المنسدل -->
+      <!-- تبويب البث المباشر -->
       <div class="relative">
         <button onclick="toggleDropdown('tvDropdown')" id="btnTVTab" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-2 border border-slate-800">
           <i class="fa-solid fa-tv text-[11px] text-amber-400"></i>
@@ -106,9 +105,15 @@
       </button>
     </div>
 
-    <!-- يسار الشريط: مركز الخدمات والابتكارات المتطورة ومواقيت الصلاة -->
+    <!-- يسار الشريط: نداء البائع + الابتكارات الذكية + الساعة والصلاة -->
     <div class="flex items-center gap-2.5">
       
+      <!-- زر نداء البائع المباشر (Call Host) -->
+      <button onclick="triggerCallStaffModal()" class="px-3 py-1.5 rounded-xl text-xs font-black bg-rose-500/15 border border-rose-500/40 text-rose-300 hover:bg-rose-500 hover:text-white transition flex items-center gap-1.5 shadow">
+        <i class="fa-solid fa-bell animate-bounce text-xs"></i>
+        <span>نداء البائع (C)</span>
+      </button>
+
       <!-- زر المرشد الصوتي السريع -->
       <button onclick="toggleVoiceStylist()" id="btnVoiceStylist" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30 hover:bg-amber-500 hover:text-slate-950 transition flex items-center gap-1.5 shadow">
         <i class="fa-solid fa-microphone-lines text-xs"></i>
@@ -125,21 +130,27 @@
 
         <div id="servicesDropdown" class="absolute top-full left-0 mt-2 w-64 glass-card rounded-2xl p-2 shadow-2xl opacity-0 pointer-events-none transition-all duration-200 z-50">
           
-          <!-- الفكرة 2: المرآة ومحطة التصوير -->
+          <!-- فحص صوت الترحيب -->
+          <button onclick="playLuxuryWelcomeSound(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition flex items-center justify-between mb-1">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-volume-high"></i> تجربة نغمة الترحيب</span>
+            <kbd class="text-[9px] bg-emerald-950/80 px-1.5 py-0.5 rounded text-emerald-300 font-mono">P</kbd>
+          </button>
+
+          <!-- كابينة التصوير والمرآة -->
           <button onclick="toggleGhostMirror(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-amber-300">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-camera-retro text-amber-400"></i> مرآة التصوير واستديو الإطلالة</span>
+            <span class="flex items-center gap-2"><i class="fa-solid fa-camera-retro text-amber-400"></i> المرآة الذكية ومحطة التصوير</span>
             <kbd class="text-[9px] text-slate-500 font-mono">G</kbd>
           </button>
 
-          <!-- الفكرة 5: دليل معالم الرياض الثقافي -->
+          <!-- بوصلة معالم الرياض -->
           <button onclick="toggleLandmarksModal(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
             <span class="flex items-center gap-2"><i class="fa-solid fa-landmark-flag text-amber-400"></i> بوصلة معالم الرياض</span>
             <kbd class="text-[9px] text-slate-500 font-mono">K</kbd>
           </button>
 
-          <!-- الفكرة 4: إحصائيات المعرض والزوار -->
+          <!-- إحصائيات المعرض ومستشعر الطاقة -->
           <button onclick="toggleAnalyticsModal(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-chart-simple text-emerald-400"></i> إحصائيات الزوار والطاقة</span>
+            <span class="flex items-center gap-2"><i class="fa-solid fa-chart-simple text-emerald-400"></i> إحصائيات المعرض والطاقة</span>
             <kbd class="text-[9px] text-slate-500 font-mono">D</kbd>
           </button>
 
@@ -163,7 +174,7 @@
             <kbd class="text-[9px] text-slate-500 font-mono">V</kbd>
           </button>
 
-          <!-- الرادار ومستشعر التردد -->
+          <!-- الرادار ووضع التوفير -->
           <button onclick="togglePresenceRadar(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
             <span class="flex items-center gap-2">
               <span id="radarDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
@@ -185,7 +196,6 @@
         <div id="liveClock" class="font-mono text-xs font-bold text-slate-300">--:--</div>
       </div>
 
-      <!-- ملء الشاشة -->
       <button onclick="toggleFullScreen()" title="ملء الشاشة (F)" class="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-amber-400 text-xs transition">
         <i class="fa-solid fa-expand"></i>
       </button>
@@ -195,70 +205,92 @@
   <!-- ==================== مساحة العرض الرئيسية ==================== -->
   <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-12 fade-transition">
 
-    <!-- 1. قسم الكتالوج والمنتجات -->
-    <section id="productSection" class="w-1/2 h-full p-10 lg:p-14 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition">
+    <!-- 1. قسم الكتالوج ومحطة الخدمة الذاتية (Self-Service Kiosk) -->
+    <section id="productSection" class="w-1/2 h-full p-8 lg:p-12 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition overflow-y-auto">
       <div>
-        <span class="text-amber-400 text-[11px] font-bold tracking-widest uppercase">أزياء الشارع الراقية المبتكرة</span>
+        <div class="flex items-center justify-between">
+          <span class="text-amber-400 text-[11px] font-bold tracking-widest uppercase">أزياء الشارع الراقية المبتكرة</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+            الخدمة الذاتية متاحة فوراً
+          </span>
+        </div>
         <h1 class="text-2xl lg:text-3xl font-black text-white mt-0.5">عِـزوة • EZWA</h1>
       </div>
 
-      <!-- محتوى القطعة النشطة -->
-      <div class="my-auto py-4 max-w-2xl">
+      <!-- محتوى وتفاصيل القطعة المعروضة -->
+      <div class="my-auto py-2 max-w-2xl">
         <span id="productTag" class="text-xs font-bold text-amber-400/90">الإصدار الأكثر طلباً</span>
-        <h2 id="productTitle" class="text-3xl lg:text-5xl font-black text-white mt-2 leading-tight">تيشيرت بوكس فيت - قصر المصمك</h2>
+        <h2 id="productTitle" class="text-3xl lg:text-4xl font-black text-white mt-1 leading-tight">تيشيرت بوكس فيت - قصر المصمك</h2>
         
-        <div class="flex items-baseline gap-3 mt-4">
+        <div class="flex items-baseline gap-3 mt-3">
           <span id="productPrice" class="text-3xl lg:text-4xl font-black text-amber-400">185</span>
           <span class="text-sm text-slate-400 font-bold">ريال سعودي</span>
+          <span class="text-[11px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md font-bold mr-2">دفع فوري بـ Apple Pay / مدى</span>
         </div>
 
-        <p class="text-slate-400 text-xs lg:text-sm mt-4 leading-relaxed max-w-xl">
+        <p class="text-slate-400 text-xs mt-3 leading-relaxed max-w-xl">
           خامة قطنية ثقيلة، ياقة مزدوجة الغرزة لا ترتخي مع الغسيل، وقصة أوفر سايز متزنة مع رقاقة NFC مدمجة باحترافية في حاشية السدو السفلية.
         </p>
 
-        <!-- التنسيق الموصى به مع زر استعراض المعلم -->
-        <div class="mt-6 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-300 max-w-lg flex items-center justify-between">
-          <div>
-            <span class="text-amber-400 font-bold block mb-1">التنسيق الموصى به:</span>
-            <span id="stylingText">كارجو بلون بيج رملي أو فحمي، مع سنيكرز أبيض لإبراز حاشية السدو.</span>
+        <!-- أزرار حسم التردد والأسئلة الشائعة (Objection Breakers) -->
+        <div class="mt-4 pt-3 border-t border-slate-900">
+          <span class="text-[11px] text-slate-400 font-bold block mb-2">استفسارات تهمك قبل الشراء:</span>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="showQuickAnswer('wash')" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-[11px] text-slate-300 hover:border-amber-400 hover:text-white transition flex items-center gap-1.5">
+              <i class="fa-solid fa-shirt text-amber-400 text-[10px]"></i>
+              <span>هل ينكمش بالغسيل؟</span>
+            </button>
+            <button onclick="showQuickAnswer('exchange')" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-[11px] text-slate-300 hover:border-amber-400 hover:text-white transition flex items-center gap-1.5">
+              <i class="fa-solid fa-rotate-left text-emerald-400 text-[10px]"></i>
+              <span>سياسة التبديل والاسترجاع</span>
+            </button>
+            <button onclick="showQuickAnswer('nfc')" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-[11px] text-slate-300 hover:border-amber-400 hover:text-white transition flex items-center gap-1.5">
+              <i class="fa-solid fa-wifi rotate-90 text-amber-400 text-[10px]"></i>
+              <span>كيف تعمل شريحة السدو؟</span>
+            </button>
           </div>
-          <button onclick="toggleLandmarksModal()" class="px-2.5 py-1.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[11px] font-bold shrink-0 mr-2 hover:bg-amber-500 hover:text-slate-950 transition">
-            قصة المعلم
-          </button>
         </div>
 
-        <!-- شريط كاسر التردد التلقائي -->
-        <div id="hesitationBreaker" class="mt-4 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-300 flex items-center gap-2 opacity-0 fade-transition max-w-lg">
-          <i class="fa-solid fa-shield-halved text-amber-400"></i>
-          <span>قطن معالج ضد الانكماش يدوم طويلاً • إمكانية التبديل الفوري خلال 14 يوماً.</span>
+        <!-- صندوق الإجابة السريعة المنبثق خفيفاً -->
+        <div id="quickAnswerBox" class="mt-3 p-3 rounded-xl bg-slate-900/90 border border-amber-500/30 text-xs text-slate-200 hidden fade-transition">
+          <div class="flex justify-between items-center mb-1">
+            <strong id="quickAnswerTitle" class="text-amber-400 text-[11px]"></strong>
+            <button onclick="document.getElementById('quickAnswerBox').classList.add('hidden')" class="text-slate-400 hover:text-white text-xs">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <p id="quickAnswerText" class="leading-relaxed text-[11px] text-slate-300"></p>
         </div>
       </div>
 
-      <!-- الباركود والتنقل -->
-      <div class="flex items-center justify-between border-t border-slate-900 pt-4 max-w-2xl">
-        <div class="flex items-center gap-4">
-          <div class="relative p-1.5 bg-white rounded-xl shadow-md shrink-0">
-            <div id="qrcodeBox"></div>
-            <div class="absolute -top-1.5 -right-1.5 w-5 h-5">
-              <svg class="w-full h-full timer-ring" viewBox="0 0 36 36">
-                <path class="text-slate-800" stroke-width="4" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                <path id="timerPath" class="text-amber-400" stroke-dasharray="100, 100" stroke-width="4" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-              </svg>
+      <!-- محطة الدفع الذاتي السريع واستلام القطعة (Self Checkout Box) -->
+      <div class="border-t border-slate-900 pt-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div class="relative p-1.5 bg-white rounded-xl shadow-md shrink-0">
+              <div id="qrcodeBox"></div>
+              <div class="absolute -top-1.5 -right-1.5 w-5 h-5">
+                <svg class="w-full h-full timer-ring" viewBox="0 0 36 36">
+                  <path class="text-slate-800" stroke-width="4" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path id="timerPath" class="text-amber-400" stroke-dasharray="100, 100" stroke-width="4" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                </svg>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-xs font-black text-white block">امسح للدفع والاستلام الفوري</span>
+              <span class="text-[10px] text-slate-400 block mt-0.5">يدعم Apple Pay ومدى • خذ قطعتك الآن من الستاند أو اطلب توصيلها لباب بيتك</span>
             </div>
           </div>
-          <div class="text-right">
-            <span class="text-xs font-bold text-white block">امسح للطلب أو المعاينة</span>
-            <span class="text-[10px] text-slate-500">يتغير العرض تلقائياً كل 15 ثانية</span>
-          </div>
-        </div>
 
-        <div class="flex gap-2">
-          <button onclick="prevProduct()" class="w-9 h-9 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
-            <i class="fa-solid fa-arrow-right text-xs"></i>
-          </button>
-          <button onclick="nextProduct()" class="w-9 h-9 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
-            <i class="fa-solid fa-arrow-left text-xs"></i>
-          </button>
+          <div class="flex gap-2">
+            <button onclick="prevProduct()" class="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
+              <i class="fa-solid fa-arrow-right text-xs"></i>
+            </button>
+            <button onclick="nextProduct()" class="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
+              <i class="fa-solid fa-arrow-left text-xs"></i>
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -269,16 +301,77 @@
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
 
-    <!-- ==================== الفكرة 2: المرآة ومحطة التصوير (Lookbook Studio Snap) ==================== -->
+    <!-- ==================== نافذة نداء البائع (Call Staff Modal) ==================== -->
+    <div id="callStaffModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-rose-500/40 text-center relative shadow-2xl">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="w-16 h-16 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center mx-auto mb-3 text-rose-400 text-2xl">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+
+        <h3 class="text-xl font-black text-white">طلب مساعدة البائع</h3>
+        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+          فريق "عِـزوة" في خدمتك دائماً! إذا احتجت مقاساً خاصاً من المستودع أو استفساراً، اختر الطريقة المناسبة:
+        </p>
+
+        <div class="space-y-2.5 my-4">
+          <!-- خيار التنبيه داخل المعرض -->
+          <button onclick="confirmHostSummon()" class="w-full p-3 rounded-2xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition flex items-center justify-center gap-2 shadow-lg">
+            <i class="fa-solid fa-bullhorn text-sm"></i>
+            <span>تنبيه البائع الحاضر بالمعرض الآن</span>
+          </button>
+
+          <!-- خيار محادثة الواتساب الفورية -->
+          <a href="https://wa.me/966500000000?text=أهلاً%20عزوة،%20أنا%20أمام%20شاشة%20العرض%20وأحتاج%20مساعدة%20في%20الطلب" target="_blank" class="w-full p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold text-xs hover:bg-emerald-500 hover:text-slate-950 transition flex items-center justify-center gap-2">
+            <i class="fa-brands fa-whatsapp text-sm"></i>
+            <span>مراسلة خدمة العملاء عبر واتساب</span>
+          </a>
+        </div>
+
+        <div id="summonConfirmation" class="text-xs text-amber-300 font-bold hidden py-1">
+          ✓ تم إرسال الإشعار للبائع، سيكون معك خلال لحظات!
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== نافذة عرض اللحظة الأخيرة للإغلاق (Closing Deal Offer) ==================== -->
+    <div id="closingOfferModal" class="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-sm w-full border-2 border-amber-500 text-center relative shadow-[0_0_60px_rgba(245,158,11,0.25)]">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <span class="text-[10px] font-black uppercase tracking-widest text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+          عرض خاص لزوار المعرض اليوم
+        </span>
+
+        <h3 class="text-2xl font-black text-white mt-2">لا تدع إطلالتك تفوتك!</h3>
+        <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+          احصل على <strong class="text-amber-400">توصيل مجاني فوري</strong> أو خصم خاص عند إتمام مسح الباركود والدفع خلال الـ 5 دقائق القادمة:
+        </p>
+
+        <!-- عداد تنازلي للعرض -->
+        <div class="my-3 py-2 px-4 rounded-xl bg-slate-900 border border-slate-800 text-amber-400 font-mono text-2xl font-black inline-block">
+          04:59
+        </div>
+
+        <div class="bg-white p-3 rounded-2xl w-32 h-32 mx-auto flex items-center justify-center shadow-lg" id="offerQrCode"></div>
+
+        <button onclick="closeAllModals()" class="mt-4 text-xs text-slate-400 hover:text-white transition">
+          متابعة تصفح الكتالوج (Esc)
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== المرآة الذكية ومحطة التصوير ==================== -->
     <div id="ghostMirrorModal" class="fixed inset-0 z-50 bg-black flex items-center justify-center fade-transition opacity-0 pointer-events-none">
-      <!-- فيديو الكاميرا كمرآة عريضة نقية -->
       <video id="mirrorVideo" class="w-full h-full object-cover scale-x-[-1]" autoplay playsinline muted></video>
 
-      <!-- زر الالتقاط السريع الشفاف وزر الإغلاق -->
       <div class="absolute bottom-10 inset-x-0 flex flex-col items-center justify-center z-20 pointer-events-auto gap-3">
-        <!-- العداد التنازلي للتصوير -->
         <div id="countdownBadge" class="hidden text-5xl font-black text-amber-400 font-mono animate-ping">3</div>
-        
         <div class="flex items-center gap-4">
           <button onclick="triggerSnapPhoto()" id="btnSnap" class="px-6 py-3 rounded-full bg-amber-500 text-slate-950 font-black text-sm hover:bg-amber-400 shadow-2xl flex items-center gap-2 border-2 border-black/40">
             <i class="fa-solid fa-camera text-base"></i>
@@ -288,13 +381,10 @@
             إغلاق (Esc)
           </button>
         </div>
-        <span class="text-[11px] text-white/80 bg-black/60 px-3 py-1 rounded-full">قف باستقامة وسيقوم النظام بتوليد رمز QR لتحميل إطلالتك فوراً</span>
       </div>
 
-      <!-- كانفاس المعالجة والتصوير الخفي -->
       <canvas id="photoCanvas" class="hidden"></canvas>
 
-      <!-- نافذة معاينة الصورة الملتقطة مع باركود التنزيل -->
       <div id="photoResultModal" class="absolute inset-0 z-30 bg-slate-950/95 flex items-center justify-center p-6 hidden">
         <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/40 text-center relative shadow-2xl">
           <button onclick="closePhotoResult()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
@@ -302,17 +392,14 @@
           </button>
           <span class="text-amber-400 text-xs font-bold uppercase tracking-widest block">EZWA Lookbook Studio</span>
           <h3 class="text-lg font-black text-white mt-1">تم توثيق إطلالتك بنجاح!</h3>
-          
           <img id="snappedImagePreview" class="w-full h-56 object-cover rounded-2xl border border-amber-500/20 my-4 shadow-inner" src="" alt="Captured Snap" />
-
           <div class="bg-slate-900/90 rounded-2xl p-4 border border-slate-800 flex items-center justify-between">
             <div id="snapQrCode" class="p-1.5 bg-white rounded-xl shrink-0"></div>
             <div class="text-right mr-3">
               <span class="text-xs font-bold text-white block">امسح الكود بجوالك</span>
-              <p class="text-[11px] text-slate-400 mt-0.5">لتنزيل بطاقة إطلالتك الرقمية الموثقة ومشاركتها في وسائل التواصل.</p>
+              <p class="text-[11px] text-slate-400 mt-0.5">لتنزيل بطاقة إطلالتك الرقمية ومشاركتها في وسائل التواصل.</p>
             </div>
           </div>
-          
           <button onclick="closePhotoResult()" class="w-full mt-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-400 transition">
             العودة للمرآة
           </button>
@@ -320,7 +407,7 @@
       </div>
     </div>
 
-    <!-- ==================== الفكرة 3: مرشد الذكاء الاصطناعي الصوتي (AI Style Stylist) ==================== -->
+    <!-- ==================== مرشد الذكاء الاصطناعي الصوتي ==================== -->
     <div id="stylistModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-8 max-w-lg w-full border border-amber-500/40 text-center relative shadow-2xl">
         <button onclick="closeAllModals()" class="absolute top-5 left-5 text-slate-400 hover:text-white text-base">
@@ -338,12 +425,10 @@
           تحدث بصوتك مباشرة واسأل عن التنسيق، المقاسات، أو مناسبات ارتداء التيشيرت:
         </p>
 
-        <!-- نص العميل المسموع -->
         <div id="userSpeechBox" class="my-4 p-3 rounded-2xl bg-slate-900 border border-slate-800 text-xs text-amber-300 font-mono min-h-[44px] flex items-center justify-center">
           "اضغط على الميكروفون لبدء التحدث..."
         </div>
 
-        <!-- إجابة وتوصية المنسق الذكي -->
         <div id="stylistReplyBox" class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-right text-xs text-slate-200 hidden">
           <span class="text-amber-400 font-bold block mb-1">توصية المنسق:</span>
           <p id="stylistReplyText" class="leading-relaxed"></p>
@@ -361,7 +446,7 @@
       </div>
     </div>
 
-    <!-- ==================== الفكرة 4: إحصائيات المعرض وحفظ الطاقة (Footfall & Eco) ==================== -->
+    <!-- ==================== إحصائيات المعرض ==================== -->
     <div id="analyticsModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-emerald-500/30 text-right shadow-2xl">
         <div class="flex justify-between items-center mb-4">
@@ -388,17 +473,13 @@
           </div>
         </div>
 
-        <p class="text-[11px] text-slate-400 leading-relaxed mb-4">
-          يقوم الرادار تلقائياً بخفض سطوع الشاشة بنسبة 80% عند خلو المساحة لحماية اللوحة وتوفير الطاقة، وتستيقظ الشاشة فوراً عند اقتراب أي عميل.
-        </p>
-
         <button onclick="closeAllModals()" class="w-full py-2 rounded-xl bg-slate-900 text-slate-300 font-bold text-xs hover:bg-slate-800 border border-slate-800 transition">
           إغلاق (Esc)
         </button>
       </div>
     </div>
 
-    <!-- ==================== الفكرة 5: دليل معالم الرياض التفاعلي (Landmarks Compass) ==================== -->
+    <!-- ==================== بوصلة معالم الرياض ==================== -->
     <div id="landmarksModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-xl w-full border border-amber-500/40 text-right shadow-2xl">
         <div class="flex justify-between items-center mb-4 border-b border-slate-800/80 pb-3">
@@ -411,10 +492,8 @@
           </button>
         </div>
 
-        <!-- قائمة المعالم الثلاثة المرتبطة بالإصدارات -->
         <div class="space-y-3">
-          <!-- 1. قصر المصمك -->
-          <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-amber-500/20 flex items-center justify-between hover:border-amber-500/50 transition">
+          <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-amber-500/20 flex items-center justify-between">
             <div>
               <h4 class="text-sm font-black text-white flex items-center gap-1.5">
                 <i class="fa-solid fa-fort-awesome text-amber-400"></i>
@@ -427,8 +506,7 @@
             </a>
           </div>
 
-          <!-- 2. جبل طويق -->
-          <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between hover:border-amber-500/50 transition">
+          <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
             <div>
               <h4 class="text-sm font-black text-white flex items-center gap-1.5">
                 <i class="fa-solid fa-mountain text-amber-400"></i>
@@ -440,20 +518,6 @@
               الموقع بالخريطة
             </a>
           </div>
-
-          <!-- 3. الدرعية التاريخية -->
-          <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between hover:border-amber-500/50 transition">
-            <div>
-              <h4 class="text-sm font-black text-white flex items-center gap-1.5">
-                <i class="fa-solid fa-landmark text-amber-400"></i>
-                حي الطريف • الدرعية
-              </h4>
-              <p class="text-[11px] text-slate-300 mt-1">عاصمة المجد والتراث العالمي، ومنطلق نقوش السدو والعمارة النجدية الأصيلة.</p>
-            </div>
-            <a href="https://maps.google.com/?q=At-Turaif+District+Diriyah" target="_blank" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-[10px] font-bold shrink-0 mr-3 hover:text-white transition">
-              الموقع بالخريطة
-            </a>
-          </div>
         </div>
 
         <button onclick="closeAllModals()" class="w-full mt-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-400 transition">
@@ -462,7 +526,7 @@
       </div>
     </div>
 
-    <!-- نافذة مستشار المقاسات الدقيق للبوكس فيت -->
+    <!-- نافذة مستشار المقاسات الدقيق -->
     <div id="fitModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-lg w-full border border-amber-500/30 text-right shadow-2xl">
         <div class="flex justify-between items-center mb-3">
@@ -699,7 +763,46 @@
       }, 650);
     }
 
-    // ==================== الفكرة 2: محطة تصوير الإطلالة وتوليد الباركود ====================
+    // ==================== وظائف البائع المستقل وكسر التردد ====================
+    function showQuickAnswer(topic) {
+      const box = document.getElementById('quickAnswerBox');
+      const title = document.getElementById('quickAnswerTitle');
+      const text = document.getElementById('quickAnswerText');
+      box.classList.remove('hidden');
+
+      if (topic === 'wash') {
+        title.textContent = "هل ينكمش القطن بعد الغسيل؟";
+        text.textContent = "القطن معالج حرارياً ومغسول مسبقاً (Pre-Shrunk) لمنع أي انكماش بعد الاستخدام. الياقة محاكة بغرزة مزدوجة لا ترتخي وتدوم لسنوات.";
+      } else if (topic === 'exchange') {
+        title.textContent = "سياسة الاستبدال والاسترجاع في المعرض:";
+        text.textContent = "استبدال فوري متاح خلال 14 يوماً. إذا كان المقاس غير مناسب يمكنك استبداله مباشرة في المعرض أو عبر مندوبنا حتى باب بيتك.";
+      } else if (topic === 'nfc') {
+        title.textContent = "كيف أستخدم شريحة السدو الذكية؟";
+        text.textContent = "مرر ظهر هاتفك الذكي على حاشية السدو السفلية؛ ستفتح لك شهادة التوثيق المشفرة وتحديات ثقافية حصرية دون الحاجة لأي تطبيق أو بطاريات.";
+      }
+    }
+
+    function triggerCallStaffModal() {
+      closeAllModals();
+      document.getElementById('summonConfirmation').classList.add('hidden');
+      document.getElementById('callStaffModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function confirmHostSummon() {
+      document.getElementById('summonConfirmation').classList.remove('hidden');
+      // عزف شايم لتنبيه من في المحل
+      playLuxuryWelcomeSound();
+    }
+
+    function triggerClosingOffer() {
+      closeAllModals();
+      const qr = document.getElementById('offerQrCode');
+      qr.innerHTML = '';
+      new QRCode(qr, { text: "https://ezwa-store.com/checkout?offer=exhibition10", width: 110, height: 110 });
+      document.getElementById('closingOfferModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    // ==================== كابينة التصوير واستديو الإطلالة ====================
     let mirrorStream = null;
 
     async function toggleGhostMirror() {
@@ -745,24 +848,20 @@
       const video = document.getElementById('mirrorVideo');
       const canvas = document.getElementById('photoCanvas');
       canvas.width = 1080;
-      canvas.height = 1350; // نسبة طولية مناسبة للانستقرام والستوري
+      canvas.height = 1350;
       const ctx = canvas.getContext('2d');
 
-      // رسم الصورة المعكوسة من الكاميرا
       ctx.save();
       ctx.scale(-1, 1);
       ctx.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
       ctx.restore();
 
-      // دمج إطار وهوية "عِـزوة" الفخمة
       ctx.fillStyle = "rgba(3, 7, 18, 0.4)";
       ctx.fillRect(0, canvas.height - 180, canvas.width, 180);
 
-      // خط ذهبي للسدو
       ctx.fillStyle = "#f59e0b";
       ctx.fillRect(0, canvas.height - 180, canvas.width, 6);
 
-      // نصوص التوثيق
       ctx.font = "bold 44px 'Cairo', sans-serif";
       ctx.fillStyle = "#ffffff";
       ctx.direction = "rtl";
@@ -775,7 +874,6 @@
       const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
       document.getElementById('snappedImagePreview').src = dataUrl;
 
-      // توليد باركود لتحميل الصورة
       const qrBox = document.getElementById('snapQrCode');
       qrBox.innerHTML = '';
       new QRCode(qrBox, { text: dataUrl, width: 90, height: 90 });
@@ -787,7 +885,7 @@
       document.getElementById('photoResultModal').classList.add('hidden');
     }
 
-    // ==================== الفكرة 3: مرشد الذكاء الاصطناعي الصوتي ====================
+    // ==================== مرشد الذكاء الاصطناعي الصوتي ====================
     let recognition = null;
 
     function toggleVoiceStylist() {
@@ -798,11 +896,10 @@
     function startListeningStylist() {
       const userBox = document.getElementById('userSpeechBox');
       const micWave = document.getElementById('micPingWave');
-      const status = document.getElementById('stylistStatus');
-
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      
       if (!SpeechRecognition) {
-        userBox.textContent = "المتصفح لا يدعم التسجيل الصوتي المباشر، جرب عبر متصفح Chrome.";
+        userBox.textContent = "المتصفح لا يدعم التسجيل الصوتي المباشر، جرب عبر Google Chrome.";
         return;
       }
 
@@ -835,19 +932,18 @@
       const replyText = document.getElementById('stylistReplyText');
       replyBox.classList.remove('hidden');
 
-      let reply = "أنصحك ببنطال كارجو بلون ترابي أو أسود مغسول وسنيكرز أبيض، مع اختيار مقاسك المعتاد في البوكس فيت ليعطيك مظهر الكتف المنسدل الواسع.";
+      let reply = "أنصحك ببنطال كارجو بلون ترابي أو أسود وسنيكرز أبيض، مع اختيار مقاسك المعتاد في البوكس فيت ليعطيك مظهر الكتف المنسدل الواسع.";
 
       if (query.includes("مصمك") || query.includes("المصمك")) {
-        reply = "تيشيرت قصر المصمك يتميز بياقة مزدوجة وحاشية سدو تراثية؛ أفضل تنسيق له هو بنطال رملي فاتح وأكسسوارات جلدية بسيطة لإبراز فخامة النقش.";
+        reply = "تيشيرت قصر المصمك يتميز بياقة مزدوجة وحاشية سدو؛ أفضل تنسيق له هو بنطال رملي فاتح لإبراز فخامة النقش.";
       } else if (query.includes("طويق")) {
-        reply = "تيشيرت جبل طويق صمم بقصة بوكس فيت ثقيلة؛ يفضل تنسيقه مع بنطال دنيم أسود كلاسيكي أو شورت رياضي رمادي داكن لإطلالة حيوية.";
-      } else if (query.includes("مقاس") || query.includes("حجم") || query.includes("وزن")) {
-        reply = "قوالب البوكس فيت مصممة باتساع صدري إضافي وكتف منسدل؛ لذا مقاسك يمنحك راحة تامة دون الحاجة لزيادة المقاسات إلا إذا رغبت بقصة فضفاضة جداً.";
+        reply = "تيشيرت جبل طويق صمم بقصة بوكس فيت ثقيلة؛ يفضل تنسيقه مع بنطال دنيم أسود كلاسيكي أو شورت رمادي لإطلالة عملية.";
+      } else if (query.includes("مقاس") || query.includes("وزن")) {
+        reply = "قوالب البوكس فيت عريضة ومربعة الصدر، لذا مقاسك المعتاد يمنحك راحة تامة دون الحاجة لزيادة المقاسات.";
       }
 
       replyText.textContent = reply;
 
-      // نطق التوصية بالصوت العربي
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const ut = new SpeechSynthesisUtterance(reply);
@@ -857,28 +953,25 @@
       }
     }
 
-    // ==================== الفكرة 4: إحصائيات المعرض ومستشعر توفير الطاقة ====================
-    let visitorCount = 18;
+    // ==================== إحصائيات المعرض ومعالم الرياض ====================
+    let visitorCount = 24;
     function toggleAnalyticsModal() {
       closeAllModals();
       document.getElementById('statVisitorCount').textContent = visitorCount;
       document.getElementById('analyticsModal').classList.remove('opacity-0', 'pointer-events-none');
     }
 
-    // ==================== الفكرة 5: دليل معالم الرياض التفاعلي ====================
     function toggleLandmarksModal() {
       closeAllModals();
       document.getElementById('landmarksModal').classList.remove('opacity-0', 'pointer-events-none');
     }
 
-    // ==================== وظائف التحكم العامة ====================
+    // ==================== الوظائف الأساسية للشاشة ====================
     function toggleDropdown(id) {
       const el = document.getElementById(id);
       const isVisible = !el.classList.contains('opacity-0');
       closeAllDropdowns();
-      if (!isVisible) {
-        el.classList.remove('opacity-0', 'pointer-events-none');
-      }
+      if (!isVisible) el.classList.remove('opacity-0', 'pointer-events-none');
     }
 
     function closeAllDropdowns() {
@@ -942,11 +1035,11 @@
 
       if (mode === 'catalog') {
         btnCatalog.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
-        prodSec.className = "w-full h-full p-10 lg:p-14 flex flex-col justify-between absolute inset-0 fade-transition z-20 bg-slate-950 overflow-hidden opacity-100";
+        prodSec.className = "w-full h-full p-8 lg:p-12 flex flex-col justify-between absolute inset-0 fade-transition z-20 bg-slate-950 overflow-y-auto opacity-100";
         tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
       } else if (mode === 'split') {
         btnSplit.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
-        prodSec.className = "w-1/2 h-full p-10 lg:p-14 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100";
+        prodSec.className = "w-1/2 h-full p-8 lg:p-12 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100 overflow-y-auto";
         tvSec.className = "w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition opacity-100";
         playStream(CHANNELS[activeChannelKey]);
       } else if (mode === 'tv') {
@@ -1012,7 +1105,7 @@
       }, 1000);
     }
 
-    // ==================== مواقيت الصلاة والخروج الفوري ====================
+    // ==================== أوقات الصلاة والخروج الفوري ====================
     const prayerTimesRiyadh = [
       { name: "الفجر", time: "04:55" },
       { name: "الظهر", time: "11:42" },
@@ -1066,7 +1159,7 @@
       }
     }
 
-    // ==================== منطق مستشار البوكس فيت ====================
+    // ==================== مستشار المقاسات ====================
     function selectFitParam(type, val, btn) {
       if (type === 'height') {
         selectedH = val;
@@ -1155,7 +1248,7 @@
     }
 
     function closeAllModals() {
-      ['vipModal', 'fitModal', 'ghostMirrorModal', 'stylistModal', 'analyticsModal', 'landmarksModal'].forEach(id => {
+      ['vipModal', 'fitModal', 'ghostMirrorModal', 'stylistModal', 'analyticsModal', 'landmarksModal', 'callStaffModal', 'closingOfferModal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
@@ -1169,7 +1262,7 @@
       dismissPrayerOverlay();
     }
 
-    // ==================== الرادار ووضع توفير الطاقة الذكي ====================
+    // ==================== الرادار ووضع الحضور المستقل ====================
     let isRadarOn = false;
     let radarStream = null;
     let radarTimer = null;
@@ -1221,8 +1314,6 @@
           if (diff > 12000) {
             idleSec = 0;
             focusStandingSec++;
-            
-            // إلغاء تعتيم توفير الطاقة فوراً
             document.getElementById('mainContainer').classList.remove('eco-dimmed');
 
             if (currentLayout === 'lounge') {
@@ -1230,18 +1321,16 @@
               visitorCount++;
               playLuxuryWelcomeSound();
             }
-            if (focusStandingSec >= 7) {
-              const breaker = document.getElementById('hesitationBreaker');
-              if (breaker) breaker.classList.remove('opacity-0');
+
+            // إذا وقف الزائر لأكثر من 12 ثانية محتاراً، يفتح له عرض الإغلاق
+            if (focusStandingSec === 12) {
+              triggerClosingOffer();
             }
           } else {
             idleSec++;
             focusStandingSec = 0;
-            const breaker = document.getElementById('hesitationBreaker');
-            if (breaker) breaker.classList.add('opacity-0');
 
-            // تفعيل تعتيم الطاقة التلقائي بعد 25 ثانية خلو
-            if (idleSec >= 25) {
+            if (idleSec >= 30) {
               document.getElementById('mainContainer').classList.add('eco-dimmed');
               if (currentLayout === 'split') setScreenLayout('lounge');
             }
@@ -1265,7 +1354,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // اختصارات لوحة المفاتيح الشاملة
+    // اختصارات لوحة المفاتيح
     window.addEventListener('keydown', (e) => {
       unlockAudioContext();
       const k = e.key.toLowerCase();
@@ -1274,6 +1363,7 @@
       if (k === '3') setScreenLayout('tv');
       if (k === 'l') setScreenLayout('lounge');
       
+      if (k === 'c') triggerCallStaffModal();
       if (k === 'p') playLuxuryWelcomeSound();
       if (k === 'g') toggleGhostMirror();
       if (k === 's') toggleVoiceStylist();
