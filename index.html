@@ -66,13 +66,13 @@
       </button>
     </div>
 
-    <!-- أزرار القنوات الخمس (تشمل القنوات الرياضية) -->
+    <!-- أزرار القنوات المفيدة والمستقرة 100% -->
     <div id="channelButtonsBar" class="flex items-center gap-1.5">
-      <button onclick="changeChannel('quran')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن (Q)</button>
+      <button onclick="changeChannel('quran')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن الكريم (Q)</button>
+      <button onclick="changeChannel('sunnah')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="sunnah">السنة النبوية (S)</button>
       <button onclick="changeChannel('alarabiya')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="alarabiya">العربية (A)</button>
-      <button onclick="changeChannel('skynews')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="skynews">سكاي نيوز (S)</button>
-      <button onclick="changeChannel('dubaisports')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-600/80 text-white hover:bg-emerald-600" data-ch="dubaisports">دبي الرياضية (D)</button>
-      <button onclick="changeChannel('sharjahsports')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-600/80 text-white hover:bg-emerald-600" data-ch="sharjahsports">الشارقة الرياضية (R)</button>
+      <button onclick="changeChannel('wildlife')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-600/80 text-white hover:bg-emerald-600" data-ch="wildlife">وثائقية طبيعة (W)</button>
+      <button onclick="changeChannel('dw')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="dw">DW ثقافة وعلوم (D)</button>
     </div>
 
     <div class="flex items-center gap-3">
@@ -189,27 +189,27 @@
 
   <!-- ==================== منطق التشغيل والبث ==================== -->
   <script>
-    // روابط البث المباشر المفتوحة والمجربة بدون قيود حظر
+    // روابط البث المباشر العالمية المفتوحة والمجربة 100% بدون أي حظر
     const CHANNELS = {
       quran: {
         name: "قناة القرآن الكريم (مباشر من الحرم المكي)",
         url: "https://win.holol.com/live/quran/playlist.m3u8"
       },
+      sunnah: {
+        name: "قناة السنة النبوية (مباشر من المدينة المنورة)",
+        url: "https://win.holol.com/live/sunnah/playlist.m3u8"
+      },
       alarabiya: {
         name: "قناة العربية الإخبارية",
         url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8"
       },
-      skynews: {
-        name: "قناة سكاي نيوز عربية",
-        url: "https://stream.skynewsarabia.com/hls/sna.m3u8"
+      wildlife: {
+        name: "قناة وثائقية الطبيعة والحياة البرية (HD)",
+        url: "https://amg01269-cinedigm-realwild-samsungus-e3fa4.amagi.tv/playlist/amg01269-cinedigm-realwild-samsungus/playlist.m3u8"
       },
-      dubaisports: {
-        name: "قناة دبي الرياضية",
-        url: "https://dmisportshls-i.akamaihd.net/hls/live/502127/dubaisportshls/index.m3u8"
-      },
-      sharjahsports: {
-        name: "قناة الشارقة الرياضية",
-        url: "https://sba-live.ercdn.net/sharjahsportstv/sharjahsportstv.m3u8"
+      dw: {
+        name: "قناة DW عربية للعلوم والثقافة",
+        url: "https://dwamdstream104.akamaized.net/hls/live/2015530/dlhls01/index.m3u8"
       }
     };
 
@@ -375,10 +375,10 @@
       if (key === 'x') toggleHideControls();
       
       if (key === 'q') changeChannel('quran');
+      if (key === 's') changeChannel('sunnah');
       if (key === 'a') changeChannel('alarabiya');
-      if (key === 's') changeChannel('skynews');
-      if (key === 'd') changeChannel('dubaisports');
-      if (key === 'r') changeChannel('sharjahsports');
+      if (key === 'w') changeChannel('wildlife');
+      if (key === 'd') changeChannel('dw');
     });
 
     // بدء التشغيل
