@@ -44,6 +44,9 @@
       border-radius: 9999px;
       animation: radarWave 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
     }
+    
+    /* شاشة توفير الطاقة الذكية */
+    .eco-dimmed { filter: brightness(0.18) grayscale(0.6); }
   </style>
 </head>
 <body id="screenBody" class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden" onclick="unlockAudioContext()">
@@ -53,19 +56,17 @@
     
     <!-- يمين الشريط: أنماط الشاشة والتبويبات المنسدلة -->
     <div class="flex items-center gap-2">
-      <!-- 1. نمط المنتجات -->
       <button onclick="setScreenLayout('catalog')" id="btnCatalog" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-1.5">
         <i class="fa-solid fa-shirt text-[11px]"></i>
         <span>المنتجات (1)</span>
       </button>
 
-      <!-- 2. النمط المزدوج -->
       <button onclick="setScreenLayout('split')" id="btnSplit" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5">
         <i class="fa-solid fa-table-columns text-[11px]"></i>
         <span>المزدوج (2)</span>
       </button>
 
-      <!-- 3. تبويب البث المباشر المنسدل -->
+      <!-- تبويب البث المباشر المنسدل -->
       <div class="relative">
         <button onclick="toggleDropdown('tvDropdown')" id="btnTVTab" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-2 border border-slate-800">
           <i class="fa-solid fa-tv text-[11px] text-amber-400"></i>
@@ -73,7 +74,6 @@
           <i class="fa-solid fa-chevron-down text-[9px] opacity-70"></i>
         </button>
 
-        <!-- القائمة المنسدلة للبث -->
         <div id="tvDropdown" class="absolute top-full right-0 mt-2 w-56 glass-card rounded-2xl p-2 shadow-2xl opacity-0 pointer-events-none transition-all duration-200 z-50">
           <button onclick="setScreenLayout('tv'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 mb-2 flex items-center justify-between">
             <span>تفعيل البث بشاشة كاملة</span>
@@ -100,7 +100,6 @@
         </div>
       </div>
 
-      <!-- 4. نمط اللاونج -->
       <button onclick="setScreenLayout('lounge')" id="btnLounge" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-amber-300 hover:bg-slate-800 transition flex items-center gap-1.5 border border-slate-800/80">
         <i class="fa-solid fa-gem text-[10px]"></i>
         <span>اللاونج (L)</span>
@@ -109,7 +108,14 @@
 
     <!-- يسار الشريط: مركز الخدمات والابتكارات المتطورة ومواقيت الصلاة -->
     <div class="flex items-center gap-2.5">
-      <!-- تبويب منسدل: الابتكارات والخدمات الذكية -->
+      
+      <!-- زر المرشد الصوتي السريع -->
+      <button onclick="toggleVoiceStylist()" id="btnVoiceStylist" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30 hover:bg-amber-500 hover:text-slate-950 transition flex items-center gap-1.5 shadow">
+        <i class="fa-solid fa-microphone-lines text-xs"></i>
+        <span>المرشد الصوتي (S)</span>
+      </button>
+
+      <!-- تبويب منسدل: الابتكارات الذكية -->
       <div class="relative">
         <button onclick="toggleDropdown('servicesDropdown')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-200 hover:text-white transition flex items-center gap-2">
           <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i>
@@ -117,52 +123,51 @@
           <i class="fa-solid fa-chevron-down text-[9px] opacity-70"></i>
         </button>
 
-        <!-- القائمة المنسدلة للخدمات والابتكارات -->
         <div id="servicesDropdown" class="absolute top-full left-0 mt-2 w-64 glass-card rounded-2xl p-2 shadow-2xl opacity-0 pointer-events-none transition-all duration-200 z-50">
           
-          <!-- فحص وتجربة صوت الترحيب -->
-          <button onclick="playLuxuryWelcomeSound(); closeAllDropdowns();" class="w-full text-right px-3 py-2.5 rounded-xl text-xs font-bold bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition flex items-center justify-between mb-1">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-volume-high"></i> تجربة صوت الترحيب</span>
-            <kbd class="text-[9px] bg-emerald-950/80 px-1.5 py-0.5 rounded text-emerald-300 font-mono">P</kbd>
-          </button>
-
-          <!-- الابتكار 1: المرآة الذكية الكاملة والنقية -->
+          <!-- الفكرة 2: المرآة ومحطة التصوير -->
           <button onclick="toggleGhostMirror(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-amber-300">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-person text-amber-400"></i> المرآة الذكية (Mirror)</span>
+            <span class="flex items-center gap-2"><i class="fa-solid fa-camera-retro text-amber-400"></i> مرآة التصوير واستديو الإطلالة</span>
             <kbd class="text-[9px] text-slate-500 font-mono">G</kbd>
           </button>
 
-          <!-- الابتكار 2: محاكي ملامسة القطعة المباشر -->
-          <button onclick="simulateNFCTap(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-hand-pointer text-amber-400"></i> ملامسة القطعة (NFC Tap)</span>
-            <kbd class="text-[9px] text-slate-500 font-mono">T</kbd>
+          <!-- الفكرة 5: دليل معالم الرياض الثقافي -->
+          <button onclick="toggleLandmarksModal(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-landmark-flag text-amber-400"></i> بوصلة معالم الرياض</span>
+            <kbd class="text-[9px] text-slate-500 font-mono">K</kbd>
+          </button>
+
+          <!-- الفكرة 4: إحصائيات المعرض والزوار -->
+          <button onclick="toggleAnalyticsModal(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-chart-simple text-emerald-400"></i> إحصائيات الزوار والطاقة</span>
+            <kbd class="text-[9px] text-slate-500 font-mono">D</kbd>
           </button>
 
           <div class="h-px bg-slate-800 my-1"></div>
 
+          <!-- مستشار المقاسات الحسابي -->
+          <button onclick="toggleFitAdvisorModal(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-ruler-combined text-amber-400"></i> مستشار المقاسات (Boxy Fit)</span>
+            <kbd class="text-[9px] text-slate-500 font-mono">M</kbd>
+          </button>
+
+          <!-- ملامسة شريحة السدو NFC -->
+          <button onclick="simulateNFCTap(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-hand-pointer text-amber-400"></i> ملامسة شريحة السدو (NFC)</span>
+            <kbd class="text-[9px] text-slate-500 font-mono">T</kbd>
+          </button>
+
+          <!-- عضوية النخبة VIP -->
           <button onclick="triggerVIPModal(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
             <span class="flex items-center gap-2"><i class="fa-solid fa-crown text-amber-400"></i> عضوية النخبة (VIP)</span>
             <kbd class="text-[9px] text-slate-500 font-mono">V</kbd>
           </button>
-          
-          <button onclick="triggerNFCModal(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-wifi rotate-90 text-amber-400"></i> شرح تقنية السدو NFC</span>
-            <kbd class="text-[9px] text-slate-500 font-mono">N</kbd>
-          </button>
 
-          <!-- مستشار المقاسات الحسابي للبوكس فيت -->
-          <button onclick="toggleFitAdvisorModal(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-amber-300">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-ruler-combined text-amber-400"></i> مستشار المقاسات (Boxy Fit)</span>
-            <kbd class="text-[9px] text-slate-500 font-mono">M</kbd>
-          </button>
-          
-          <div class="h-px bg-slate-800 my-1"></div>
-          
-          <!-- الابتكار 3 و4: الرادار الذكي ومستشعر التردد والصوت -->
+          <!-- الرادار ومستشعر التردد -->
           <button onclick="togglePresenceRadar(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
             <span class="flex items-center gap-2">
               <span id="radarDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
-              <span id="radarStatusText">الرادار + كاشف التردد</span>
+              <span id="radarStatusText">الرادار + وضع التوفير</span>
             </span>
             <kbd class="text-[9px] text-slate-500 font-mono">R</kbd>
           </button>
@@ -188,7 +193,7 @@
   </header>
 
   <!-- ==================== مساحة العرض الرئيسية ==================== -->
-  <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-12">
+  <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-12 fade-transition">
 
     <!-- 1. قسم الكتالوج والمنتجات -->
     <section id="productSection" class="w-1/2 h-full p-10 lg:p-14 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition">
@@ -211,13 +216,18 @@
           خامة قطنية ثقيلة، ياقة مزدوجة الغرزة لا ترتخي مع الغسيل، وقصة أوفر سايز متزنة مع رقاقة NFC مدمجة باحترافية في حاشية السدو السفلية.
         </p>
 
-        <!-- التنسيق الموصى به -->
-        <div class="mt-6 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-300 max-w-lg">
-          <span class="text-amber-400 font-bold block mb-1">التنسيق الموصى به:</span>
-          <span id="stylingText">كارجو بلون بيج رملي أو فحمي، مع سنيكرز أبيض لإبراز حاشية السدو.</span>
+        <!-- التنسيق الموصى به مع زر استعراض المعلم -->
+        <div class="mt-6 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-300 max-w-lg flex items-center justify-between">
+          <div>
+            <span class="text-amber-400 font-bold block mb-1">التنسيق الموصى به:</span>
+            <span id="stylingText">كارجو بلون بيج رملي أو فحمي، مع سنيكرز أبيض لإبراز حاشية السدو.</span>
+          </div>
+          <button onclick="toggleLandmarksModal()" class="px-2.5 py-1.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[11px] font-bold shrink-0 mr-2 hover:bg-amber-500 hover:text-slate-950 transition">
+            قصة المعلم
+          </button>
         </div>
 
-        <!-- شريط كاسر التردد -->
+        <!-- شريط كاسر التردد التلقائي -->
         <div id="hesitationBreaker" class="mt-4 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-300 flex items-center gap-2 opacity-0 fade-transition max-w-lg">
           <i class="fa-solid fa-shield-halved text-amber-400"></i>
           <span>قطن معالج ضد الانكماش يدوم طويلاً • إمكانية التبديل الفوري خلال 14 يوماً.</span>
@@ -259,10 +269,267 @@
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
 
-    <!-- ==================== المرآة الذكية الكاملة والخالية من الكتابات ==================== -->
-    <div id="ghostMirrorModal" class="fixed inset-0 z-50 bg-black flex items-center justify-center fade-transition opacity-0 pointer-events-none cursor-pointer" ondblclick="closeAllModals()" title="انقر نقراً مزدوجاً أو اضغط Esc للخروج">
-      <!-- فيديو الكاميرا الحقيقي كمرآة نقية بدون أي شوائب أو كتابة -->
+    <!-- ==================== الفكرة 2: المرآة ومحطة التصوير (Lookbook Studio Snap) ==================== -->
+    <div id="ghostMirrorModal" class="fixed inset-0 z-50 bg-black flex items-center justify-center fade-transition opacity-0 pointer-events-none">
+      <!-- فيديو الكاميرا كمرآة عريضة نقية -->
       <video id="mirrorVideo" class="w-full h-full object-cover scale-x-[-1]" autoplay playsinline muted></video>
+
+      <!-- زر الالتقاط السريع الشفاف وزر الإغلاق -->
+      <div class="absolute bottom-10 inset-x-0 flex flex-col items-center justify-center z-20 pointer-events-auto gap-3">
+        <!-- العداد التنازلي للتصوير -->
+        <div id="countdownBadge" class="hidden text-5xl font-black text-amber-400 font-mono animate-ping">3</div>
+        
+        <div class="flex items-center gap-4">
+          <button onclick="triggerSnapPhoto()" id="btnSnap" class="px-6 py-3 rounded-full bg-amber-500 text-slate-950 font-black text-sm hover:bg-amber-400 shadow-2xl flex items-center gap-2 border-2 border-black/40">
+            <i class="fa-solid fa-camera text-base"></i>
+            <span>التقاط إطلالة عِـزوة</span>
+          </button>
+          <button onclick="closeAllModals()" class="px-5 py-3 rounded-full bg-slate-900/80 text-white font-bold text-xs hover:bg-slate-800 border border-slate-700 shadow-xl">
+            إغلاق (Esc)
+          </button>
+        </div>
+        <span class="text-[11px] text-white/80 bg-black/60 px-3 py-1 rounded-full">قف باستقامة وسيقوم النظام بتوليد رمز QR لتحميل إطلالتك فوراً</span>
+      </div>
+
+      <!-- كانفاس المعالجة والتصوير الخفي -->
+      <canvas id="photoCanvas" class="hidden"></canvas>
+
+      <!-- نافذة معاينة الصورة الملتقطة مع باركود التنزيل -->
+      <div id="photoResultModal" class="absolute inset-0 z-30 bg-slate-950/95 flex items-center justify-center p-6 hidden">
+        <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/40 text-center relative shadow-2xl">
+          <button onclick="closePhotoResult()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <span class="text-amber-400 text-xs font-bold uppercase tracking-widest block">EZWA Lookbook Studio</span>
+          <h3 class="text-lg font-black text-white mt-1">تم توثيق إطلالتك بنجاح!</h3>
+          
+          <img id="snappedImagePreview" class="w-full h-56 object-cover rounded-2xl border border-amber-500/20 my-4 shadow-inner" src="" alt="Captured Snap" />
+
+          <div class="bg-slate-900/90 rounded-2xl p-4 border border-slate-800 flex items-center justify-between">
+            <div id="snapQrCode" class="p-1.5 bg-white rounded-xl shrink-0"></div>
+            <div class="text-right mr-3">
+              <span class="text-xs font-bold text-white block">امسح الكود بجوالك</span>
+              <p class="text-[11px] text-slate-400 mt-0.5">لتنزيل بطاقة إطلالتك الرقمية الموثقة ومشاركتها في وسائل التواصل.</p>
+            </div>
+          </div>
+          
+          <button onclick="closePhotoResult()" class="w-full mt-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-400 transition">
+            العودة للمرآة
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== الفكرة 3: مرشد الذكاء الاصطناعي الصوتي (AI Style Stylist) ==================== -->
+    <div id="stylistModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-8 max-w-lg w-full border border-amber-500/40 text-center relative shadow-2xl">
+        <button onclick="closeAllModals()" class="absolute top-5 left-5 text-slate-400 hover:text-white text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="w-20 h-20 rounded-full bg-amber-500/10 border-2 border-amber-500/50 flex items-center justify-center mx-auto mb-4 relative">
+          <i class="fa-solid fa-wand-magic-sparkles text-2xl text-amber-400"></i>
+          <span id="micPingWave" class="hidden absolute inset-0 rounded-full border-2 border-amber-400 animate-ping"></span>
+        </div>
+
+        <span class="text-[11px] font-bold text-amber-400 uppercase tracking-widest">Interactive AI Stylist</span>
+        <h2 class="text-2xl font-black text-white mt-1">مرشد عِـزوة الذكي للتنسيق</h2>
+        <p id="stylistStatus" class="text-slate-300 text-xs mt-2 leading-relaxed">
+          تحدث بصوتك مباشرة واسأل عن التنسيق، المقاسات، أو مناسبات ارتداء التيشيرت:
+        </p>
+
+        <!-- نص العميل المسموع -->
+        <div id="userSpeechBox" class="my-4 p-3 rounded-2xl bg-slate-900 border border-slate-800 text-xs text-amber-300 font-mono min-h-[44px] flex items-center justify-center">
+          "اضغط على الميكروفون لبدء التحدث..."
+        </div>
+
+        <!-- إجابة وتوصية المنسق الذكي -->
+        <div id="stylistReplyBox" class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-right text-xs text-slate-200 hidden">
+          <span class="text-amber-400 font-bold block mb-1">توصية المنسق:</span>
+          <p id="stylistReplyText" class="leading-relaxed"></p>
+        </div>
+
+        <div class="mt-6 flex items-center justify-center gap-3">
+          <button onclick="startListeningStylist()" id="btnMicAction" class="px-6 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-400 transition flex items-center gap-2 shadow-lg">
+            <i class="fa-solid fa-microphone"></i>
+            <span>تحدث الآن</span>
+          </button>
+          <button onclick="closeAllModals()" class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-xs hover:text-white transition">
+            إغلاق (Esc)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== الفكرة 4: إحصائيات المعرض وحفظ الطاقة (Footfall & Eco) ==================== -->
+    <div id="analyticsModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-emerald-500/30 text-right shadow-2xl">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-black text-white flex items-center gap-2">
+            <i class="fa-solid fa-chart-line text-emerald-400"></i>
+            تحليلات الحضور ومستشعر الطاقة
+          </h3>
+          <button onclick="closeAllModals()" class="text-slate-400 hover:text-white text-sm">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 block font-bold">إجمالي زوار الشاشة اليوم:</span>
+            <div id="statVisitorCount" class="text-3xl font-black text-emerald-400 font-mono mt-1">24</div>
+          </div>
+          <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 block font-bold">حالة مستشعر الطاقة:</span>
+            <div class="text-sm font-black text-amber-400 mt-2 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+              <span>نشط (Eco-Active)</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-[11px] text-slate-400 leading-relaxed mb-4">
+          يقوم الرادار تلقائياً بخفض سطوع الشاشة بنسبة 80% عند خلو المساحة لحماية اللوحة وتوفير الطاقة، وتستيقظ الشاشة فوراً عند اقتراب أي عميل.
+        </p>
+
+        <button onclick="closeAllModals()" class="w-full py-2 rounded-xl bg-slate-900 text-slate-300 font-bold text-xs hover:bg-slate-800 border border-slate-800 transition">
+          إغلاق (Esc)
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== الفكرة 5: دليل معالم الرياض التفاعلي (Landmarks Compass) ==================== -->
+    <div id="landmarksModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-xl w-full border border-amber-500/40 text-right shadow-2xl">
+        <div class="flex justify-between items-center mb-4 border-b border-slate-800/80 pb-3">
+          <div>
+            <span class="text-amber-400 text-[10px] font-bold uppercase tracking-widest">Heritage Landmarks Compass</span>
+            <h3 class="text-xl font-black text-white mt-0.5">بوصلة معالم الرياض • هوية عِـزوة</h3>
+          </div>
+          <button onclick="closeAllModals()" class="text-slate-400 hover:text-white text-sm">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- قائمة المعالم الثلاثة المرتبطة بالإصدارات -->
+        <div class="space-y-3">
+          <!-- 1. قصر المصمك -->
+          <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-amber-500/20 flex items-center justify-between hover:border-amber-500/50 transition">
+            <div>
+              <h4 class="text-sm font-black text-white flex items-center gap-1.5">
+                <i class="fa-solid fa-fort-awesome text-amber-400"></i>
+                قصر المصمك التاريخي
+              </h4>
+              <p class="text-[11px] text-slate-300 mt-1">رمز توحيد المملكة وقلب الرياض النابض، ملهم الإصدار الرائد مع حاشية السدو.</p>
+            </div>
+            <a href="https://maps.google.com/?q=Al+Masmak+Palace+Riyadh" target="_blank" class="px-3 py-1.5 rounded-xl bg-amber-500 text-slate-950 text-[10px] font-bold shrink-0 mr-3 hover:bg-amber-400 transition">
+              الموقع بالخريطة
+            </a>
+          </div>
+
+          <!-- 2. جبل طويق -->
+          <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between hover:border-amber-500/50 transition">
+            <div>
+              <h4 class="text-sm font-black text-white flex items-center gap-1.5">
+                <i class="fa-solid fa-mountain text-amber-400"></i>
+                جبل طويق (شموخ نجد)
+              </h4>
+              <p class="text-[11px] text-slate-300 mt-1">شاهد العزيمة والصلابة، ملهم قصة البوكس فيت الثقيلة ذات البناء الهندسي القائم.</p>
+            </div>
+            <a href="https://maps.google.com/?q=Tuwaiq+Mountain+Riyadh" target="_blank" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-[10px] font-bold shrink-0 mr-3 hover:text-white transition">
+              الموقع بالخريطة
+            </a>
+          </div>
+
+          <!-- 3. الدرعية التاريخية -->
+          <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between hover:border-amber-500/50 transition">
+            <div>
+              <h4 class="text-sm font-black text-white flex items-center gap-1.5">
+                <i class="fa-solid fa-landmark text-amber-400"></i>
+                حي الطريف • الدرعية
+              </h4>
+              <p class="text-[11px] text-slate-300 mt-1">عاصمة المجد والتراث العالمي، ومنطلق نقوش السدو والعمارة النجدية الأصيلة.</p>
+            </div>
+            <a href="https://maps.google.com/?q=At-Turaif+District+Diriyah" target="_blank" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-[10px] font-bold shrink-0 mr-3 hover:text-white transition">
+              الموقع بالخريطة
+            </a>
+          </div>
+        </div>
+
+        <button onclick="closeAllModals()" class="w-full mt-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-400 transition">
+          العودة للمتجر (Esc)
+        </button>
+      </div>
+    </div>
+
+    <!-- نافذة مستشار المقاسات الدقيق للبوكس فيت -->
+    <div id="fitModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-lg w-full border border-amber-500/30 text-right shadow-2xl">
+        <div class="flex justify-between items-center mb-3">
+          <div>
+            <h3 class="text-lg font-black text-white flex items-center gap-2">
+              <i class="fa-solid fa-ruler-combined text-amber-400"></i>
+              مستشار قصة البوكس فيت (Boxy Fit)
+            </h3>
+            <span class="text-[11px] text-amber-400/90 font-bold block mt-0.5">
+              * قوالب البوكس فيت عريضة ومربعة الصدر بطبيعتها (Wide Chest - Box Cut)
+            </span>
+          </div>
+          <button onclick="closeAllModals()" class="text-slate-400 hover:text-white text-sm">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="space-y-3.5 text-xs">
+          <div>
+            <label class="text-slate-400 block mb-1 font-bold">1. الطول التقريبي (سم):</label>
+            <div class="grid grid-cols-4 gap-1.5" id="heightGroup">
+              <button onclick="selectFitParam('height', 'short', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">160-168</button>
+              <button onclick="selectFitParam('height', 'med', this)" class="fit-btn p-2 rounded-xl bg-amber-500 text-slate-950 font-bold border border-amber-400 shadow">169-176</button>
+              <button onclick="selectFitParam('height', 'tall', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">177-184</button>
+              <button onclick="selectFitParam('height', 'xtall', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">185+</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-slate-400 block mb-1 font-bold">2. الوزن التقريبي (كجم):</label>
+            <div class="grid grid-cols-5 gap-1.5" id="weightGroup">
+              <button onclick="selectFitParam('weight', 'w60', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">55-68</button>
+              <button onclick="selectFitParam('weight', 'w75', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">69-79</button>
+              <button onclick="selectFitParam('weight', 'w85', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">80-89</button>
+              <button onclick="selectFitParam('weight', 'w95', this)" class="fit-btn p-2 rounded-xl bg-amber-500 text-slate-950 font-bold border border-amber-400 shadow">90-102</button>
+              <button onclick="selectFitParam('weight', 'w110', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">103+</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-slate-400 block mb-1 font-bold">3. النمط المفضل في اللبس:</label>
+            <div class="grid grid-cols-2 gap-2" id="styleGroup">
+              <button onclick="selectFitParam('style', 'regular', this)" class="fit-btn p-2 rounded-xl bg-amber-500 text-slate-950 font-bold border border-amber-400 shadow">
+                <span class="block font-bold">بوكس فيت متزن (Regular Boxy)</span>
+                <span class="text-[10px] text-slate-950 opacity-90">اتساع صدر متزن + طول مثالي عند الحزام</span>
+              </button>
+              <button onclick="selectFitParam('style', 'baggy', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">
+                <span class="block font-bold">فضفاض حر (Streetwear Baggy)</span>
+                <span class="text-[10px] text-slate-400">أوفر سايز واسع جداً وكتف منسدل بعمق</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="p-3.5 bg-amber-500/10 rounded-2xl border border-amber-500/30 mt-3">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] text-amber-400 font-bold">المقاس الهندسي الموصى به:</span>
+              <span id="dimensionBadge" class="text-[10px] bg-slate-900 text-amber-300 border border-amber-500/20 px-2 py-0.5 rounded-md font-mono">الصدر: 128 سم | الطول: 74 سم</span>
+            </div>
+            
+            <div class="flex items-baseline gap-2 mt-1">
+              <div id="modalFitResult" class="text-3xl font-black text-amber-400 font-mono">XL</div>
+              <span class="text-xs text-slate-300 font-bold" id="fitCutTitle">(يعادل وسع 2XL في التيشيرت العادي)</span>
+            </div>
+            <p id="modalFitNote" class="text-[11px] text-slate-300 mt-1.5 leading-relaxed"></p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- نافذة وضع كبار الشخصيات VIP -->
@@ -307,122 +574,7 @@
       </div>
     </div>
 
-    <!-- نافذة استعراض تقنية NFC -->
-    <div id="nfcModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card rounded-3xl p-8 max-w-xl w-full border border-amber-500/30 text-center relative shadow-2xl">
-        <button onclick="closeAllModals()" class="absolute top-5 left-5 text-slate-400 hover:text-white text-base">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-
-        <div class="relative w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-          <div class="absolute inset-0 bg-amber-500/10 rounded-full radar-pulse"></div>
-          <div class="w-14 h-14 bg-slate-900 border-2 border-amber-500 rounded-full flex items-center justify-center text-2xl text-amber-400 shadow-xl z-10">
-            <i class="fa-solid fa-wifi rotate-90"></i>
-          </div>
-        </div>
-
-        <span class="text-[11px] font-bold text-amber-400 uppercase tracking-widest">NTAG215 / NTAG216 Embedded</span>
-        <h2 class="text-2xl font-black text-white mt-1">كيف تعمل تقنية عِـزوة الذكية؟</h2>
-        <p class="text-slate-300 text-xs mt-2 max-w-md mx-auto leading-relaxed">
-          تم دمج رقاقة اتصال المدى القريب (NFC) باحترافية كاملة داخل حاشية السدو السفلية للتيشيرت، دون أي بطاريات أو حاجة للشحن.
-        </p>
-
-        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 my-5 text-right flex items-center justify-between">
-          <div>
-            <h4 class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
-              <i class="fa-solid fa-mobile-screen-button"></i>
-              تجربة حية فورية:
-            </h4>
-            <p class="text-[11px] text-slate-300 mt-1">قرّب ظهر هاتفك الذكي من طرف شريط السدو السفلي ليفتح رابط توثيق القطعة والتجربة السحابية فوراً.</p>
-          </div>
-          <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-base shrink-0 mr-3">
-            <i class="fa-solid fa-arrow-down animate-bounce"></i>
-          </div>
-        </div>
-
-        <button onclick="closeAllModals()" class="text-xs text-slate-400 hover:text-white transition">
-          إغلاق النافذة (Esc)
-        </button>
-      </div>
-    </div>
-
-    <!-- نافذة مستشار المقاسات الدقيق (هندسة البوكس فيت) -->
-    <div id="fitModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card rounded-3xl p-6 max-w-lg w-full border border-amber-500/30 text-right shadow-2xl">
-        <div class="flex justify-between items-center mb-3">
-          <div>
-            <h3 class="text-lg font-black text-white flex items-center gap-2">
-              <i class="fa-solid fa-ruler-combined text-amber-400"></i>
-              مستشار قصة البوكس فيت (Boxy Fit)
-            </h3>
-            <span class="text-[11px] text-amber-400/90 font-bold block mt-0.5">
-              * قوالب البوكس فيت عريضة ومربعة الصدر بطبيعتها (Wide Chest - Box Cut)
-            </span>
-          </div>
-          <button onclick="closeAllModals()" class="text-slate-400 hover:text-white text-sm">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-
-        <div class="space-y-3.5 text-xs">
-          <!-- 1. الطول -->
-          <div>
-            <label class="text-slate-400 block mb-1 font-bold">1. الطول التقريبي (سم):</label>
-            <div class="grid grid-cols-4 gap-1.5" id="heightGroup">
-              <button onclick="selectFitParam('height', 'short', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">160-168</button>
-              <button onclick="selectFitParam('height', 'med', this)" class="fit-btn p-2 rounded-xl bg-amber-500 text-slate-950 font-bold border border-amber-400 shadow">169-176</button>
-              <button onclick="selectFitParam('height', 'tall', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">177-184</button>
-              <button onclick="selectFitParam('height', 'xtall', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">185+</button>
-            </div>
-          </div>
-
-          <!-- 2. الوزن -->
-          <div>
-            <label class="text-slate-400 block mb-1 font-bold">2. الوزن التقريبي (كجم):</label>
-            <div class="grid grid-cols-5 gap-1.5" id="weightGroup">
-              <button onclick="selectFitParam('weight', 'w60', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">55-68</button>
-              <button onclick="selectFitParam('weight', 'w75', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">69-79</button>
-              <button onclick="selectFitParam('weight', 'w85', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">80-89</button>
-              <button onclick="selectFitParam('weight', 'w95', this)" class="fit-btn p-2 rounded-xl bg-amber-500 text-slate-950 font-bold border border-amber-400 shadow">90-102</button>
-              <button onclick="selectFitParam('weight', 'w110', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">103+</button>
-            </div>
-          </div>
-
-          <!-- 3. تفضيل القصة -->
-          <div>
-            <label class="text-slate-400 block mb-1 font-bold">3. النمط المفضل في اللبس:</label>
-            <div class="grid grid-cols-2 gap-2" id="styleGroup">
-              <button onclick="selectFitParam('style', 'regular', this)" class="fit-btn p-2 rounded-xl bg-amber-500 text-slate-950 font-bold border border-amber-400 shadow">
-                <span class="block font-bold">بوكس فيت متزن (Regular Boxy)</span>
-                <span class="text-[10px] text-slate-950 opacity-90">اتساع صدر متزن + طول مثالي عند الحزام</span>
-              </button>
-              <button onclick="selectFitParam('style', 'baggy', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">
-                <span class="block font-bold">فضفاض حر (Streetwear Baggy)</span>
-                <span class="text-[10px] text-slate-400">أوفر سايز واسع جداً وكتف منسدل بعمق</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- بطاقة النتيجة الحسابية -->
-          <div class="p-3.5 bg-amber-500/10 rounded-2xl border border-amber-500/30 mt-3">
-            <div class="flex items-center justify-between">
-              <span class="text-[11px] text-amber-400 font-bold">المقاس الهندسي الموصى به:</span>
-              <span id="dimensionBadge" class="text-[10px] bg-slate-900 text-amber-300 border border-amber-500/20 px-2 py-0.5 rounded-md font-mono">الصدر: 128 سم | الطول: 74 سم</span>
-            </div>
-            
-            <div class="flex items-baseline gap-2 mt-1">
-              <div id="modalFitResult" class="text-3xl font-black text-amber-400 font-mono">XL</div>
-              <span class="text-xs text-slate-300 font-bold" id="fitCutTitle">(يعادل وسع 2XL في التيشيرت العادي)</span>
-            </div>
-            <p id="modalFitNote" class="text-[11px] text-slate-300 mt-1.5 leading-relaxed">
-              لأن باترون البوكس فيت عريض ومربع الصدر، فإن مقاس XL يمنحك راحة تامة في محيط البطن والصدر دون ملامسة للجسم، مع طول متناسق وملموم تماماً لطول 170 سم.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- شاشة أوقات الصلاة بالرياض (مع زر إغلاق وتخطي فوري) -->
+    <!-- شاشة أوقات الصلاة بالرياض -->
     <div id="prayerOverlay" class="absolute inset-0 bg-slate-950/95 z-50 backdrop-blur-md flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none">
       <div class="text-center p-8 glass-card rounded-3xl border border-amber-500/30 max-w-sm mx-4 shadow-2xl relative">
         <button onclick="dismissPrayerOverlay()" title="إغلاق فوري (Esc)" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center transition">
@@ -463,7 +615,7 @@
   <video id="radarCamera" class="hidden" autoplay playsinline muted></video>
   <canvas id="radarCanvas" class="hidden" width="64" height="48"></canvas>
 
-  <!-- ==================== المحرك والمنطق ==================== -->
+  <!-- ==================== المحرك البرمجي والذكاء التفاعلي ==================== -->
   <script>
     const CHANNELS = {
       quran: { name: "القرآن الكريم", short: "القرآن", type: "hls", url: "https://win.holol.com/live/quran/playlist.m3u8" },
@@ -547,6 +699,179 @@
       }, 650);
     }
 
+    // ==================== الفكرة 2: محطة تصوير الإطلالة وتوليد الباركود ====================
+    let mirrorStream = null;
+
+    async function toggleGhostMirror() {
+      closeAllModals();
+      const modal = document.getElementById('ghostMirrorModal');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+
+      const video = document.getElementById('mirrorVideo');
+      try {
+        if (!mirrorStream) {
+          mirrorStream = await navigator.mediaDevices.getUserMedia({ 
+            video: { width: 1920, height: 1080, facingMode: "user" } 
+          });
+        }
+        video.srcObject = mirrorStream;
+      } catch (err) {
+        console.warn("تعذر فتح كاميرا المرآة:", err);
+      }
+    }
+
+    function triggerSnapPhoto() {
+      const cd = document.getElementById('countdownBadge');
+      const btnSnap = document.getElementById('btnSnap');
+      btnSnap.disabled = true;
+      cd.classList.remove('hidden');
+      
+      let count = 3;
+      cd.textContent = count;
+      const countTimer = setInterval(() => {
+        count--;
+        if (count > 0) {
+          cd.textContent = count;
+        } else {
+          clearInterval(countTimer);
+          cd.classList.add('hidden');
+          captureAndStampPhoto();
+          btnSnap.disabled = false;
+        }
+      }, 1000);
+    }
+
+    function captureAndStampPhoto() {
+      const video = document.getElementById('mirrorVideo');
+      const canvas = document.getElementById('photoCanvas');
+      canvas.width = 1080;
+      canvas.height = 1350; // نسبة طولية مناسبة للانستقرام والستوري
+      const ctx = canvas.getContext('2d');
+
+      // رسم الصورة المعكوسة من الكاميرا
+      ctx.save();
+      ctx.scale(-1, 1);
+      ctx.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+      ctx.restore();
+
+      // دمج إطار وهوية "عِـزوة" الفخمة
+      ctx.fillStyle = "rgba(3, 7, 18, 0.4)";
+      ctx.fillRect(0, canvas.height - 180, canvas.width, 180);
+
+      // خط ذهبي للسدو
+      ctx.fillStyle = "#f59e0b";
+      ctx.fillRect(0, canvas.height - 180, canvas.width, 6);
+
+      // نصوص التوثيق
+      ctx.font = "bold 44px 'Cairo', sans-serif";
+      ctx.fillStyle = "#ffffff";
+      ctx.direction = "rtl";
+      ctx.fillText("عِـزوة • EZWA LOOKBOOK", canvas.width - 50, canvas.height - 100);
+
+      ctx.font = "26px 'Cairo', sans-serif";
+      ctx.fillStyle = "#fcd34d";
+      ctx.fillText("إصدار خاص موثق بتقنية NFC • الرياض", canvas.width - 50, canvas.height - 50);
+
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      document.getElementById('snappedImagePreview').src = dataUrl;
+
+      // توليد باركود لتحميل الصورة
+      const qrBox = document.getElementById('snapQrCode');
+      qrBox.innerHTML = '';
+      new QRCode(qrBox, { text: dataUrl, width: 90, height: 90 });
+
+      document.getElementById('photoResultModal').classList.remove('hidden');
+    }
+
+    function closePhotoResult() {
+      document.getElementById('photoResultModal').classList.add('hidden');
+    }
+
+    // ==================== الفكرة 3: مرشد الذكاء الاصطناعي الصوتي ====================
+    let recognition = null;
+
+    function toggleVoiceStylist() {
+      closeAllModals();
+      document.getElementById('stylistModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function startListeningStylist() {
+      const userBox = document.getElementById('userSpeechBox');
+      const micWave = document.getElementById('micPingWave');
+      const status = document.getElementById('stylistStatus');
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        userBox.textContent = "المتصفح لا يدعم التسجيل الصوتي المباشر، جرب عبر متصفح Chrome.";
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = 'ar-SA';
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        micWave.classList.remove('hidden');
+        userBox.textContent = "جاري الاستماع لصوتك الآن...";
+      };
+
+      recognition.onresult = (event) => {
+        const query = event.results[0][0].transcript;
+        userBox.textContent = `"${query}"`;
+        micWave.classList.add('hidden');
+        processStylistAdvice(query);
+      };
+
+      recognition.onerror = () => {
+        micWave.classList.add('hidden');
+        userBox.textContent = "لم نتمكن من سماعك بوضوح، اضغط على 'تحدث الآن' مجدداً.";
+      };
+
+      recognition.start();
+    }
+
+    function processStylistAdvice(query) {
+      const replyBox = document.getElementById('stylistReplyBox');
+      const replyText = document.getElementById('stylistReplyText');
+      replyBox.classList.remove('hidden');
+
+      let reply = "أنصحك ببنطال كارجو بلون ترابي أو أسود مغسول وسنيكرز أبيض، مع اختيار مقاسك المعتاد في البوكس فيت ليعطيك مظهر الكتف المنسدل الواسع.";
+
+      if (query.includes("مصمك") || query.includes("المصمك")) {
+        reply = "تيشيرت قصر المصمك يتميز بياقة مزدوجة وحاشية سدو تراثية؛ أفضل تنسيق له هو بنطال رملي فاتح وأكسسوارات جلدية بسيطة لإبراز فخامة النقش.";
+      } else if (query.includes("طويق")) {
+        reply = "تيشيرت جبل طويق صمم بقصة بوكس فيت ثقيلة؛ يفضل تنسيقه مع بنطال دنيم أسود كلاسيكي أو شورت رياضي رمادي داكن لإطلالة حيوية.";
+      } else if (query.includes("مقاس") || query.includes("حجم") || query.includes("وزن")) {
+        reply = "قوالب البوكس فيت مصممة باتساع صدري إضافي وكتف منسدل؛ لذا مقاسك يمنحك راحة تامة دون الحاجة لزيادة المقاسات إلا إذا رغبت بقصة فضفاضة جداً.";
+      }
+
+      replyText.textContent = reply;
+
+      // نطق التوصية بالصوت العربي
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const ut = new SpeechSynthesisUtterance(reply);
+        ut.lang = 'ar-SA';
+        ut.rate = 0.95;
+        window.speechSynthesis.speak(ut);
+      }
+    }
+
+    // ==================== الفكرة 4: إحصائيات المعرض ومستشعر توفير الطاقة ====================
+    let visitorCount = 18;
+    function toggleAnalyticsModal() {
+      closeAllModals();
+      document.getElementById('statVisitorCount').textContent = visitorCount;
+      document.getElementById('analyticsModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    // ==================== الفكرة 5: دليل معالم الرياض التفاعلي ====================
+    function toggleLandmarksModal() {
+      closeAllModals();
+      document.getElementById('landmarksModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    // ==================== وظائف التحكم العامة ====================
     function toggleDropdown(id) {
       const el = document.getElementById(id);
       const isVisible = !el.classList.contains('opacity-0');
@@ -741,7 +1066,7 @@
       }
     }
 
-    // ==================== منطق مستشار البوكس فيت الدقيق ====================
+    // ==================== منطق مستشار البوكس فيت ====================
     function selectFitParam(type, val, btn) {
       if (type === 'height') {
         selectedH = val;
@@ -778,58 +1103,29 @@
         "3XL": { chest: 140, len: 78 }
       };
 
-      if (selectedW === 'w60') {
-        finalSize = (selectedStyle === 'baggy') ? "M" : "S";
-      } else if (selectedW === 'w75') {
-        finalSize = (selectedStyle === 'baggy') ? "L" : "M";
-      } else if (selectedW === 'w85') {
-        finalSize = (selectedStyle === 'baggy') ? "XL" : "L";
-      } else if (selectedW === 'w95') {
-        finalSize = (selectedStyle === 'baggy') ? "2XL" : "XL";
-      } else if (selectedW === 'w110') {
-        finalSize = (selectedStyle === 'baggy') ? "3XL" : "2XL";
-      }
+      if (selectedW === 'w60') finalSize = (selectedStyle === 'baggy') ? "M" : "S";
+      else if (selectedW === 'w75') finalSize = (selectedStyle === 'baggy') ? "L" : "M";
+      else if (selectedW === 'w85') finalSize = (selectedStyle === 'baggy') ? "XL" : "L";
+      else if (selectedW === 'w95') finalSize = (selectedStyle === 'baggy') ? "2XL" : "XL";
+      else if (selectedW === 'w110') finalSize = (selectedStyle === 'baggy') ? "3XL" : "2XL";
 
-      if (selectedH === 'xtall' && (finalSize === 'S' || finalSize === 'M')) {
-        finalSize = (finalSize === 'S') ? 'M' : 'L';
-      }
+      if (selectedH === 'xtall' && (finalSize === 'S' || finalSize === 'M')) finalSize = (finalSize === 'S') ? 'M' : 'L';
 
       const sp = sizeSpecs[finalSize];
       dim = `الصدر: ${sp.chest} سم | الطول: ${sp.len} سم`;
 
       if (selectedStyle === 'baggy') {
         title = `(اتساع أوفر سايز فضفاض يعادل ${finalSize === '2XL' ? '3XL' : 'أكبر بمقاس'} في العادي)`;
-        note = `بما أن باترون البوكس فيت مصمم بصدر عريض، فإن مقاس ${finalSize} سيمنحك وسعاً مريحاً جداً لا يلامس الجسم إطلاقاً وكتفاً منسدلاً بعمق أنيق.`;
+        note = `بما أن باترون البوكس فيت مصمم بصدر عريض، فإن مقاس ${finalSize} سيمنحك وسعاً مريحاً جداً لا يلامس الجسم وكتفاً منسدلاً بعمق أنيق.`;
       } else {
         title = `(يعادل وسع ${finalSize === 'XL' ? '2XL' : 'مقاس أكبر'} في التيشيرتات العادية)`;
-        note = `لأن قصة البوكس فيت عريضة ومربعة الصدر بطبيعتها؛ فإن مقاس ${finalSize} يمنحك راحة تامة في محيط الصدر والبطن دون شد، مع طول مثالي ملموم عند الحزام تماماً.`;
+        note = `لأن قصة البوكس فيت عريضة ومربعة الصدر بطبيعتها؛ فإن مقاس ${finalSize} يمنحك راحة تامة في محيط الصدر دون شد، مع طول مثالي ملموم عند الحزام.`;
       }
 
       document.getElementById('modalFitResult').textContent = finalSize;
       document.getElementById('fitCutTitle').textContent = title;
       document.getElementById('dimensionBadge').textContent = dim;
       document.getElementById('modalFitNote').textContent = note;
-    }
-
-    // ==================== دوال المرآة النقية الكاملة ====================
-    let mirrorStream = null;
-
-    async function toggleGhostMirror() {
-      closeAllModals();
-      const modal = document.getElementById('ghostMirrorModal');
-      modal.classList.remove('opacity-0', 'pointer-events-none');
-
-      const video = document.getElementById('mirrorVideo');
-      try {
-        if (!mirrorStream) {
-          mirrorStream = await navigator.mediaDevices.getUserMedia({ 
-            video: { width: 1920, height: 1080, facingMode: "user" } 
-          });
-        }
-        video.srcObject = mirrorStream;
-      } catch (err) {
-        console.warn("تعذر فتح كاميرا المرآة أو تم رفض الإذن:", err);
-      }
     }
 
     function simulateNFCTap() {
@@ -848,11 +1144,6 @@
       document.getElementById('vipModal').classList.remove('opacity-0', 'pointer-events-none');
     }
 
-    function triggerNFCModal() {
-      closeAllModals();
-      document.getElementById('nfcModal').classList.remove('opacity-0', 'pointer-events-none');
-    }
-
     function toggleFitAdvisorModal() {
       const modal = document.getElementById('fitModal');
       const isVisible = !modal.classList.contains('opacity-0');
@@ -864,25 +1155,21 @@
     }
 
     function closeAllModals() {
-      ['vipModal', 'nfcModal', 'fitModal', 'ghostMirrorModal'].forEach(id => {
+      ['vipModal', 'fitModal', 'ghostMirrorModal', 'stylistModal', 'analyticsModal', 'landmarksModal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
 
-      // إيقاف بث كاميرا المرآة عند الإغلاق
       const video = document.getElementById('mirrorVideo');
-      if (video && video.srcObject) {
-        video.srcObject = null;
-      }
+      if (video && video.srcObject) video.srcObject = null;
       if (mirrorStream) {
         mirrorStream.getTracks().forEach(track => track.stop());
         mirrorStream = null;
       }
-
       dismissPrayerOverlay();
     }
 
-    // الرادار ومستشعر التردد
+    // ==================== الرادار ووضع توفير الطاقة الذكي ====================
     let isRadarOn = false;
     let radarStream = null;
     let radarTimer = null;
@@ -900,7 +1187,7 @@
           document.getElementById('radarCamera').srcObject = radarStream;
           isRadarOn = true;
           dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-ping";
-          label.textContent = "الرادار: يعمل";
+          label.textContent = "الرادار + وضع التوفير: نشط";
           startRadarDetect();
         } catch (e) { alert("يتطلب إذن الكاميرا لتشغيل الرادار."); }
       } else {
@@ -908,7 +1195,8 @@
         clearInterval(radarTimer);
         isRadarOn = false;
         dot.className = "w-2 h-2 rounded-full bg-slate-500";
-        label.textContent = "الرادار + كاشف التردد";
+        label.textContent = "الرادار + وضع التوفير";
+        document.getElementById('mainContainer').classList.remove('eco-dimmed');
       }
     }
 
@@ -933,8 +1221,13 @@
           if (diff > 12000) {
             idleSec = 0;
             focusStandingSec++;
+            
+            // إلغاء تعتيم توفير الطاقة فوراً
+            document.getElementById('mainContainer').classList.remove('eco-dimmed');
+
             if (currentLayout === 'lounge') {
               setScreenLayout('split');
+              visitorCount++;
               playLuxuryWelcomeSound();
             }
             if (focusStandingSec >= 7) {
@@ -947,8 +1240,10 @@
             const breaker = document.getElementById('hesitationBreaker');
             if (breaker) breaker.classList.add('opacity-0');
 
-            if (idleSec >= 25 && currentLayout === 'split') {
-              setScreenLayout('lounge');
+            // تفعيل تعتيم الطاقة التلقائي بعد 25 ثانية خلو
+            if (idleSec >= 25) {
+              document.getElementById('mainContainer').classList.add('eco-dimmed');
+              if (currentLayout === 'split') setScreenLayout('lounge');
             }
           }
         }
@@ -970,7 +1265,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // اختصارات لوحة المفاتيح
+    // اختصارات لوحة المفاتيح الشاملة
     window.addEventListener('keydown', (e) => {
       unlockAudioContext();
       const k = e.key.toLowerCase();
@@ -981,12 +1276,13 @@
       
       if (k === 'p') playLuxuryWelcomeSound();
       if (k === 'g') toggleGhostMirror();
+      if (k === 's') toggleVoiceStylist();
+      if (k === 'd') toggleAnalyticsModal();
+      if (k === 'k') toggleLandmarksModal();
       if (k === 't') simulateNFCTap();
       if (k === 'v') triggerVIPModal();
-      if (k === 'n') triggerNFCModal();
       if (k === 'm') toggleFitAdvisorModal();
       
-      // زر الهروب يغلق المرآة والنوافذ والصلاة فوراً
       if (e.key === 'Escape') { 
         closeAllModals(); 
         closeAllDropdowns(); 
@@ -995,7 +1291,6 @@
       if (k === 'r') togglePresenceRadar();
       if (k === 'f') toggleFullScreen();
       if (k === 'q') changeChannel('quran');
-      if (k === 's') changeChannel('sunnah');
       if (k === 'a') changeChannel('alarabiya');
       if (k === 'j') changeChannel('aljazeera');
     });
