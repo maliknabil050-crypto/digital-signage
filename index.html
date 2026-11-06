@@ -73,11 +73,11 @@
       </div>
     </div>
 
-    <!-- يسار الشريط: الرادار + المقاسات + تحدث مع البائع + نداء المشرف + مواقيت الصلاة -->
+    <!-- يسار الشريط: زر الرادار اليدوي + المقاسات + تحدث مع البائع + نداء المشرف + مواقيت الصلاة -->
     <div class="flex items-center gap-2">
-      <!-- زر الرادار -->
-      <button onclick="togglePresenceRadar()" id="btnRadarToggle" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-2 shadow">
-        <span id="radarStatusDot" class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+      <!-- زر التحكم اليدوي الصريح بالرادار (تشغيل وإيقاف) -->
+      <button onclick="togglePresenceRadar()" id="btnRadarToggle" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 transition flex items-center gap-2 shadow">
+        <span id="radarStatusDot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
         <span id="radarBtnText">الرادار: نشط (R)</span>
       </button>
 
@@ -120,7 +120,7 @@
   <!-- مساحة العرض الرئيسية -->
   <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-12 fade-transition">
 
-    <!-- 1. قسم الكتالوج والمنتج المعروض بحجم كبير وواضح -->
+    <!-- 1. قسم الكتالوج والمنتج المتزامن كلياً -->
     <section id="productSection" class="w-1/2 h-full p-5 lg:p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition overflow-y-auto">
       
       <!-- ترويسة المتجر مع الشعار الرسمي logo.jpeg -->
@@ -273,10 +273,9 @@
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
 
-    <!-- ==================== نافذة التكبير العملاقة للمنتج (Zoom Modal) ==================== -->
+    <!-- نافذة المعاينة المكبرة للمنتج (Zoom Modal) -->
     <div id="zoomModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
       <div class="relative max-w-3xl w-full h-[85vh] flex flex-col items-center justify-center">
-        <!-- زر إغلاق المعاينة المكبرة -->
         <button onclick="closeZoomModal()" class="absolute top-2 left-2 z-50 w-10 h-10 rounded-full bg-slate-900/80 hover:bg-amber-500 text-white hover:text-slate-950 flex items-center justify-center text-lg border border-slate-700 transition">
           <i class="fa-solid fa-xmark"></i>
         </button>
@@ -290,7 +289,7 @@
       </div>
     </div>
 
-    <!-- ==================== نافذة مستشار المقاسات ==================== -->
+    <!-- نافذة مستشار المقاسات -->
     <div id="fitModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-lg w-full border border-amber-500/30 text-right shadow-2xl">
         <div class="flex justify-between items-center mb-3">
@@ -362,7 +361,7 @@
       </div>
     </div>
 
-    <!-- ==================== نافذة الحوار الصوتي مع البائع ==================== -->
+    <!-- نافذة الحوار الصوتي مع البائع -->
     <div id="voiceSalesmanModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-8 max-w-lg w-full border-2 border-amber-500/40 text-center relative shadow-2xl">
         <button onclick="closeAllModals()" class="absolute top-5 left-5 text-slate-400 hover:text-white text-base">
@@ -392,7 +391,7 @@
       </div>
     </div>
 
-    <!-- ==================== نافذة حجز القطعة ==================== -->
+    <!-- نافذة حجز القطعة (مرتبطة بواتساب البائع) -->
     <div id="reserveModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/40 text-right shadow-2xl relative">
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
@@ -420,7 +419,7 @@
       </div>
     </div>
 
-    <!-- ==================== نافذة نداء المشرف ==================== -->
+    <!-- نافذة نداء المشرف (مرتبطة بواتساب المشرف) -->
     <div id="callStaffModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-sm w-full border border-rose-500/40 text-center relative shadow-2xl">
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
@@ -472,7 +471,7 @@
   <video id="radarCamera" class="hidden" autoplay playsinline muted></video>
   <canvas id="radarCanvas" class="hidden" width="16" height="12"></canvas>
 
-  <!-- ==================== المحرك البرمجي ==================== -->
+  <!-- المحرك البرمجي المحدث بالكامل -->
   <script>
     const CONTACTS = {
       supervisor: "966502777884",
@@ -486,7 +485,7 @@
       aljazeera: { name: "الجزيرة", short: "الجزيرة", type: "iframe", url: "https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&mute=1&playsinline=1" }
     };
 
-    // مصفوفة المنتجات: كل منتج مربوط بصورته ووصفه وسعره وباركوده بدقة
+    // مصفوفة المنتجات: كل قطعة مرتبطة بصورها ومعلوماتها الخاصة، مع صورة بديلة Fallback تضمن عدم انقطاع العرض
     const PRODUCTS = [
       {
         tag: "إصدار شموخ نجد",
@@ -494,8 +493,10 @@
         price: "195",
         originalPrice: "195",
         description: "مستوحى من شموخ جبال طويق الراسخة؛ خامة قطنية ثقيلة بياقة مزدوجة لا ترتخي، وقصة بوكس فيت متزنة مع رقاقة NFC مدمجة في حاشية السدو لتوثيق ملكية القطعة.",
-        frontImg: "./model-front.png",
-        backImg: "./model-back.png",
+        frontImg: "./tuwaiq-front.png",
+        backImg: "./tuwaiq-back.png",
+        fallbackFront: "./model-front.png",
+        fallbackBack: "./model-back.png",
         qrUrl: "https://ezwa-store.com/p/tuwaiq"
       },
       {
@@ -504,8 +505,10 @@
         price: "185",
         originalPrice: "185",
         description: "مستوحى من قصر المصمك الشاهد على ملحمة توحيد المملكة؛ قماش قطني معالج عالي الكثافة، طبعة خلفية فاخرة غير قابلة للتشقق، وشريحة NFC مشفرة بحاشية السدو.",
-        frontImg: "./model-front.png",
-        backImg: "./model-back.png",
+        frontImg: "./almasmak-front.png",
+        backImg: "./almasmak-back.png",
+        fallbackFront: "./model-front.png",
+        fallbackBack: "./model-back.png",
         qrUrl: "https://ezwa-store.com/p/almasmak"
       },
       {
@@ -514,8 +517,10 @@
         price: "140",
         originalPrice: "140",
         description: "نسيج رياضي مسامي فائق الخفة ومقاوم للتعرق، مصمم للأداء العالي والتمارين الرياضية اليومية مع مرونة تامة وثبات بالألوان بعد الغسيل المتكرر.",
-        frontImg: "./model-front.png",
-        backImg: "./model-back.png",
+        frontImg: "./sports-front.png",
+        backImg: "./sports-back.png",
+        fallbackFront: "./model-front.png",
+        fallbackBack: "./model-back.png",
         qrUrl: "https://ezwa-store.com/p/sports-top"
       }
     ];
@@ -549,6 +554,15 @@
       closeAllModals();
     }
 
+    // دالة الحصول على مسار الصورة الصحيح مع Fallback آمن
+    function getProductImageSrc(product, angle) {
+      if (angle === 'front') {
+        return product.frontImg || product.fallbackFront || './model-front.png';
+      } else {
+        return product.backImg || product.fallbackBack || './model-back.png';
+      }
+    }
+
     // التبديل بين صورة الأمام والخلف للتيشيرت
     function switchProductView(angle) {
       currentViewAngle = angle;
@@ -558,13 +572,21 @@
       const btnB = document.getElementById('btnBackView');
       const currentP = PRODUCTS[currentProductIndex];
 
+      const targetSrc = getProductImageSrc(currentP, angle);
+      
+      // تلاشٍ سريع لإشعار العميل بالتحديث
+      img.classList.add('opacity-40');
+      setTimeout(() => {
+        img.src = targetSrc;
+        img.onerror = () => { img.src = (angle === 'front') ? currentP.fallbackFront : currentP.fallbackBack; };
+        img.classList.remove('opacity-40');
+      }, 80);
+
       if (angle === 'front') {
-        img.src = currentP.frontImg;
         badge.textContent = "الواجهة الأمامية";
         btnF.className = "flex-1 py-1.5 rounded-xl bg-amber-500 text-slate-950 text-xs font-black shadow-md transition flex items-center justify-center gap-1.5";
         btnB.className = "flex-1 py-1.5 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5";
       } else {
-        img.src = currentP.backImg;
         badge.textContent = "الواجهة الخلفية";
         btnB.className = "flex-1 py-1.5 rounded-xl bg-amber-500 text-slate-950 text-xs font-black shadow-md transition flex items-center justify-center gap-1.5";
         btnF.className = "flex-1 py-1.5 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5";
@@ -577,7 +599,7 @@
       const zoomImg = document.getElementById('zoomedProductImage');
       const currentP = PRODUCTS[currentProductIndex];
       
-      zoomImg.src = (currentViewAngle === 'front') ? currentP.frontImg : currentP.backImg;
+      zoomImg.src = getProductImageSrc(currentP, currentViewAngle);
       switchZoomView(currentViewAngle);
 
       zoomModal.classList.remove('opacity-0', 'pointer-events-none');
@@ -594,12 +616,12 @@
       const btnB = document.getElementById('zoomBtnBack');
       const currentP = PRODUCTS[currentProductIndex];
 
+      zoomImg.src = getProductImageSrc(currentP, angle);
+
       if (angle === 'front') {
-        zoomImg.src = currentP.frontImg;
         btnF.className = "px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shadow-lg transition";
         btnB.className = "px-4 py-2 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 font-bold text-xs transition";
       } else {
-        zoomImg.src = currentP.backImg;
         btnB.className = "px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shadow-lg transition";
         btnF.className = "px-4 py-2 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 font-bold text-xs transition";
       }
@@ -970,6 +992,7 @@
       document.getElementById('productPrice').textContent = p.price;
       document.getElementById('productDescription').textContent = p.description;
 
+      // تبديل صورة المنتج لتطابق الصنف المعروض فورياً
       switchProductView('front');
 
       const qrBox = document.getElementById('qrcodeBox');
@@ -1040,46 +1063,64 @@
       dismissPrayerOverlay();
     }
 
-    // ==================== الرادار المجهري الخفيف ====================
+    // ==================== الرادار المجهري والتحكم اليدوي الكامل ====================
     let isRadarEnabled = true;
     let radarStream = null;
     let radarTimer = null;
     let lastFrame = null;
     let cooldownTimer = 0;
 
-    function togglePresenceRadar() {
+    // تشغيل وإيقاف الرادار يدوياً
+    async function togglePresenceRadar() {
       const dot = document.getElementById('radarStatusDot');
       const txt = document.getElementById('radarBtnText');
       isRadarEnabled = !isRadarEnabled;
 
       if (isRadarEnabled) {
-        dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-ping";
+        dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping";
         txt.textContent = "الرادار: نشط (R)";
+        await initUltraLightRadar();
       } else {
-        dot.className = "w-2 h-2 rounded-full bg-slate-500";
+        dot.className = "w-2.5 h-2.5 rounded-full bg-slate-500";
         txt.textContent = "الرادار: متوقف (R)";
+        stopRadar();
+      }
+    }
+
+    function stopRadar() {
+      if (radarTimer) {
+        clearInterval(radarTimer);
+        radarTimer = null;
+      }
+      if (radarStream) {
+        radarStream.getTracks().forEach(track => track.stop());
+        radarStream = null;
       }
     }
 
     async function initUltraLightRadar() {
+      if (!isRadarEnabled) return;
       try {
-        radarStream = await navigator.mediaDevices.getUserMedia({ 
-          video: { width: 16, height: 12 } 
-        });
-        document.getElementById('radarCamera').srcObject = radarStream;
+        if (!radarStream) {
+          radarStream = await navigator.mediaDevices.getUserMedia({ 
+            video: { width: 16, height: 12 } 
+          });
+          document.getElementById('radarCamera').srcObject = radarStream;
+        }
         startRadarLoop();
       } catch (e) {
         console.log("كاميرا الرادار غير متوفرة أو لم يتم منح الإذن.");
         const dot = document.getElementById('radarStatusDot');
         const txt = document.getElementById('radarBtnText');
         if (dot && txt) {
-          dot.className = "w-2 h-2 rounded-full bg-amber-500";
+          dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500";
           txt.textContent = "الرادار: غير متاح";
         }
       }
     }
 
     function startRadarLoop() {
+      if (radarTimer) clearInterval(radarTimer);
       const v = document.getElementById('radarCamera');
       const c = document.getElementById('radarCanvas');
       const ctx = c.getContext('2d', { willReadFrequently: true });
