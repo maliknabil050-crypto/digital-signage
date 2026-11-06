@@ -49,7 +49,7 @@
 </head>
 <body class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden">
 
-  <!-- ==================== شريط التحكم العلوي المدمج ==================== -->
+  <!-- ==================== شريط التحكم العلوي ==================== -->
   <header id="topControlBar" class="z-50 bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80 px-4 py-2 flex items-center justify-between transition-transform duration-300">
     <div class="flex items-center gap-2">
       <button id="btnModeMenu" onclick="setMode('menu')" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition-all flex items-center gap-1.5">
@@ -66,13 +66,13 @@
       </button>
     </div>
 
-    <!-- أزرار القنوات الخمس الفعالة والمجربة -->
+    <!-- أزرار القنوات الخمس (تشمل القنوات الرياضية) -->
     <div id="channelButtonsBar" class="flex items-center gap-1.5">
       <button onclick="changeChannel('quran')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن (Q)</button>
       <button onclick="changeChannel('alarabiya')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="alarabiya">العربية (A)</button>
-      <button onclick="changeChannel('alhadath')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="alhadath">الحدث (H)</button>
       <button onclick="changeChannel('skynews')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="skynews">سكاي نيوز (S)</button>
-      <button onclick="changeChannel('trtarabi')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="trtarabi">TRT عربي (T)</button>
+      <button onclick="changeChannel('dubaisports')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-600/80 text-white hover:bg-emerald-600" data-ch="dubaisports">دبي الرياضية (D)</button>
+      <button onclick="changeChannel('sharjahsports')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-600/80 text-white hover:bg-emerald-600" data-ch="sharjahsports">الشارقة الرياضية (R)</button>
     </div>
 
     <div class="flex items-center gap-3">
@@ -88,7 +88,7 @@
     </div>
   </header>
 
-  <!-- ==================== مساحة العرض الرئيسية بكامل الارتفاع ==================== -->
+  <!-- ==================== مساحة العرض الرئيسية ==================== -->
   <main class="flex-1 w-full h-full relative overflow-hidden bg-black flex items-center justify-center">
 
     <!-- 1. شاشة المنيو والإعلانات -->
@@ -160,7 +160,7 @@
       </div>
     </section>
 
-    <!-- 2. شاشة البث المباشر (تأخذ كامل الارتفاع والنسبة الصحيحة بدون اقتصاص) -->
+    <!-- 2. شاشة البث المباشر -->
     <section id="tvSection" class="w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10 bg-black flex items-center justify-center">
       <div id="liveBadge" class="absolute top-3 right-4 z-20 bg-slate-950/70 backdrop-blur-md px-3 py-1 rounded-full border border-slate-800 flex items-center gap-2 pointer-events-none">
         <span class="w-2 h-2 bg-red-600 rounded-full animate-ping"></span>
@@ -174,7 +174,7 @@
 
   </main>
 
-  <!-- ==================== شريط الأخبار السفلي النحيف ==================== -->
+  <!-- ==================== شريط الأخبار السفلي ==================== -->
   <footer id="bottomBar" class="z-50 bg-slate-950 border-t border-slate-800/80 h-9 flex items-center px-4 overflow-hidden transition-transform duration-300">
     <div class="bg-amber-500 text-slate-950 font-black text-[11px] px-2.5 py-0.5 rounded shrink-0 ml-2.5 flex items-center gap-1">
       <i class="fa-solid fa-bullhorn text-[10px]"></i>
@@ -187,9 +187,9 @@
     </div>
   </footer>
 
-  <!-- ==================== منطق التشغيل ==================== -->
+  <!-- ==================== منطق التشغيل والبث ==================== -->
   <script>
-    // القنوات الخمس المفتوحة 100% والمجربة للعمل المباشر على GitHub Pages
+    // روابط البث المباشر المفتوحة والمجربة بدون قيود حظر
     const CHANNELS = {
       quran: {
         name: "قناة القرآن الكريم (مباشر من الحرم المكي)",
@@ -199,17 +199,17 @@
         name: "قناة العربية الإخبارية",
         url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8"
       },
-      alhadath: {
-        name: "قناة الحدث الإخبارية",
-        url: "https://live.alhadath.net/alhadathpublish/alhadath.smil/playlist.m3u8"
-      },
       skynews: {
         name: "قناة سكاي نيوز عربية",
         url: "https://stream.skynewsarabia.com/hls/sna.m3u8"
       },
-      trtarabi: {
-        name: "قناة TRT عربي الإخبارية",
-        url: "https://tv-trtarabi.medya.trt.com.tr/master.m3u8"
+      dubaisports: {
+        name: "قناة دبي الرياضية",
+        url: "https://dmisportshls-i.akamaihd.net/hls/live/502127/dubaisportshls/index.m3u8"
+      },
+      sharjahsports: {
+        name: "قناة الشارقة الرياضية",
+        url: "https://sba-live.ercdn.net/sharjahsportstv/sharjahsportstv.m3u8"
       }
     };
 
@@ -376,9 +376,9 @@
       
       if (key === 'q') changeChannel('quran');
       if (key === 'a') changeChannel('alarabiya');
-      if (key === 'h') changeChannel('alhadath');
       if (key === 's') changeChannel('skynews');
-      if (key === 't') changeChannel('trtarabi');
+      if (key === 'd') changeChannel('dubaisports');
+      if (key === 'r') changeChannel('sharjahsports');
     });
 
     // بدء التشغيل
