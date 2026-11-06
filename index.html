@@ -22,7 +22,7 @@
     body { font-family: 'Cairo', sans-serif; background-color: #030712; color: #f3f4f6; overflow: hidden; user-select: none; width: 100vw; height: 100vh; }
     .fade-transition { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
     .timer-ring { transform: rotate(-90deg); transform-origin: 50% 50%; }
-    .glass-card { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .glass-card { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
     .gold-gradient { background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     
     @keyframes radarWave {
@@ -41,66 +41,124 @@
 </head>
 <body class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden">
 
-  <!-- ==================== شريط خدمات علوي مدمج ونظيف ==================== -->
-  <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/80 backdrop-blur-md px-6 py-2.5 flex items-center justify-between border-b border-slate-900">
-    <!-- أنماط العرض الثلاثة والقنوات -->
-    <div class="flex items-center gap-1.5">
-      <button onclick="setScreenLayout('catalog')" id="btnCatalog" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition">المنتجات (1)</button>
-      <button onclick="setScreenLayout('split')" id="btnSplit" class="px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition">المزدوج (2)</button>
-      <button onclick="setScreenLayout('tv')" id="btnTV" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition">البث (3)</button>
-      <button onclick="setScreenLayout('lounge')" id="btnLounge" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-900 text-amber-300 hover:bg-slate-800 transition">اللاونج (L)</button>
-      <span class="text-slate-700 mx-1">|</span>
-      <button onclick="changeChannel('quran')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن (Q)</button>
-      <button onclick="changeChannel('sunnah')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300" data-ch="sunnah">السنة (S)</button>
-      <button onclick="changeChannel('alarabiya')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300" data-ch="alarabiya">العربية (A)</button>
-      <button onclick="changeChannel('aljazeera')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300" data-ch="aljazeera">الجزيرة (J)</button>
-    </div>
-
-    <!-- مركز الأوضاع الخاصة والخدمات -->
+  <!-- ==================== شريط علوي بنظام التبويبات المنسدلة ==================== -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-md px-6 py-2 flex items-center justify-between border-b border-slate-900 shadow-xl">
+    
+    <!-- يمين الشريط: أنماط الشاشة والتبويبات المنسدلة -->
     <div class="flex items-center gap-2">
-      <!-- موعد الصلاة القادمة بالرياض -->
-      <div class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[11px] text-slate-300">
-        <i class="fa-solid fa-mosque text-amber-400"></i>
-        <span id="nextPrayerName">الصلاة:</span>
-        <span id="nextPrayerTime" class="text-amber-400 font-bold font-mono">--:--</span>
+      <!-- 1. نمط المنتجات -->
+      <button onclick="setScreenLayout('catalog')" id="btnCatalog" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+        <i class="fa-solid fa-shirt text-[11px]"></i>
+        <span>المنتجات (1)</span>
+      </button>
+
+      <!-- 2. النمط المزدوج -->
+      <button onclick="setScreenLayout('split')" id="btnSplit" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5">
+        <i class="fa-solid fa-table-columns text-[11px]"></i>
+        <span>المزدوج (2)</span>
+      </button>
+
+      <!-- 3. تبويب البث المباشر (قائمة منسدلة تضم القنوات وتفعيل البث) -->
+      <div class="relative">
+        <button onclick="toggleDropdown('tvDropdown')" id="btnTVTab" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-2 border border-slate-800">
+          <i class="fa-solid fa-tv text-[11px] text-amber-400"></i>
+          <span id="activeChannelLabel">البث: القرآن (3)</span>
+          <i class="fa-solid fa-chevron-down text-[9px] opacity-70"></i>
+        </button>
+
+        <!-- القائمة المنسدلة للبث -->
+        <div id="tvDropdown" class="absolute top-full right-0 mt-2 w-56 glass-card rounded-2xl p-2 shadow-2xl opacity-0 pointer-events-none transition-all duration-200 z-50">
+          <button onclick="setScreenLayout('tv'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 mb-2 flex items-center justify-between">
+            <span>تفعيل البث بشاشة كاملة</span>
+            <kbd class="text-[9px] bg-slate-800 px-1.5 py-0.5 rounded text-slate-300 font-mono">3</kbd>
+          </button>
+          
+          <div class="text-[10px] text-slate-500 px-2.5 py-1 font-bold">اختيار القناة:</div>
+          <button onclick="changeChannel('quran'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200" id="ch_quran">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-kaaba text-amber-400 text-xs"></i> القرآن الكريم</span>
+            <kbd class="text-[9px] text-slate-500 font-mono">Q</kbd>
+          </button>
+          <button onclick="changeChannel('sunnah'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200" id="ch_sunnah">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-mosque text-emerald-400 text-xs"></i> السنة النبوية</span>
+            <kbd class="text-[9px] text-slate-500 font-mono">S</kbd>
+          </button>
+          <button onclick="changeChannel('alarabiya'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200" id="ch_alarabiya">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-newspaper text-purple-400 text-xs"></i> العربية</span>
+            <kbd class="text-[9px] text-slate-500 font-mono">A</kbd>
+          </button>
+          <button onclick="changeChannel('aljazeera'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200" id="ch_aljazeera">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-globe text-orange-400 text-xs"></i> الجزيرة</span>
+            <kbd class="text-[9px] text-slate-500 font-mono">J</kbd>
+          </button>
+        </div>
       </div>
 
-      <!-- زر النمط السري VIP -->
-      <button onclick="triggerVIPModal()" title="عرض عضوية النخبة (V)" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500/10 border border-amber-500/30 text-amber-300 hover:bg-amber-500/20 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-crown text-[11px]"></i>
-        <span>VIP (V)</span>
+      <!-- 4. نمط اللاونج -->
+      <button onclick="setScreenLayout('lounge')" id="btnLounge" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-amber-300 hover:bg-slate-800 transition flex items-center gap-1.5 border border-slate-800/80">
+        <i class="fa-solid fa-gem text-[10px]"></i>
+        <span>اللاونج (L)</span>
       </button>
+    </div>
 
-      <!-- زر استعراض NFC -->
-      <button onclick="triggerNFCModal()" title="استعراض تقنية NFC (N)" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
-        <i class="fa-solid fa-wifi rotate-90 text-[11px] text-amber-400"></i>
-        <span>NFC (N)</span>
-      </button>
+    <!-- يسار الشريط: قائمة الخدمات الذكية ومواقيت الصلاة والساعة -->
+    <div class="flex items-center gap-2.5">
+      <!-- تبويب منسدل: الخدمات الذكية (VIP, NFC, المقاسات, الرادار) -->
+      <div class="relative">
+        <button onclick="toggleDropdown('servicesDropdown')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-200 hover:text-white transition flex items-center gap-2">
+          <i class="fa-solid fa-layer-group text-amber-400"></i>
+          <span>الخدمات الذكية</span>
+          <i class="fa-solid fa-chevron-down text-[9px] opacity-70"></i>
+        </button>
 
-      <!-- زر نافذة المقاسات -->
-      <button onclick="toggleFitAdvisorModal()" title="مستشار المقاسات (M)" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
-        <i class="fa-solid fa-ruler-combined text-amber-400 text-[11px]"></i>
-        <span>المقاس (M)</span>
-      </button>
+        <!-- القائمة المنسدلة للخدمات -->
+        <div id="servicesDropdown" class="absolute top-full left-0 mt-2 w-60 glass-card rounded-2xl p-2 shadow-2xl opacity-0 pointer-events-none transition-all duration-200 z-50">
+          <button onclick="triggerVIPModal(); closeAllDropdowns();" class="w-full text-right px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-amber-300">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-crown text-amber-400"></i> عضوية النخبة (VIP)</span>
+            <kbd class="text-[9px] text-slate-500 font-mono">V</kbd>
+          </button>
+          <button onclick="triggerNFCModal(); closeAllDropdowns();" class="w-full text-right px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-wifi rotate-90 text-amber-400"></i> استعراض تقنية NFC</span>
+            <kbd class="text-[9px] text-slate-500 font-mono">N</kbd>
+          </button>
+          <button onclick="toggleFitAdvisorModal(); closeAllDropdowns();" class="w-full text-right px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-ruler-combined text-amber-400"></i> مستشار المقاسات</span>
+            <kbd class="text-[9px] text-slate-500 font-mono">M</kbd>
+          </button>
+          
+          <div class="h-px bg-slate-800 my-1"></div>
+          
+          <button onclick="togglePresenceRadar(); closeAllDropdowns();" class="w-full text-right px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
+            <span class="flex items-center gap-2">
+              <span id="radarDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+              <span id="radarStatusText">رادار الحضور البصري</span>
+            </span>
+            <kbd class="text-[9px] text-slate-500 font-mono">R</kbd>
+          </button>
+        </div>
+      </div>
 
-      <!-- زر الرادار -->
-      <button id="radarBtn" onclick="togglePresenceRadar()" title="رادار الحضور البصري (R)" class="px-2 py-1 rounded-lg text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
-        <span id="radarDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
-        <span id="radarStatusText">الرادار (R)</span>
-      </button>
+      <!-- موعد الصلاة القادمة والساعة اللحظية في بطاقة مدمجة -->
+      <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+        <div class="flex items-center gap-1.5 text-slate-300">
+          <i class="fa-solid fa-mosque text-amber-400 text-[11px]"></i>
+          <span id="nextPrayerName">الصلاة:</span>
+          <span id="nextPrayerTime" class="text-amber-400 font-bold font-mono">--:--</span>
+        </div>
+        <span class="text-slate-700">|</span>
+        <div id="liveClock" class="font-mono text-xs font-bold text-slate-300">--:--</div>
+      </div>
 
-      <!-- الساعة وملء الشاشة -->
-      <div id="liveClock" class="font-mono text-xs font-bold text-slate-400 px-2 border-r border-slate-800">--:--</div>
-      <button onclick="toggleFullScreen()" title="ملء الشاشة (F)" class="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 text-xs">
+      <!-- زر ملء الشاشة -->
+      <button onclick="toggleFullScreen()" title="ملء الشاشة (F)" class="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-amber-400 text-xs transition">
         <i class="fa-solid fa-expand"></i>
       </button>
     </div>
   </header>
 
   <!-- ==================== مساحة العرض الرئيسية ==================== -->
-  <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-11">
+  <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-12">
 
-    <!-- 1. قسم الكتالوج والمنتجات (يدعم الشاشة الكاملة ونصف الشاشة) -->
+    <!-- 1. قسم الكتالوج والمنتجات -->
     <section id="productSection" class="w-1/2 h-full p-10 lg:p-14 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition">
       <div>
         <span class="text-amber-400 text-[11px] font-bold tracking-widest uppercase">أزياء الشارع الراقية المبتكرة</span>
@@ -121,7 +179,7 @@
           خامة قطنية ثقيلة، ياقة مزدوجة الغرزة لا ترتخي مع الغسيل، وقصة أوفر سايز متزنة مع رقاقة NFC مدمجة باحترافية في حاشية السدو السفلية.
         </p>
 
-        <!-- اقتراح التنسيق الهادئ -->
+        <!-- التنسيق الموصى به -->
         <div class="mt-6 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-300 max-w-lg">
           <span class="text-amber-400 font-bold block mb-1">التنسيق الموصى به:</span>
           <span id="stylingText">كارجو بلون بيج رملي أو فحمي، مع سنيكرز أبيض لإبراز حاشية السدو.</span>
@@ -157,15 +215,15 @@
       </div>
     </section>
 
-    <!-- 2. قسم البث الحي التلفزيوني (يدعم الشاشة الكاملة ونصف الشاشة) -->
+    <!-- 2. قسم البث الحي التلفزيوني -->
     <section id="tvSection" class="w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition">
       <video id="hlsVideo" class="w-full h-full max-h-full max-w-full object-contain" autoplay playsinline muted controls></video>
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
 
-    <!-- ==================== النوافذ المنبثقة الذكية والسرية ==================== -->
+    <!-- ==================== النوافذ المنبثقة الذكية ==================== -->
 
-    <!-- 1. نافذة وضع كبار الشخصيات VIP (تفتح بـ V) -->
+    <!-- 1. نافذة وضع كبار الشخصيات VIP -->
     <div id="vipModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-8 max-w-2xl w-full border border-amber-500/40 text-center relative shadow-2xl">
         <button onclick="closeAllModals()" class="absolute top-5 left-5 text-slate-400 hover:text-white text-base">
@@ -208,7 +266,7 @@
       </div>
     </div>
 
-    <!-- 2. نافذة استعراض تقنية الـ NFC التفاعلية (تفتح بـ N) -->
+    <!-- 2. نافذة استعراض تقنية NFC -->
     <div id="nfcModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-8 max-w-xl w-full border border-amber-500/30 text-center relative shadow-2xl">
         <button onclick="closeAllModals()" class="absolute top-5 left-5 text-slate-400 hover:text-white text-base">
@@ -247,7 +305,7 @@
       </div>
     </div>
 
-    <!-- 3. نافذة مستشار المقاسات (تفتح بـ M) -->
+    <!-- 3. نافذة مستشار المقاسات -->
     <div id="fitModal" class="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/30 text-right">
         <div class="flex justify-between items-center mb-4">
@@ -288,7 +346,7 @@
       </div>
     </div>
 
-    <!-- 4. شاشة أوقات الصلاة المؤتمتة بالرياض -->
+    <!-- 4. شاشة أوقات الصلاة بالرياض -->
     <div id="prayerOverlay" class="absolute inset-0 bg-slate-950/95 z-50 backdrop-blur-md flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none">
       <div class="text-center p-8 glass-card rounded-3xl border border-amber-500/30 max-w-sm mx-4 shadow-2xl">
         <div class="w-16 h-16 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
@@ -323,10 +381,10 @@
   <!-- ==================== المحرك والمنطق ==================== -->
   <script>
     const CHANNELS = {
-      quran: { name: "القرآن الكريم", type: "hls", url: "https://win.holol.com/live/quran/playlist.m3u8" },
-      sunnah: { name: "السنة النبوية", type: "hls", url: "https://win.holol.com/live/sunnah/playlist.m3u8" },
-      alarabiya: { name: "العربية", type: "hls", url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8" },
-      aljazeera: { name: "الجزيرة", type: "iframe", url: "https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&mute=1&playsinline=1" }
+      quran: { name: "القرآن الكريم", short: "القرآن", type: "hls", url: "https://win.holol.com/live/quran/playlist.m3u8" },
+      sunnah: { name: "السنة النبوية", short: "السنة", type: "hls", url: "https://win.holol.com/live/sunnah/playlist.m3u8" },
+      alarabiya: { name: "العربية", short: "العربية", type: "hls", url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8" },
+      aljazeera: { name: "الجزيرة", short: "الجزيرة", type: "iframe", url: "https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&mute=1&playsinline=1" }
     };
 
     const PRODUCTS = [
@@ -361,6 +419,31 @@
     let currentH = 'med';
     let currentW = 'fit';
 
+    // التحكم في القوائم المنسدلة
+    function toggleDropdown(id) {
+      const el = document.getElementById(id);
+      const isVisible = !el.classList.contains('opacity-0');
+      closeAllDropdowns();
+      if (!isVisible) {
+        el.classList.remove('opacity-0', 'pointer-events-none');
+      }
+    }
+
+    function closeAllDropdowns() {
+      ['tvDropdown', 'servicesDropdown'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('opacity-0', 'pointer-events-none');
+      });
+    }
+
+    // إغلاق المنسدلات عند النقر في أي مكان خارجها
+    window.addEventListener('click', (e) => {
+      if (!e.target.closest('#btnTVTab') && !e.target.closest('#tvDropdown') &&
+          !e.target.closest('#servicesDropdown') && !e.target.closest('button[onclick*="servicesDropdown"]')) {
+        closeAllDropdowns();
+      }
+    });
+
     function playStream(channel) {
       const video = document.getElementById('hlsVideo');
       const iframe = document.getElementById('iframeVideo');
@@ -388,40 +471,38 @@
       }
     }
 
-    // إدارة أنماط الشاشة الثلاثة: كتالوج كامل، مزدوج، بث كامل، أو لاونج
     function setScreenLayout(mode) {
       currentLayout = mode;
       closeAllModals();
+      closeAllDropdowns();
       const prodSec = document.getElementById('productSection');
       const tvSec = document.getElementById('tvSection');
       const loungeOverlay = document.getElementById('loungeOverlay');
       
       const btnCatalog = document.getElementById('btnCatalog');
       const btnSplit = document.getElementById('btnSplit');
-      const btnTV = document.getElementById('btnTV');
       const btnLounge = document.getElementById('btnLounge');
 
-      [btnCatalog, btnSplit, btnTV, btnLounge].forEach(b => {
-        b.className = "px-3 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition";
+      [btnCatalog, btnSplit, btnLounge].forEach(b => {
+        b.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-1.5";
       });
       loungeOverlay.classList.add('opacity-0', 'pointer-events-none');
 
       if (mode === 'catalog') {
-        btnCatalog.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition";
+        btnCatalog.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
         prodSec.className = "w-full h-full p-10 lg:p-14 flex flex-col justify-between absolute inset-0 fade-transition z-20 bg-slate-950 overflow-hidden opacity-100";
         tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
       } else if (mode === 'split') {
-        btnSplit.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition";
+        btnSplit.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
         prodSec.className = "w-1/2 h-full p-10 lg:p-14 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100";
         tvSec.className = "w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition opacity-100";
         playStream(CHANNELS[activeChannelKey]);
       } else if (mode === 'tv') {
-        btnTV.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition";
         tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-100 z-20 bg-black flex items-center justify-center";
         prodSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
         playStream(CHANNELS[activeChannelKey]);
       } else if (mode === 'lounge') {
-        btnLounge.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition";
+        btnLounge.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
         tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-100 z-20 bg-black flex items-center justify-center";
         prodSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
         loungeOverlay.classList.remove('opacity-0', 'pointer-events-none');
@@ -432,11 +513,16 @@
     function changeChannel(key) {
       if (!CHANNELS[key]) return;
       activeChannelKey = key;
-      document.querySelectorAll('.ch-btn').forEach(btn => {
-        btn.className = (btn.getAttribute('data-ch') === key) 
-          ? "ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950" 
-          : "ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300";
+      document.getElementById('activeChannelLabel').textContent = `البث: ${CHANNELS[key].short} (3)`;
+      
+      ['quran', 'sunnah', 'alarabiya', 'aljazeera'].forEach(k => {
+        const item = document.getElementById(`ch_${k}`);
+        if (item) {
+          if (k === key) item.className = "w-full text-right px-3 py-2 rounded-xl text-xs font-bold bg-amber-500/10 text-amber-300 flex items-center justify-between";
+          else item.className = "w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200";
+        }
       });
+
       if (currentLayout !== 'catalog') playStream(CHANNELS[key]);
     }
 
@@ -514,7 +600,7 @@
       }
     }
 
-    // إدارة النوافذ المنبثقة
+    // النوافذ المنبثقة
     function triggerVIPModal() {
       closeAllModals();
       document.getElementById('vipModal').classList.remove('opacity-0', 'pointer-events-none');
@@ -552,7 +638,7 @@
       document.getElementById('modalFitNote').textContent = desc;
     }
 
-    // محرك الرادار البصري
+    // محرك الرادار
     let isRadarOn = false;
     let radarStream = null;
     let radarTimer = null;
@@ -576,7 +662,7 @@
         clearInterval(radarTimer);
         isRadarOn = false;
         dot.className = "w-2 h-2 rounded-full bg-slate-500";
-        label.textContent = "الرادار (R)";
+        label.textContent = "رادار الحضور البصري";
       }
     }
 
@@ -599,14 +685,10 @@
 
           if (diff > 12000) {
             idleSec = 0;
-            if (currentLayout === 'lounge') {
-              setScreenLayout('split');
-            }
+            if (currentLayout === 'lounge') setScreenLayout('split');
           } else {
             idleSec++;
-            if (idleSec >= 25 && currentLayout === 'split') {
-              setScreenLayout('lounge');
-            }
+            if (idleSec >= 25 && currentLayout === 'split') setScreenLayout('lounge');
           }
         }
         lastFrame = frame;
@@ -626,18 +708,18 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // اختصارات لوحة المفاتيح
+    // اختصارات الكيبورد
     window.addEventListener('keydown', (e) => {
       const k = e.key.toLowerCase();
-      if (k === '1') setScreenLayout('catalog'); // المنتجات شاشة كاملة
-      if (k === '2') setScreenLayout('split');   // الوضع المزدوج
-      if (k === '3') setScreenLayout('tv');      // البث التلفزيوني شاشة كاملة
-      if (k === 'l') setScreenLayout('lounge');  // اللاونج
+      if (k === '1') setScreenLayout('catalog');
+      if (k === '2') setScreenLayout('split');
+      if (k === '3') setScreenLayout('tv');
+      if (k === 'l') setScreenLayout('lounge');
       
       if (k === 'v') triggerVIPModal();
       if (k === 'n') triggerNFCModal();
       if (k === 'm') toggleFitAdvisorModal();
-      if (e.key === 'Escape') closeAllModals();
+      if (e.key === 'Escape') { closeAllModals(); closeAllDropdowns(); }
 
       if (k === 'r') togglePresenceRadar();
       if (k === 'f') toggleFullScreen();
