@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Signage OS - المنظومة الذكية التفاعلية</title>
+  <title>Smart Signage OS - منصة العرض الذكية</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- HLS.js -->
+  <!-- HLS.js لتشغيل البث الحي -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <!-- مكتبة توليد الباركود محلياً بدون إنترنت -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <!-- Cairo Font -->
+  <!-- خط Cairo -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -53,7 +53,7 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
     .lounge-glass {
-      background: rgba(10, 15, 29, 0.65);
+      background: rgba(10, 15, 29, 0.75);
       backdrop-filter: blur(20px);
       border: 1px solid rgba(245, 158, 11, 0.25);
     }
@@ -65,6 +65,19 @@
     .timer-ring {
       transform: rotate(-90deg);
       transform-origin: 50% 50%;
+    }
+    /* نبضات الرادار لتقنية NFC */
+    @keyframes radarWave {
+      0% { transform: scale(0.9); opacity: 1; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+    .radar-pulse::before {
+      content: '';
+      position: absolute;
+      inset: -10px;
+      border: 2px solid #f59e0b;
+      border-radius: 9999px;
+      animation: radarWave 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
     }
   </style>
 </head>
@@ -91,7 +104,7 @@
       </button>
     </div>
 
-    <!-- القنوات الأساسية المؤكدة -->
+    <!-- القنوات الأساسية المؤكدة والمفتوحة 100% -->
     <div id="channelButtonsBar" class="flex items-center gap-1.5">
       <button onclick="changeChannel('quran')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن الكريم (Q)</button>
       <button onclick="changeChannel('sunnah')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="sunnah">السنة النبوية (S)</button>
@@ -100,7 +113,7 @@
     </div>
 
     <div class="flex items-center gap-4">
-      <!-- موعد الصلاة القادمة -->
+      <!-- موعد الصلاة القادمة بالرياض -->
       <div class="hidden lg:flex items-center gap-2 px-3 py-1 rounded-xl bg-slate-900/90 border border-amber-500/30 text-xs">
         <i class="fa-solid fa-mosque text-amber-400"></i>
         <span id="nextPrayerName" class="text-slate-400">الصلاة القادمة:</span>
@@ -125,7 +138,7 @@
   <!-- ==================== مساحة العرض الرئيسية ==================== -->
   <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex transition-all duration-500">
 
-    <!-- 1. قسم الواجهة التفاعلية والكتالوج -->
+    <!-- 1. قسم الكتالوج والمنتجات التفاعلي -->
     <section id="menuSection" class="w-1/2 h-full p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-800/80 fade-transition overflow-hidden">
       <div class="flex justify-between items-center mb-2">
         <div>
@@ -183,7 +196,7 @@
       <div id="miniProductsGrid" class="grid grid-cols-3 gap-3"></div>
     </section>
 
-    <!-- 2. قسم البث التلفزيوني الحي -->
+    <!-- 2. قسم البث الحي المباشر -->
     <section id="tvSection" class="w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition">
       <div id="liveBadge" class="absolute top-4 right-4 z-30 glass px-3.5 py-1.5 rounded-full flex items-center gap-2 pointer-events-none">
         <span class="w-2 h-2 bg-red-600 rounded-full animate-ping"></span>
@@ -194,10 +207,118 @@
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
 
-    <!-- 3. وضع اللاونج المطور الحي (Lounge Mode): البث المباشر يعمل بالكامل وفوقه بطاقة ديكور فاخرة -->
+    <!-- ==================== الطبقات السرية التفاعلية للموظف ==================== -->
+
+    <!-- السري 1: نمط كبار الشخصيات VIP (المفتاح V) -->
+    <div id="vipOverlay" class="absolute inset-0 z-40 bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-8">
+      <div class="lounge-glass rounded-3xl p-10 max-w-3xl w-full border border-amber-500/40 shadow-2xl relative overflow-hidden text-center">
+        <div class="w-20 h-20 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl text-amber-400 shadow-inner">
+          <i class="fa-solid fa-crown"></i>
+        </div>
+        <span class="text-xs font-black tracking-widest text-amber-400 uppercase">VIP Membership Tier</span>
+        <h1 class="text-4xl font-black gold-gradient-text mt-1">أركان عِزوة • النخبة الحصرية</h1>
+        <p class="text-slate-300 text-sm mt-3 max-w-xl mx-auto leading-relaxed">
+          عضوية استثنائية دائمة ومثبتة ومخصصة فقط لأصحاب الأرقام <span class="text-amber-400 font-bold font-mono">#01 إلى #10</span>. تمنحك أسبقية امتلاك الإصدارات المحدودة وامتيازات التخصيص الشخصي الفاخر مع توثيق الهوية الرقمية.
+        </p>
+
+        <div class="grid grid-cols-3 gap-4 my-8 text-right">
+          <div class="glass p-4 rounded-2xl border border-amber-500/20">
+            <i class="fa-solid fa-fingerprint text-amber-400 text-lg mb-2"></i>
+            <h4 class="text-xs font-bold text-white">بطاقة رقمية مشفرة</h4>
+            <p class="text-[11px] text-slate-400 mt-1">شريحة ذكية معتمدة</p>
+          </div>
+          <div class="glass p-4 rounded-2xl border border-amber-500/20">
+            <i class="fa-solid fa-shirt text-amber-400 text-lg mb-2"></i>
+            <h4 class="text-xs font-bold text-white">قطع مرقمة حصرية</h4>
+            <p class="text-[11px] text-slate-400 mt-1">تطريز يدوي فاخر</p>
+          </div>
+          <div class="glass p-4 rounded-2xl border border-amber-500/20">
+            <i class="fa-solid fa-star text-amber-400 text-lg mb-2"></i>
+            <h4 class="text-xs font-bold text-white">أولوية المعارض الخاصة</h4>
+            <p class="text-[11px] text-slate-400 mt-1">دعوات VIP الرسمية</p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between border-t border-slate-800/80 pt-5">
+          <div class="text-right">
+            <span class="text-xs text-slate-400">المقاعد المتاحة حالياً:</span>
+            <span class="text-sm font-black text-rose-400 mr-2">متبقي مقعدين فقط (#08, #09)</span>
+          </div>
+          <button onclick="dismissSecretModals()" class="px-5 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition">
+            رجوع (Esc)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- السري 2: استعراض تقنية NFC التفاعلية (المفتاح N) -->
+    <div id="nfcOverlay" class="absolute inset-0 z-40 bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-8">
+      <div class="glass rounded-3xl p-8 max-w-2xl w-full border border-amber-500/30 shadow-2xl relative text-center">
+        
+        <div class="relative w-28 h-28 mx-auto mb-6 flex items-center justify-center">
+          <div class="absolute inset-0 bg-amber-500/10 rounded-full radar-pulse"></div>
+          <div class="w-20 h-20 bg-slate-900 border-2 border-amber-500 rounded-full flex items-center justify-center text-3xl text-amber-400 shadow-xl z-10">
+            <i class="fa-solid fa-wifi rotate-90"></i>
+          </div>
+        </div>
+
+        <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">NTAG215 / NTAG216 Embedded Tag</span>
+        <h2 class="text-3xl font-black text-white mt-1">كيف تعمل ملابس عِزوة الذكية؟</h2>
+        <p class="text-slate-300 text-sm mt-3 leading-relaxed max-w-lg mx-auto">
+          تم دمج رقاقة اتصال المدى القريب (NFC) باحترافية تامة داخل حياكة السدو السفلي للتيشيرت، دون بطاريات أو حاجة للشحن.
+        </p>
+
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 my-6 text-right flex items-center justify-between">
+          <div>
+            <h4 class="text-sm font-bold text-amber-300 flex items-center gap-2">
+              <i class="fa-solid fa-mobile-screen-button"></i>
+              جرّب بنفسك الآن:
+            </h4>
+            <p class="text-xs text-slate-300 mt-1">قرّب ظهر هاتفك الذكي من طرف التيشيرت لتفتح تجربة "اكتشف الرياض" وتوثيق القطعة فوراً.</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xl shrink-0 mr-4">
+            <i class="fa-solid fa-arrow-down animate-bounce"></i>
+          </div>
+        </div>
+
+        <div class="text-center text-xs text-slate-500">
+          اضغط زر <span class="text-amber-400 font-bold font-mono">Esc</span> للرجوع للشاشة الرئيسية
+        </div>
+      </div>
+    </div>
+
+    <!-- السري 3: العرض الخاطف المفاجئ Flash Drop (المفتاح E) -->
+    <div id="flashOverlay" class="absolute inset-0 z-40 bg-red-950/90 backdrop-blur-2xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-8">
+      <div class="glass rounded-3xl p-8 max-w-xl w-full border-2 border-rose-500/50 shadow-2xl text-center relative overflow-hidden">
+        <div class="absolute -top-12 -left-12 w-32 h-32 bg-rose-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+        <span class="bg-rose-600 text-white text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-wider animate-pulse">
+          ⚡ عرض خاطف وحصري داخل المعرض
+        </span>
+
+        <h2 class="text-4xl font-black text-white mt-4">خصم 25% لمدة 60 ثانية</h2>
+        <p class="text-slate-300 text-xs mt-2">عرض سري متاح لزوار المعرض المتواجدين حالياً فقط عند الشراء الفوري.</p>
+
+        <!-- عداد الثواني التنازلي التفاعلي -->
+        <div class="my-6">
+          <div id="flashCountdown" class="text-6xl font-black font-mono text-amber-400 drop-shadow-md">60</div>
+          <span class="text-[11px] text-slate-400">ثانية متبقية قبل انتهاء العرض</span>
+        </div>
+
+        <div class="p-3 bg-slate-900/90 rounded-2xl border border-rose-500/30 flex items-center justify-center gap-3">
+          <i class="fa-solid fa-bag-shopping text-rose-400"></i>
+          <span class="text-xs font-bold text-white">كود الخصم الفوري عند الكاشير:</span>
+          <span class="text-xs font-black text-amber-400 font-mono tracking-widest">EZWA-VIP</span>
+        </div>
+
+        <button onclick="dismissSecretModals()" class="mt-6 text-xs text-slate-400 hover:text-white transition">
+          إلغاء العرض السري (Esc)
+        </button>
+      </div>
+    </div>
+
+    <!-- 4. شاشة وضع اللاونج المطور الحي (المفتاح L) -->
     <div id="loungeOverlay" class="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between p-10 fade-transition opacity-0">
-      
-      <!-- بطاقة الترويسة العلوية الفاخرة -->
       <div class="flex justify-between items-start pointer-events-auto">
         <div class="lounge-glass px-8 py-5 rounded-3xl shadow-2xl max-w-md border border-amber-500/30">
           <span class="text-amber-400 text-xs font-bold tracking-widest uppercase flex items-center gap-2 mb-1">
@@ -208,14 +329,12 @@
           <p class="text-slate-300 text-xs mt-1 leading-relaxed">أصالة نجد برؤية عصرية • تقنية NFC التفاعلية • جودة قطنية نقية</p>
         </div>
 
-        <!-- الساعة الرقمية والتقويم في اللاونج -->
         <div class="lounge-glass px-6 py-4 rounded-3xl shadow-2xl text-left border border-amber-500/30">
           <div id="loungeClock" class="text-3xl font-black font-mono text-amber-400">--:--:--</div>
           <div id="loungeDate" class="text-xs text-slate-300 font-semibold mt-1">الرياض، المملكة العربية السعودية</div>
         </div>
       </div>
 
-      <!-- بطاقة سفلية راقية للتفاعل السريع والباركود -->
       <div class="flex justify-between items-end pointer-events-auto">
         <div class="lounge-glass px-5 py-3 rounded-2xl flex items-center gap-3">
           <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></div>
@@ -234,7 +353,7 @@
       </div>
     </div>
 
-    <!-- 4. نافذة الصلاة التلقائية -->
+    <!-- 5. نافذة الصلاة التلقائية في الرياض -->
     <div id="prayerOverlay" class="absolute inset-0 bg-slate-950/95 z-40 backdrop-blur-md flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none">
       <div class="text-center p-8 glass rounded-3xl border border-amber-500/40 max-w-md mx-4 shadow-2xl">
         <div class="w-16 h-16 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
@@ -258,12 +377,12 @@
     </div>
     <div class="overflow-hidden w-full whitespace-nowrap">
       <div id="tickerText" class="animate-ticker text-xs font-semibold text-slate-300">
-        ✨ أهلاً وسهلاً بكم • استمتعوا بأرقى تشكيلات الأزياء العصرية وتقنية NFC التفاعلية • أوقات العمل من 8:00 صباحاً حتى 12:00 منتصف الليل • امسح الباركود على الشاشة لطلب القطعة فوراً • اضغط مفتاح (X) لملء الشاشة بالكامل بدون أشرطة.
+        ✨ أهلاً وسهلاً بكم في متجرنا • استمتعوا بأرقى تشكيلات الأزياء العصرية وتقنية NFC التفاعلية • أوقات العمل من 8:00 صباحاً حتى 12:00 منتصف الليل • امسح الباركود على الشاشة لطلب القطعة فوراً • اضغط مفتاح (X) لملء الشاشة بالكامل بدون أشرطة.
       </div>
     </div>
   </footer>
 
-  <!-- ==================== منطق التشغيل ==================== -->
+  <!-- ==================== منطق المنظومة والتحكم السري ==================== -->
   <script>
     const CHANNELS = {
       quran: {
@@ -324,6 +443,7 @@
     let isControlsHidden = false;
     let activeChannelKey = 'quran';
     let hlsInstance = null;
+    let flashTimer = null;
 
     function playStream(channel) {
       const video = document.getElementById('hlsVideo');
@@ -358,6 +478,7 @@
 
     function setScreenLayout(mode) {
       currentLayout = mode;
+      dismissSecretModals();
       const menuSec = document.getElementById('menuSection');
       const tvSec = document.getElementById('tvSection');
       const loungeOverlay = document.getElementById('loungeOverlay');
@@ -385,10 +506,8 @@
         playStream(CHANNELS[activeChannelKey]);
       } else if (mode === 'lounge') {
         btnLounge.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition-all flex items-center gap-1.5";
-        // التلفزيون يملأ الشاشة بالكامل في الخلفية
         tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-100 z-20 bg-black flex items-center justify-center";
         menuSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
-        // وتظهر طبقة اللاونج التفاعلية الفخمة فوقه
         loungeOverlay.classList.remove('opacity-0', 'pointer-events-none');
         playStream(CHANNELS[activeChannelKey]);
       }
@@ -411,6 +530,47 @@
       else playStream(CHANNELS[key]);
     }
 
+    // إدارة النوافذ السرية للموظف
+    function triggerSecretVIP() {
+      dismissSecretModals();
+      const vip = document.getElementById('vipOverlay');
+      vip.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function triggerSecretNFC() {
+      dismissSecretModals();
+      const nfc = document.getElementById('nfcOverlay');
+      nfc.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function triggerSecretFlash() {
+      dismissSecretModals();
+      const flash = document.getElementById('flashOverlay');
+      flash.classList.remove('opacity-0', 'pointer-events-none');
+
+      let remaining = 60;
+      const counterEl = document.getElementById('flashCountdown');
+      counterEl.textContent = remaining;
+
+      if (flashTimer) clearInterval(flashTimer);
+      flashTimer = setInterval(() => {
+        remaining--;
+        counterEl.textContent = remaining;
+        if (remaining <= 0) {
+          clearInterval(flashTimer);
+          dismissSecretModals();
+        }
+      }, 1000);
+    }
+
+    function dismissSecretModals() {
+      if (flashTimer) clearInterval(flashTimer);
+      ['vipOverlay', 'nfcOverlay', 'flashOverlay'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('opacity-0', 'pointer-events-none');
+      });
+    }
+
     function updateSpotlight(index) {
       const p = PRODUCTS[index];
       document.getElementById('spotlightTag').textContent = p.tag;
@@ -421,7 +581,6 @@
       const nextP = PRODUCTS[(index + 1) % PRODUCTS.length];
       document.getElementById('nextProductTitle').textContent = nextP.title;
 
-      // باركود القائمة الرئيسية
       const qrBox = document.getElementById('qrcodeContainer');
       qrBox.innerHTML = '';
       new QRCode(qrBox, {
@@ -478,7 +637,6 @@
       }, 1000);
     }
 
-    // مواقيت الصلاة في الرياض
     const prayerTimesRiyadh = [
       { name: "الفجر", time: "04:55" },
       { name: "الظهر", time: "11:42" },
@@ -538,22 +696,32 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // اختصارات لوحة المفاتيح
+    // اختصارات لوحة المفاتيح والتحكم السري للموظف
     window.addEventListener('keydown', (e) => {
       const key = e.key.toLowerCase();
+      
+      // التحكم السري الفوري
+      if (key === 'v') triggerSecretVIP();      // نمط كبار الشخصيات
+      if (key === 'n') triggerSecretNFC();      // استعراض تقنية NFC
+      if (key === 'e') triggerSecretFlash();    // العرض الخاطف 60 ثانية
+      if (e.key === 'Escape') dismissSecretModals(); // إلغاء فوري
+
+      // التحكم العام بأوضاع العرض
       if (key === '1') setScreenLayout('menu');
       if (key === '2') setScreenLayout('tv');
       if (key === '3') setScreenLayout('split');
       if (key === 'l') setScreenLayout('lounge');
       if (key === 'f') toggleFullScreen();
       if (key === 'x') toggleHideControls();
+
+      // القنوات الأربع المؤكدة
       if (key === 'q') changeChannel('quran');
       if (key === 's') changeChannel('sunnah');
       if (key === 'a') changeChannel('alarabiya');
       if (key === 'j') changeChannel('aljazeera');
     });
 
-    // تشغيل المنظومة
+    // بدء التشغيل
     initLoungeQr();
     startSpotlightTimer();
     setScreenLayout('split');
