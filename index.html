@@ -46,7 +46,7 @@
     }
   </style>
 </head>
-<body id="screenBody" class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden">
+<body id="screenBody" class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden" onclick="unlockAudioContext()">
 
   <!-- ==================== شريط علوي بنظام التبويبات المنسدلة ==================== -->
   <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-md px-6 py-2 flex items-center justify-between border-b border-slate-900 shadow-xl">
@@ -132,6 +132,12 @@
             <kbd class="text-[9px] text-slate-500 font-mono">T</kbd>
           </button>
 
+          <!-- تجربة نغمة الترحيب الفورية -->
+          <button onclick="playLuxuryWelcomeSound(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-emerald-300">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-volume-high text-emerald-400"></i> تجربة صوت الترحيب</span>
+            <span class="text-[10px] text-slate-500">فحص</span>
+          </button>
+
           <div class="h-px bg-slate-800 my-1"></div>
 
           <button onclick="triggerVIPModal(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
@@ -210,7 +216,7 @@
           <span id="stylingText">كارجو بلون بيج رملي أو فحمي، مع سنيكرز أبيض لإبراز حاشية السدو.</span>
         </div>
 
-        <!-- الابتكار: شريط كاسر التردد التلقائي (يظهر إذا وقف الزائر وتأمل طويلاً) -->
+        <!-- الابتكار: شريط كاسر التردد التلقائي -->
         <div id="hesitationBreaker" class="mt-4 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-300 flex items-center gap-2 opacity-0 fade-transition max-w-lg">
           <i class="fa-solid fa-shield-halved text-amber-400"></i>
           <span>قطن معالج ضد الانكماش يدوم طويلاً • إمكانية التبديل الفوري خلال 14 يوماً.</span>
@@ -254,7 +260,7 @@
 
     <!-- ==================== النوافذ التفاعلية والابتكارات ==================== -->
 
-    <!-- الابتكار: نافذة الانعكاس الشبح (Ghost Silhouette) -->
+    <!-- نافذة الانعكاس الشبح (Ghost Silhouette) -->
     <div id="ghostMirrorModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-8 max-w-lg w-full border border-amber-500/40 text-center relative shadow-2xl">
         <button onclick="closeAllModals()" class="absolute top-5 left-5 text-slate-400 hover:text-white text-base">
@@ -264,7 +270,6 @@
         <h2 class="text-2xl font-black text-white mt-1">الانعكاس الشبح: محاكي القصة</h2>
         <p class="text-slate-400 text-xs mt-2">قف مباشرة أمام الكاميرا؛ يعكس النظام خطوط سقوط الكتف والاتساع على هيئة جسمك:</p>
 
-        <!-- مجسم توضيحي للكتف المنسدل والقصة -->
         <div class="my-6 p-6 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col items-center justify-center relative overflow-hidden">
           <div class="w-36 h-48 border-2 border-dashed border-amber-500/60 rounded-3xl flex flex-col items-center justify-start p-3 relative">
             <div class="w-10 h-10 rounded-full border border-amber-400/80 mb-2"></div>
@@ -476,6 +481,62 @@
     let currentH = 'med';
     let currentW = 'fit';
 
+    // ==================== محرك الصوت المزدوج الذكي ====================
+    let audioCtx = null;
+    function unlockAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    // توليد نغمة ترحيبية فندقية إلكترونية فاخرة (Chime)
+    function playLuxuryWelcomeSound() {
+      try {
+        unlockAudioContext();
+        if (!audioCtx) return;
+
+        const now = audioCtx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 (نغمات هادئة راقية)
+        
+        notes.forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + (idx * 0.12));
+          
+          gain.gain.setValueAtTime(0.001, now + (idx * 0.12));
+          gain.gain.exponentialRampToValueAtTime(0.2, now + (idx * 0.12) + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + (idx * 0.12) + 1.2);
+          
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          
+          osc.start(now + (idx * 0.12));
+          osc.stop(now + (idx * 0.12) + 1.3);
+        });
+      } catch (e) {}
+
+      // محاولة النطق الصوتي العربي بالتوازي
+      speakWelcome("أهلاً بك في عِـزوة");
+    }
+
+    function speakWelcome(text) {
+      try {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const ut = new SpeechSynthesisUtterance(text);
+          ut.lang = 'ar-SA';
+          ut.rate = 0.9;
+          ut.pitch = 1.0;
+          window.speechSynthesis.speak(ut);
+        }
+      } catch (e) {}
+    }
+
     function toggleDropdown(id) {
       const el = document.getElementById(id);
       const isVisible = !el.classList.contains('opacity-0');
@@ -491,6 +552,7 @@
     }
 
     window.addEventListener('click', (e) => {
+      unlockAudioContext();
       if (!e.target.closest('#btnTVTab') && !e.target.closest('#tvDropdown') &&
           !e.target.closest('#servicesDropdown') && !e.target.closest('button[onclick*="servicesDropdown"]')) {
         closeAllDropdowns();
@@ -615,35 +677,20 @@
 
     // ==================== دوال الابتكارات الجديدة ====================
 
-    // 1. تشغيل الانعكاس الشبح
     function toggleGhostMirror() {
       closeAllModals();
       document.getElementById('ghostMirrorModal').classList.remove('opacity-0', 'pointer-events-none');
     }
 
-    // 2. محاكاة ملامسة القطعة بالـ NFC (وميض ذهبي وتحكم مباشر)
     function simulateNFCTap() {
       const body = document.getElementById('screenBody');
       body.classList.add('flash-active');
       setTimeout(() => body.classList.remove('flash-active'), 1200);
 
-      // التوجيه للقطعة وتفعيل الصوت التوجيهي
       currentProductIndex = 0;
       updateProduct(currentProductIndex);
       if (currentLayout !== 'split') setScreenLayout('split');
-      speakWelcome("تم الاتصال بقطعة قصر المصمك بنجاح. أهلاً بك في عِزوة.");
-    }
-
-    // 3. تقنية الصوت التوجيهي الصامتة
-    function speakWelcome(text) {
-      try {
-        if ('speechSynthesis' in window) {
-          const ut = new SpeechSynthesisUtterance(text);
-          ut.lang = 'ar-SA';
-          ut.rate = 0.95;
-          window.speechSynthesis.speak(ut);
-        }
-      } catch (e) {}
+      playLuxuryWelcomeSound();
     }
 
     // مواقيت الصلاة بالرياض
@@ -730,9 +777,10 @@
     let radarTimer = null;
     let lastFrame = null;
     let idleSec = 0;
-    let focusStandingSec = 0; // ثواني الوقوف والتأمل لحساب التردد
+    let focusStandingSec = 0;
 
     async function togglePresenceRadar() {
+      unlockAudioContext();
       const dot = document.getElementById('radarDot');
       const label = document.getElementById('radarStatusText');
       if (!isRadarOn) {
@@ -776,9 +824,8 @@
             focusStandingSec++;
             if (currentLayout === 'lounge') {
               setScreenLayout('split');
-              speakWelcome("أهلاً بك في عِـزوة");
+              playLuxuryWelcomeSound();
             }
-            // إذا وقف الزائر وتأمل لأكثر من 7 ثوانٍ (كاشف التردد)
             if (focusStandingSec >= 7) {
               const breaker = document.getElementById('hesitationBreaker');
               if (breaker) breaker.classList.remove('opacity-0');
@@ -799,6 +846,7 @@
     }
 
     function toggleFullScreen() {
+      unlockAudioContext();
       if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
       else if (document.exitFullscreen) document.exitFullscreen();
     }
@@ -813,13 +861,13 @@
 
     // اختصارات لوحة المفاتيح
     window.addEventListener('keydown', (e) => {
+      unlockAudioContext();
       const k = e.key.toLowerCase();
       if (k === '1') setScreenLayout('catalog');
       if (k === '2') setScreenLayout('split');
       if (k === '3') setScreenLayout('tv');
       if (k === 'l') setScreenLayout('lounge');
       
-      // اختصارات الابتكارات
       if (k === 'g') toggleGhostMirror();
       if (k === 't') simulateNFCTap();
       if (k === 'v') triggerVIPModal();
