@@ -23,7 +23,7 @@
 </head>
 <body id="screenBody" class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden" onclick="handleFirstUserInteraction()">
 
-  <!-- الشريط العلوي النظيف -->
+  <!-- الشريط العلوي مع الشعار وشاشات البث -->
   <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-md px-6 py-2.5 flex items-center justify-between border-b border-slate-900 shadow-xl">
     
     <!-- يمين الشريط: أنماط العرض وقنوات البث المباشر -->
@@ -73,15 +73,15 @@
       </div>
     </div>
 
-    <!-- يسار الشريط: الرادار + المقاسات (المكان الوحيد المعتمد) + تحدث مع البائع + نداء الطاقم + مواقيت الصلاة -->
+    <!-- يسار الشريط: الرادار + المقاسات + تحدث مع البائع + نداء + مواقيت الصلاة -->
     <div class="flex items-center gap-2">
-      <!-- زر الرادار المرئي -->
+      <!-- زر الرادار -->
       <button onclick="togglePresenceRadar()" id="btnRadarToggle" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-2 shadow">
         <span id="radarStatusDot" class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
         <span id="radarBtnText">الرادار: نشط (R)</span>
       </button>
 
-      <!-- مستشار المقاسات الثابت بالشريط العلوي -->
+      <!-- مستشار المقاسات -->
       <button onclick="toggleFitAdvisorModal()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex items-center gap-1.5 shadow">
         <i class="fa-solid fa-ruler-combined text-[11px]"></i>
         <span>المقاسات (M)</span>
@@ -120,69 +120,100 @@
   <!-- مساحة العرض الرئيسية -->
   <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-12 fade-transition">
 
-    <!-- 1. قسم الكتالوج وبوابة البائع الرقمي -->
-    <section id="productSection" class="w-1/2 h-full p-8 lg:p-12 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition overflow-y-auto">
-      <div>
-        <div class="flex items-center justify-between">
-          <span class="text-amber-400 text-[11px] font-bold tracking-widest uppercase">أزياء الشارع الراقية المبتكرة</span>
-          <span class="px-3 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[11px] font-bold flex items-center gap-1.5">
-            <i class="fa-solid fa-user-tie text-[10px]"></i>
-            مستشارك الرقمي المعتمد في خدمتك
-          </span>
+    <!-- 1. قسم الكتالوج وبوابة المنتجات -->
+    <section id="productSection" class="w-1/2 h-full p-6 lg:p-8 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition overflow-y-auto">
+      
+      <!-- ترويسة المتجر مع الشعار الرسمي logo.jpeg -->
+      <div class="flex items-center justify-between border-b border-slate-900 pb-3">
+        <div class="flex items-center gap-3">
+          <img src="./logo.jpeg" alt="EZWA Logo" class="w-10 h-10 object-contain rounded-xl border border-amber-500/20 bg-slate-900 p-0.5 shadow-md">
+          <div>
+            <h1 class="text-xl font-black text-white">عِـزوة • EZWA</h1>
+            <span class="text-amber-400 text-[10px] font-bold tracking-widest uppercase">أزياء الشارع الراقية المبتكرة</span>
+          </div>
         </div>
-        <h1 class="text-2xl lg:text-3xl font-black text-white mt-0.5">عِـزوة • EZWA</h1>
+        <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold flex items-center gap-1">
+          <i class="fa-solid fa-user-tie text-[9px]"></i>
+          مستشارك الرقمي بالخدمة
+        </span>
       </div>
 
-      <!-- تفاصيل القطعة المعروضة -->
-      <div class="my-auto py-4 max-w-2xl">
-        <span id="productTag" class="text-xs font-bold text-amber-400/90">الإصدار الأكثر طلباً</span>
-        <h2 id="productTitle" class="text-3xl lg:text-4xl font-black text-white mt-1 leading-tight">تيشيرت بوكس فيت - قصر المصمك</h2>
-        
-        <div class="flex items-baseline gap-3 mt-3">
-          <span id="productPrice" class="text-3xl lg:text-4xl font-black text-amber-400">185</span>
-          <span class="text-sm text-slate-400 font-bold">ريال سعودي</span>
-          <span class="text-[11px] text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-md font-bold mr-2">دفع فوري بـ Apple Pay / مدى</span>
+      <!-- منطقة عرض المنتج والصور -->
+      <div class="my-auto py-2">
+        <div class="grid grid-cols-12 gap-4 items-center">
+          
+          <!-- استعراض صور المنتج (model-front.png و model-back.png) -->
+          <div class="col-span-5 relative group">
+            <div class="w-full h-56 lg:h-64 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-center p-2 relative overflow-hidden shadow-inner">
+              <img id="mainProductImage" src="./model-front.png" alt="Product View" class="w-full h-full object-contain fade-transition">
+              <span id="viewAngleBadge" class="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/60 text-[9px] font-bold text-amber-300 border border-amber-500/20">
+                الواجهة الأمامية
+              </span>
+            </div>
+
+            <!-- أزرار التبديل السريع بين الأمام والخلف -->
+            <div class="flex gap-1.5 mt-2 justify-center">
+              <button onclick="switchProductView('front')" id="btnFrontView" class="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 text-[10px] font-bold shadow transition">
+                الأمام
+              </button>
+              <button onclick="switchProductView('back')" id="btnBackView" class="px-2.5 py-1 rounded-lg bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-[10px] font-bold transition">
+                الخلف
+              </button>
+            </div>
+          </div>
+
+          <!-- تفاصيل القطعة والسعر -->
+          <div class="col-span-7">
+            <span id="productTag" class="text-[11px] font-bold text-amber-400/90">الإصدار الأكثر طلباً</span>
+            <h2 id="productTitle" class="text-xl lg:text-2xl font-black text-white mt-0.5 leading-snug">تيشيرت بوكس فيت - قصر المصمك</h2>
+            
+            <div class="flex items-baseline gap-2 mt-2">
+              <span id="productPrice" class="text-2xl lg:text-3xl font-black text-amber-400">185</span>
+              <span class="text-xs text-slate-400 font-bold">ريال سعودي</span>
+              <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded font-bold mr-1">دفع فوري Apple Pay / مدى</span>
+            </div>
+
+            <p class="text-slate-400 text-xs mt-2.5 leading-relaxed">
+              خامة قطنية ثقيلة، ياقة مزدوجة الغرزة لا ترتخي مع الغسيل، وقصة أوفر سايز متزنة مع رقاقة NFC مدمجة باحترافية في حاشية السدو السفلية.
+            </p>
+          </div>
         </div>
 
-        <p class="text-slate-400 text-xs mt-4 leading-relaxed max-w-xl">
-          خامة قطنية ثقيلة، ياقة مزدوجة الغرزة لا ترتخي مع الغسيل، وقصة أوفر سايز متزنة مع رقاقة NFC مدمجة باحترافية في حاشية السدو السفلية.
-        </p>
-
-        <!-- أزرار الخدمات السفلية (تم حذف تكرار المقاسات واستبداله بطلب المساعدة الفورية) -->
-        <div class="mt-8 pt-5 border-t border-slate-900">
-          <span class="text-[11px] text-slate-400 font-bold block mb-3">خدمات وصلاحيات المعرض الفورية:</span>
-          <div class="grid grid-cols-4 gap-2.5">
+        <!-- أزرار الخدمات وصلاحيات المعرض الفورية -->
+        <div class="mt-4 pt-3 border-t border-slate-900">
+          <span class="text-[11px] text-slate-400 font-bold block mb-2">خدمات وصلاحيات المعرض الفورية:</span>
+          <div class="grid grid-cols-4 gap-2">
             <!-- طلب مساعدة المشرف -->
-            <button onclick="triggerCallStaffModal()" class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
-              <i class="fa-solid fa-headset text-sm mb-1.5 text-amber-400"></i>
-              <span class="font-bold text-[11px]">مساعدة المعرض</span>
+            <button onclick="triggerCallStaffModal()" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
+              <i class="fa-solid fa-headset text-sm mb-1 text-amber-400"></i>
+              <span class="font-bold text-[10px]">مساعدة المعرض</span>
             </button>
 
             <!-- خصم المعرض الفوري -->
-            <button onclick="applySalesmanDiscount()" class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
-              <i class="fa-solid fa-tag text-sm mb-1.5 text-emerald-400"></i>
-              <span class="font-bold text-[11px]">خصم 10% فوري</span>
+            <button onclick="applySalesmanDiscount()" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
+              <i class="fa-solid fa-tag text-sm mb-1 text-emerald-400"></i>
+              <span class="font-bold text-[10px]">خصم 10% فوري</span>
             </button>
 
             <!-- حجز القطعة -->
-            <button onclick="openReserveModal()" class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
-              <i class="fa-solid fa-bookmark text-sm mb-1.5 text-purple-400"></i>
-              <span class="font-bold text-[11px]">حجز القطعة</span>
+            <button onclick="openReserveModal()" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
+              <i class="fa-solid fa-bookmark text-sm mb-1 text-purple-400"></i>
+              <span class="font-bold text-[10px]">حجز القطعة</span>
             </button>
 
             <!-- شرح السدو والـ NFC -->
-            <button onclick="salesmanExplainNFC()" class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
-              <i class="fa-solid fa-wifi rotate-90 text-sm mb-1.5 text-amber-400"></i>
-              <span class="font-bold text-[11px]">توثيق الـ NFC</span>
+            <button onclick="salesmanExplainNFC()" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
+              <i class="fa-solid fa-wifi rotate-90 text-sm mb-1 text-amber-400"></i>
+              <span class="font-bold text-[10px]">توثيق الـ NFC</span>
             </button>
           </div>
         </div>
       </div>
 
       <!-- محطة السداد الذاتي والباركود -->
-      <div class="border-t border-slate-900 pt-3">
+      <div class="border-t border-slate-900 pt-2.5">
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-3">
             <div class="relative p-1.5 bg-white rounded-xl shadow-md shrink-0">
               <div id="qrcodeBox"></div>
               <div class="absolute -top-1.5 -right-1.5 w-5 h-5">
@@ -216,7 +247,7 @@
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
 
-    <!-- ==================== نافذة مستشار المقاسات للبوكس فيت ==================== -->
+    <!-- ==================== نافذة مستشار المقاسات ==================== -->
     <div id="fitModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-lg w-full border border-amber-500/30 text-right shadow-2xl">
         <div class="flex justify-between items-center mb-3">
@@ -412,6 +443,8 @@
         title: "تيشيرت بوكس فيت - قصر المصمك",
         price: "185",
         originalPrice: "185",
+        frontImg: "./model-front.png",
+        backImg: "./model-back.png",
         qrUrl: "https://ezwa-store.com/p/almasmak"
       },
       {
@@ -419,6 +452,8 @@
         title: "تيشيرت بوكس فيت - جبل طويق",
         price: "195",
         originalPrice: "195",
+        frontImg: "./model-front.png",
+        backImg: "./model-back.png",
         qrUrl: "https://ezwa-store.com/p/tuwaiq"
       },
       {
@@ -426,6 +461,8 @@
         title: "التشكيلة الرياضية (Top Giving)",
         price: "140",
         originalPrice: "140",
+        frontImg: "./model-front.png",
+        backImg: "./model-back.png",
         qrUrl: "https://ezwa-store.com/p/sports-top"
       }
     ];
@@ -436,6 +473,7 @@
     let hlsInstance = null;
     let timerElapsed = 0;
     let hasInteracted = false;
+    let currentViewAngle = 'front';
 
     let selectedH = 'med';
     let selectedW = 'w95';
@@ -447,6 +485,28 @@
     function unlockAudioContext() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    // التبديل بين صورة الأمام والخلف للتيشيرت
+    function switchProductView(angle) {
+      currentViewAngle = angle;
+      const img = document.getElementById('mainProductImage');
+      const badge = document.getElementById('viewAngleBadge');
+      const btnF = document.getElementById('btnFrontView');
+      const btnB = document.getElementById('btnBackView');
+      const currentP = PRODUCTS[currentProductIndex];
+
+      if (angle === 'front') {
+        img.src = currentP.frontImg;
+        badge.textContent = "الواجهة الأمامية";
+        btnF.className = "px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 text-[10px] font-bold shadow transition";
+        btnB.className = "px-2.5 py-1 rounded-lg bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-[10px] font-bold transition";
+      } else {
+        img.src = currentP.backImg;
+        badge.textContent = "الواجهة الخلفية";
+        btnB.className = "px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 text-[10px] font-bold shadow transition";
+        btnF.className = "px-2.5 py-1 rounded-lg bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-[10px] font-bold transition";
+      }
     }
 
     // 1. عزف نغمة الشايم الفاخرة أولاً
@@ -768,7 +828,7 @@
 
       if (mode === 'catalog') {
         btnCatalog.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
-        prodSec.className = "w-full h-full p-8 lg:p-12 flex flex-col justify-between absolute inset-0 fade-transition z-20 bg-slate-950 overflow-y-auto opacity-100";
+        prodSec.className = "w-full h-full p-6 lg:p-8 flex flex-col justify-between absolute inset-0 fade-transition z-20 bg-slate-950 overflow-y-auto opacity-100";
         tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
         
         if (hlsInstance) hlsInstance.stopLoad();
@@ -776,7 +836,7 @@
         iframe.src = "about:blank";
       } else if (mode === 'split') {
         btnSplit.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
-        prodSec.className = "w-1/2 h-full p-8 lg:p-12 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100 overflow-y-auto";
+        prodSec.className = "w-1/2 h-full p-6 lg:p-8 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100 overflow-y-auto";
         tvSec.className = "w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition opacity-100";
         playStream(CHANNELS[activeChannelKey]);
       } else if (mode === 'tv') {
@@ -807,6 +867,9 @@
       document.getElementById('productTag').textContent = p.tag;
       document.getElementById('productTitle').textContent = p.title;
       document.getElementById('productPrice').textContent = p.price;
+
+      // تحديث صورة المنتج
+      switchProductView('front');
 
       const qrBox = document.getElementById('qrcodeBox');
       qrBox.innerHTML = '';
@@ -940,7 +1003,7 @@
 
           if (diff > 1200) {
             playGreetingSequence();
-            cooldownTimer = 60; // صمت 60 ثانية
+            cooldownTimer = 60;
           }
         }
         lastFrame = frame;
