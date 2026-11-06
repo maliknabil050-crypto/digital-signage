@@ -73,15 +73,15 @@
       </div>
     </div>
 
-    <!-- يسار الشريط: الرادار + المقاسات + تحدث مع البائع + نداء الطاقم + مواقيت الصلاة -->
+    <!-- يسار الشريط: الرادار + المقاسات (المكان الوحيد المعتمد) + تحدث مع البائع + نداء الطاقم + مواقيت الصلاة -->
     <div class="flex items-center gap-2">
-      <!-- زر الرادار المرئي في الشريط العلوي -->
+      <!-- زر الرادار المرئي -->
       <button onclick="togglePresenceRadar()" id="btnRadarToggle" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-2 shadow">
         <span id="radarStatusDot" class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
         <span id="radarBtnText">الرادار: نشط (R)</span>
       </button>
 
-      <!-- مستشار المقاسات -->
+      <!-- مستشار المقاسات الثابت بالشريط العلوي -->
       <button onclick="toggleFitAdvisorModal()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex items-center gap-1.5 shadow">
         <i class="fa-solid fa-ruler-combined text-[11px]"></i>
         <span>المقاسات (M)</span>
@@ -148,14 +148,14 @@
           خامة قطنية ثقيلة، ياقة مزدوجة الغرزة لا ترتخي مع الغسيل، وقصة أوفر سايز متزنة مع رقاقة NFC مدمجة باحترافية في حاشية السدو السفلية.
         </p>
 
-        <!-- أزرار صلاحيات وخدمات المعرض الفورية -->
+        <!-- أزرار الخدمات السفلية (تم حذف تكرار المقاسات واستبداله بطلب المساعدة الفورية) -->
         <div class="mt-8 pt-5 border-t border-slate-900">
           <span class="text-[11px] text-slate-400 font-bold block mb-3">خدمات وصلاحيات المعرض الفورية:</span>
           <div class="grid grid-cols-4 gap-2.5">
-            <!-- مستشار المقاسات -->
-            <button onclick="toggleFitAdvisorModal()" class="p-3 rounded-xl bg-slate-900 border border-amber-500/40 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex flex-col items-center justify-center text-center shadow">
-              <i class="fa-solid fa-ruler-combined text-sm mb-1.5 text-amber-400"></i>
-              <span class="font-bold text-[11px]">المقاسات (M)</span>
+            <!-- طلب مساعدة المشرف -->
+            <button onclick="triggerCallStaffModal()" class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
+              <i class="fa-solid fa-headset text-sm mb-1.5 text-amber-400"></i>
+              <span class="font-bold text-[11px]">مساعدة المعرض</span>
             </button>
 
             <!-- خصم المعرض الفوري -->
@@ -194,7 +194,7 @@
             </div>
             <div class="text-right">
               <span class="text-xs font-black text-white block">امسح للسداد والاستلام المباشر</span>
-              <span class="text-[10px] text-slate-400 block mt-0.5">Apple Pay ومدى • خذ مقاسك من المعرض أو اطلب شحنها لمنزلك</span>
+              <span class="text-[10px] text-slate-400 block mt-0.5">Apple Pay ومدى • استلم مقاسك من المعرض مباشرة</span>
             </div>
           </div>
 
@@ -357,7 +357,7 @@
         </div>
         <h3 class="text-lg font-black text-white">نداء المشرف بالمعرض</h3>
         <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">فريق عِـزوة حاضر في المعرض لمساعدتك فوراً</p>
-        <button onclick="playWelcomeAudio(); alert('تم إشعار المشرف وسيكون معك خلال لحظات!'); closeAllModals();" class="w-full mt-4 p-3 rounded-2xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg">
+        <button onclick="playGreetingSequence(); alert('تم إشعار المشرف وسيكون معك خلال لحظات!'); closeAllModals();" class="w-full mt-4 p-3 rounded-2xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg">
           تنبيه المشرف الآن
         </button>
       </div>
@@ -380,20 +380,20 @@
       </div>
     </div>
 
-    <!-- لافتة الترحيب المباشرة لفك حظر الصوت في المتصفحات -->
+    <!-- لافتة فك حظر الصوت في المتصفحات -->
     <div id="firstInteractionNotice" class="absolute bottom-6 right-6 z-50 glass-card border border-amber-500/50 rounded-2xl p-4 shadow-2xl flex items-center gap-3 fade-transition cursor-pointer" onclick="handleFirstUserInteraction()">
       <div class="w-10 h-10 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-lg animate-bounce">
         <i class="fa-solid fa-hand-wave"></i>
       </div>
       <div class="text-right">
-        <h4 class="text-xs font-bold text-white">انقر هنا لتفعيل صوت البائع</h4>
-        <span class="text-[10px] text-amber-300">لتفعيل محرك الصوت العربي لترحيب البائع</span>
+        <h4 class="text-xs font-bold text-white">انقر هنا لتفعيل صوت ونغمة البائع</h4>
+        <span class="text-[10px] text-amber-300">لتفعيل محرك النغمة الفاخرة والصوت العربي</span>
       </div>
     </div>
 
   </main>
 
-  <!-- كاميرا الرادار المجهرية الخفية محلياً (16x12 فقط لتوفير الأداء التام) -->
+  <!-- كاميرا الرادار المجهرية الخفية محلياً -->
   <video id="radarCamera" class="hidden" autoplay playsinline muted></video>
   <canvas id="radarCanvas" class="hidden" width="16" height="12"></canvas>
 
@@ -441,7 +441,6 @@
     let selectedW = 'w95';
     let selectedStyle = 'regular';
 
-    // ربط ملف الصوت المسجل
     const welcomeAudio = new Audio('./welcome.mp3');
     let audioCtx = null;
 
@@ -450,14 +449,38 @@
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    // تشغيل ملف welcome.mp3 الصوتي المباشر
-    function playWelcomeAudio() {
+    // 1. عزف نغمة الشايم الفاخرة أولاً
+    function playLuxuryChime() {
       unlockAudioContext();
-      welcomeAudio.currentTime = 0;
-      welcomeAudio.volume = 1.0;
-      welcomeAudio.play().catch(e => {
-        console.log("تعذر تشغيل welcome.mp3 تلقائياً بسبب سياسة المتصفح:", e);
-      });
+      try {
+        if (audioCtx) {
+          const now = audioCtx.currentTime;
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.frequency.setValueAtTime(freq, now + (idx * 0.12));
+            gain.gain.setValueAtTime(0.001, now + (idx * 0.12));
+            gain.gain.exponentialRampToValueAtTime(0.18, now + (idx * 0.12) + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + (idx * 0.12) + 1.1);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now + (idx * 0.12));
+            osc.stop(now + (idx * 0.12) + 1.2);
+          });
+        }
+      } catch (e) {}
+    }
+
+    // 2. تتابع النغمة ثم الرسالة الترحيبية
+    function playGreetingSequence() {
+      playLuxuryChime();
+      setTimeout(() => {
+        welcomeAudio.currentTime = 0;
+        welcomeAudio.volume = 1.0;
+        welcomeAudio.play().catch(() => {
+          speakSalesmanText("حيّاك الله في عِـزوة! أنا بائعك الرقمي المعتمد، تفضل باختيار قطعتك المناسبة وأنا معك لأي استفسار أو خصم أو سداد فوري.");
+        });
+      }, 750);
     }
 
     function handleFirstUserInteraction() {
@@ -467,7 +490,7 @@
 
       if (!hasInteracted) {
         hasInteracted = true;
-        playWelcomeAudio();
+        playGreetingSequence();
       }
     }
 
@@ -606,11 +629,10 @@
       speakSalesmanText("كل تيشيرت من عِـزوة مدمج به شريحة سدو سحابية مشفرة. بمجرد ملامسة هاتفك لطرف السدو السفلي، تفتح لك صفحة توثيق القطعة وتحديات الرياض، دون أي بطاريات أو برامج إضافية.");
     }
 
-    // زر "تحدث مع البائع" المدمج
     function activateSalesmanVoice() {
       closeAllModals();
       document.getElementById('voiceSalesmanModal').classList.remove('opacity-0', 'pointer-events-none');
-      playWelcomeAudio();
+      playGreetingSequence();
       setTimeout(() => {
         startSalesmanHearing();
       }, 2500);
@@ -854,7 +876,7 @@
       dismissPrayerOverlay();
     }
 
-    // ==================== الرادار المجهري الخفيف مع زر التحكم المرئي ====================
+    // ==================== الرادار المجهري الخفيف ====================
     let isRadarEnabled = true;
     let radarStream = null;
     let radarTimer = null;
@@ -901,7 +923,6 @@
       radarTimer = setInterval(() => {
         if (!isRadarEnabled) return;
 
-        // صمت تام لمدة 60 ثانية بعد كل تشغيل لصوت الترحيب
         if (cooldownTimer > 0) {
           cooldownTimer -= 2;
           return;
@@ -917,14 +938,13 @@
             diff += Math.abs(frame.data[i] - lastFrame.data[i]);
           }
 
-          // استشعار اقتراب الزائر
           if (diff > 1200) {
-            playWelcomeAudio();
-            cooldownTimer = 60; // 60 ثانية صمت
+            playGreetingSequence();
+            cooldownTimer = 60; // صمت 60 ثانية
           }
         }
         lastFrame = frame;
-      }, 2000); // فحص خفيف كل ثانيتين
+      }, 2000);
     }
 
     function toggleFullScreen() {
@@ -941,7 +961,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // اختصارات لوحة المفاتيح المعتمدة
+    // اختصارات لوحة المفاتيح
     window.addEventListener('keydown', (e) => {
       unlockAudioContext();
       const k = e.key.toLowerCase();
