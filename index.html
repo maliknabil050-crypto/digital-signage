@@ -126,9 +126,9 @@
             <kbd class="text-[9px] bg-emerald-950/80 px-1.5 py-0.5 rounded text-emerald-300 font-mono">P</kbd>
           </button>
 
-          <!-- الابتكار 1: المرآة الذكية ومحاكي القصة الكامل -->
+          <!-- الابتكار 1: المرآة الذكية الكاملة والنقية -->
           <button onclick="toggleGhostMirror(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-amber-300">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-person text-amber-400"></i> المرآة الذكية (Ghost Mirror)</span>
+            <span class="flex items-center gap-2"><i class="fa-solid fa-person text-amber-400"></i> المرآة الذكية (Mirror)</span>
             <kbd class="text-[9px] text-slate-500 font-mono">G</kbd>
           </button>
 
@@ -259,84 +259,10 @@
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
 
-    <!-- ==================== النوافذ التفاعلية والابتكارات ==================== -->
-
-    <!-- مرآة القياس التفاعلية الشاملة بكامل الشاشة (Ghost Mirror) -->
-    <div id="ghostMirrorModal" class="fixed inset-0 z-50 bg-black flex flex-col justify-between p-8 fade-transition opacity-0 pointer-events-none">
-      
-      <!-- فيديو الكاميرا الحقيقي كمرآة معكوسة -->
-      <video id="mirrorVideo" class="absolute inset-0 w-full h-full object-cover scale-x-[-1] opacity-75" autoplay playsinline muted></video>
-      
-      <!-- تدرج لوني سينمائي داكن للحفاظ على وضوح العناصر -->
-      <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/80 pointer-events-none"></div>
-
-      <!-- الشريط العلوي للمرآة -->
-      <div class="relative z-20 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
-            <i class="fa-solid fa-person text-lg"></i>
-          </div>
-          <div>
-            <h2 class="text-xl font-black text-white">المرآة الذكية • محاكي قصة البوكس فيت (Boxy Fit)</h2>
-            <span class="text-xs text-amber-400 font-bold">قف بمحاذاة خطوط الكتف لمعاينة السقوط المنسدل والاتساع</span>
-          </div>
-        </div>
-
-        <button onclick="closeAllModals()" class="px-5 py-2.5 rounded-2xl bg-slate-900/90 border border-slate-700 text-white text-xs font-bold hover:bg-amber-500 hover:text-slate-950 transition flex items-center gap-2 shadow-xl">
-          <span>إغلاق المرآة</span>
-          <kbd class="text-[10px] bg-black/40 px-1.5 py-0.5 rounded font-mono">Esc</kbd>
-        </button>
-      </div>
-
-      <!-- منتصف الشاشة: مجسم قصة البوكس فيت المباشر المتراكب على جسم العميل -->
-      <div class="relative z-10 flex-1 flex items-center justify-center pointer-events-none">
-        <div class="relative flex flex-col items-center">
-          
-          <!-- مؤشر الياقة ومحاذاة الرأس -->
-          <div class="w-32 h-10 border-b-2 border-amber-400/90 rounded-b-full mb-1 flex items-center justify-center">
-            <span class="text-[9px] text-amber-300 font-mono tracking-widest uppercase bg-black/60 px-2 py-0.5 rounded-full">الياقة المزدوجة</span>
-          </div>
-
-          <!-- إطار قصة البوكس فيت الهندسي على الجسم -->
-          <div class="w-[440px] h-[350px] border-2 border-dashed border-amber-400/80 rounded-3xl bg-amber-500/10 backdrop-blur-[2px] flex flex-col justify-between p-4 shadow-[0_0_50px_rgba(245,158,11,0.25)]">
-            
-            <!-- الأكتاف المنسدلة -->
-            <div class="flex justify-between items-center text-[10px] font-bold text-amber-300">
-              <span class="bg-black/80 px-2.5 py-1 rounded-xl border border-amber-500/40">سقوط الكتف (Drop Shoulder)</span>
-              <span class="bg-black/80 px-2.5 py-1 rounded-xl border border-amber-500/40">سقوط الكتف (Drop Shoulder)</span>
-            </div>
-
-            <!-- اتساع الصدر المربع -->
-            <div class="text-center">
-              <span class="text-xs font-black text-amber-300 bg-slate-950/90 border border-amber-500/40 px-4 py-1.5 rounded-xl shadow-lg">
-                محيط صدر عريض ومستقيم (Boxy Wide Cut)
-              </span>
-            </div>
-
-            <!-- حاشية السدو السفلية ومستوى الحزام -->
-            <div class="flex justify-between items-center border-t-2 border-amber-400/90 pt-2 text-[10px] text-amber-400 font-bold">
-              <span class="flex items-center gap-1.5">
-                <i class="fa-solid fa-wifi rotate-90 text-[10px]"></i>
-                موقع شريحة السدو NFC
-              </span>
-              <span class="bg-black/80 px-2.5 py-1 rounded-xl border border-amber-500/30">مستوى الحزام (طول ملموم متزن)</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- الشريط السفلي للمرآة -->
-      <div class="relative z-20 flex items-center justify-between border-t border-slate-800/80 pt-4 bg-slate-950/70 backdrop-blur-md px-6 py-3 rounded-2xl border">
-        <div class="text-xs text-slate-300 flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>المرآة متزامنة مباشرة • تم تصميم القصة لإعطاء هيبة وراحة تامة دون تلاصق.</span>
-        </div>
-        
-        <div class="flex items-center gap-2 text-xs">
-          <span class="text-slate-400 font-bold">المقاس المعاين:</span>
-          <span class="px-3 py-1 rounded-xl bg-amber-500 text-slate-950 font-black font-mono text-sm shadow">XL / 2XL Boxy</span>
-        </div>
-      </div>
+    <!-- ==================== المرآة الذكية الكاملة والخالية من الكتابات ==================== -->
+    <div id="ghostMirrorModal" class="fixed inset-0 z-50 bg-black flex items-center justify-center fade-transition opacity-0 pointer-events-none cursor-pointer" ondblclick="closeAllModals()" title="انقر نقراً مزدوجاً أو اضغط Esc للخروج">
+      <!-- فيديو الكاميرا الحقيقي كمرآة نقية بدون أي شوائب أو كتابة -->
+      <video id="mirrorVideo" class="w-full h-full object-cover scale-x-[-1]" autoplay playsinline muted></video>
     </div>
 
     <!-- نافذة وضع كبار الشخصيات VIP -->
@@ -576,10 +502,9 @@
     let hlsInstance = null;
     let timerElapsed = 0;
 
-    // المتغيرات الافتراضية للقياس (مطابقة لقياسك 170 سم / 94 كجم)
-    let selectedH = 'med';         // 169-176
-    let selectedW = 'w95';         // 90-102
-    let selectedStyle = 'regular'; // بوكس فيت متزن
+    let selectedH = 'med';
+    let selectedW = 'w95';
+    let selectedStyle = 'regular';
 
     let audioCtx = null;
     const localWelcomeAudio = new Audio('./welcome.mp3');
@@ -844,7 +769,6 @@
       let dim = "الصدر: 128 سم | الطول: 74 سم";
       let note = "";
 
-      // جدول قياسات البوكس فيت الحقيقي (قالب عريض الصدر، ملموم الطول)
       const sizeSpecs = {
         "S":   { chest: 114, len: 68 },
         "M":   { chest: 118, len: 70 },
@@ -861,13 +785,11 @@
       } else if (selectedW === 'w85') {
         finalSize = (selectedStyle === 'baggy') ? "XL" : "L";
       } else if (selectedW === 'w95') {
-        // فئة 90-102 كجم (وزنك 94 كجم)
         finalSize = (selectedStyle === 'baggy') ? "2XL" : "XL";
       } else if (selectedW === 'w110') {
         finalSize = (selectedStyle === 'baggy') ? "3XL" : "2XL";
       }
 
-      // تعديل خاص بالطول المرتفع أو القصير
       if (selectedH === 'xtall' && (finalSize === 'S' || finalSize === 'M')) {
         finalSize = (finalSize === 'S') ? 'M' : 'L';
       }
@@ -889,7 +811,7 @@
       document.getElementById('modalFitNote').textContent = note;
     }
 
-    // ==================== دوال الابتكارات والمرآة الذكية ====================
+    // ==================== دوال المرآة النقية الكاملة ====================
     let mirrorStream = null;
 
     async function toggleGhostMirror() {
@@ -901,7 +823,7 @@
       try {
         if (!mirrorStream) {
           mirrorStream = await navigator.mediaDevices.getUserMedia({ 
-            video: { width: 1280, height: 720, facingMode: "user" } 
+            video: { width: 1920, height: 1080, facingMode: "user" } 
           });
         }
         video.srcObject = mirrorStream;
@@ -947,7 +869,7 @@
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
 
-      // إيقاف بث المرآة لتوفير موارد الجهاز
+      // إيقاف بث كاميرا المرآة عند الإغلاق
       const video = document.getElementById('mirrorVideo');
       if (video && video.srcObject) {
         video.srcObject = null;
@@ -1064,7 +986,7 @@
       if (k === 'n') triggerNFCModal();
       if (k === 'm') toggleFitAdvisorModal();
       
-      // زر الهروب يغلق النوافذ والصلاة والمرآة فوراً
+      // زر الهروب يغلق المرآة والنوافذ والصلاة فوراً
       if (e.key === 'Escape') { 
         closeAllModals(); 
         closeAllDropdowns(); 
