@@ -23,7 +23,7 @@
 </head>
 <body id="screenBody" class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden" onclick="handleFirstUserInteraction()">
 
-  <!-- الشريط العلوي النظيف -->
+  <!-- الشريط العلوي مع الشعار وشاشات البث -->
   <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-md px-6 py-2.5 flex items-center justify-between border-b border-slate-900 shadow-xl">
     
     <!-- يمين الشريط: أنماط العرض وقنوات البث المباشر -->
@@ -138,15 +138,21 @@
         </span>
       </div>
 
-      <!-- مساحة عرض المنتج الكبيرة (صورة ضخمة + معلومات متناسقة بجانبها) -->
+      <!-- مساحة عرض المنتج الكبيرة (صورة ضخمة + عدسة تكبير + معلومات متزامنة تماماً) -->
       <div class="my-auto py-2">
         <div class="grid grid-cols-12 gap-5 items-stretch">
           
-          <!-- صورة المنتج الضخمة والواضحة -->
+          <!-- صورة المنتج مع أيقونة التكبير وشارة الزاوية -->
           <div class="col-span-6 flex flex-col items-center">
-            <div class="w-full h-[380px] lg:h-[430px] rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-center p-2 relative overflow-hidden shadow-2xl">
-              <img id="mainProductImage" src="./model-front.png" alt="Product View" class="w-full h-full object-contain rounded-xl fade-transition">
+            <div class="w-full h-[380px] lg:h-[430px] rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-center p-2 relative overflow-hidden shadow-2xl group">
+              <img id="mainProductImage" src="./model-front.png" alt="Product View" class="w-full h-full object-contain rounded-xl fade-transition cursor-zoom-in" onclick="openZoomModal()">
               
+              <!-- أيقونة عدسة التكبير في الزاوية العلوية اليسرى -->
+              <button onclick="openZoomModal()" title="تكبير ومعاينة أدق التفاصيل" class="absolute top-3 left-3 w-8 h-8 rounded-xl bg-black/70 hover:bg-amber-500 text-white hover:text-slate-950 backdrop-blur-md border border-white/10 hover:border-amber-400 flex items-center justify-center transition shadow-lg">
+                <i class="fa-solid fa-magnifying-glass-plus text-xs"></i>
+              </button>
+
+              <!-- شارة زاوية العرض (أمام / خلف) في الزاوية العلوية اليمنى -->
               <span id="viewAngleBadge" class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-black/80 backdrop-blur-md text-[10px] font-bold text-amber-300 border border-amber-500/30 shadow-md">
                 الواجهة الأمامية
               </span>
@@ -165,14 +171,14 @@
             </div>
           </div>
 
-          <!-- تفاصيل القطعة والمعلومات الأساسية بجانبها -->
+          <!-- تفاصيل ومعلومات المنتج المتزامنة بدقة -->
           <div class="col-span-6 flex flex-col justify-between py-1">
             <div>
-              <span id="productTag" class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md inline-block">الإصدار الأكثر طلباً</span>
-              <h2 id="productTitle" class="text-2xl lg:text-3xl font-black text-white mt-2 leading-tight">تيشيرت بوكس فيت - قصر المصمك</h2>
+              <span id="productTag" class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md inline-block">إصدار شموخ نجد</span>
+              <h2 id="productTitle" class="text-2xl lg:text-3xl font-black text-white mt-2 leading-tight">تيشيرت بوكس فيت - جبل طويق</h2>
               
               <div class="flex items-baseline gap-2 mt-3">
-                <span id="productPrice" class="text-3xl lg:text-4xl font-black text-amber-400">185</span>
+                <span id="productPrice" class="text-3xl lg:text-4xl font-black text-amber-400">195</span>
                 <span class="text-xs text-slate-400 font-bold">ريال سعودي</span>
               </div>
 
@@ -181,8 +187,8 @@
                 <span>دفع فوري بـ Apple Pay ومدى</span>
               </div>
 
-              <p class="text-slate-300 text-xs mt-4 leading-relaxed bg-slate-900/60 p-3 rounded-xl border border-slate-800/80">
-                خامة قطنية فاخرة ثقيلة، ياقة محبوكة بغرزة مزدوجة لا ترتخي بعد الغسيل، وقصة بوكس فيت عريضة الصدر متزنة الطول مع رقاقة NFC مشفرة مدمجة داخل حاشية السدو السفلية.
+              <p id="productDescription" class="text-slate-300 text-xs mt-4 leading-relaxed bg-slate-900/60 p-3 rounded-xl border border-slate-800/80">
+                مستوحى من شموخ جبال طويق الراسخة؛ خامة قطنية ثقيلة بياقة مزدوجة لا ترتخي، وقصة بوكس فيت متزنة مع رقاقة NFC مدمجة في حاشية السدو لتوثيق ملكية القطعة.
               </p>
             </div>
 
@@ -266,6 +272,23 @@
       <video id="hlsVideo" class="w-full h-full max-h-full max-w-full object-contain" autoplay playsinline muted controls></video>
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
+
+    <!-- ==================== نافذة التكبير العملاقة للمنتج (Zoom Modal) ==================== -->
+    <div id="zoomModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
+      <div class="relative max-w-3xl w-full h-[85vh] flex flex-col items-center justify-center">
+        <!-- زر إغلاق المعاينة المكبرة -->
+        <button onclick="closeZoomModal()" class="absolute top-2 left-2 z-50 w-10 h-10 rounded-full bg-slate-900/80 hover:bg-amber-500 text-white hover:text-slate-950 flex items-center justify-center text-lg border border-slate-700 transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <img id="zoomedProductImage" src="./model-front.png" alt="Zoomed View" class="max-w-full max-h-full object-contain rounded-2xl shadow-2xl">
+        
+        <div class="mt-4 flex items-center gap-3">
+          <button onclick="switchZoomView('front')" id="zoomBtnFront" class="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shadow-lg transition">معاينة الواجهة الأمامية</button>
+          <button onclick="switchZoomView('back')" id="zoomBtnBack" class="px-4 py-2 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 font-bold text-xs transition">معاينة الواجهة الخلفية</button>
+        </div>
+      </div>
+    </div>
 
     <!-- ==================== نافذة مستشار المقاسات ==================== -->
     <div id="fitModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
@@ -463,12 +486,14 @@
       aljazeera: { name: "الجزيرة", short: "الجزيرة", type: "iframe", url: "https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&mute=1&playsinline=1" }
     };
 
+    // مصفوفة المنتجات: كل منتج مربوط بصورته ووصفه وسعره وباركوده بدقة
     const PRODUCTS = [
       {
         tag: "إصدار شموخ نجد",
         title: "تيشيرت بوكس فيت - جبل طويق",
         price: "195",
         originalPrice: "195",
+        description: "مستوحى من شموخ جبال طويق الراسخة؛ خامة قطنية ثقيلة بياقة مزدوجة لا ترتخي، وقصة بوكس فيت متزنة مع رقاقة NFC مدمجة في حاشية السدو لتوثيق ملكية القطعة.",
         frontImg: "./model-front.png",
         backImg: "./model-back.png",
         qrUrl: "https://ezwa-store.com/p/tuwaiq"
@@ -478,15 +503,17 @@
         title: "تيشيرت بوكس فيت - قصر المصمك",
         price: "185",
         originalPrice: "185",
+        description: "مستوحى من قصر المصمك الشاهد على ملحمة توحيد المملكة؛ قماش قطني معالج عالي الكثافة، طبعة خلفية فاخرة غير قابلة للتشقق، وشريحة NFC مشفرة بحاشية السدو.",
         frontImg: "./model-front.png",
         backImg: "./model-back.png",
         qrUrl: "https://ezwa-store.com/p/almasmak"
       },
       {
-        tag: "خامات مبتكرة",
+        tag: "خامات مبتكرة للتمارين",
         title: "التشكيلة الرياضية (Top Giving)",
         price: "140",
         originalPrice: "140",
+        description: "نسيج رياضي مسامي فائق الخفة ومقاوم للتعرق، مصمم للأداء العالي والتمارين الرياضية اليومية مع مرونة تامة وثبات بالألوان بعد الغسيل المتكرر.",
         frontImg: "./model-front.png",
         backImg: "./model-back.png",
         qrUrl: "https://ezwa-store.com/p/sports-top"
@@ -522,6 +549,7 @@
       closeAllModals();
     }
 
+    // التبديل بين صورة الأمام والخلف للتيشيرت
     function switchProductView(angle) {
       currentViewAngle = angle;
       const img = document.getElementById('mainProductImage');
@@ -541,6 +569,41 @@
         btnB.className = "flex-1 py-1.5 rounded-xl bg-amber-500 text-slate-950 text-xs font-black shadow-md transition flex items-center justify-center gap-1.5";
         btnF.className = "flex-1 py-1.5 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5";
       }
+    }
+
+    // نافذة المعاينة المكبرة (Zoom Modal)
+    function openZoomModal() {
+      const zoomModal = document.getElementById('zoomModal');
+      const zoomImg = document.getElementById('zoomedProductImage');
+      const currentP = PRODUCTS[currentProductIndex];
+      
+      zoomImg.src = (currentViewAngle === 'front') ? currentP.frontImg : currentP.backImg;
+      switchZoomView(currentViewAngle);
+
+      zoomModal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeZoomModal() {
+      document.getElementById('zoomModal').classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function switchZoomView(angle) {
+      currentViewAngle = angle;
+      const zoomImg = document.getElementById('zoomedProductImage');
+      const btnF = document.getElementById('zoomBtnFront');
+      const btnB = document.getElementById('zoomBtnBack');
+      const currentP = PRODUCTS[currentProductIndex];
+
+      if (angle === 'front') {
+        zoomImg.src = currentP.frontImg;
+        btnF.className = "px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shadow-lg transition";
+        btnB.className = "px-4 py-2 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 font-bold text-xs transition";
+      } else {
+        zoomImg.src = currentP.backImg;
+        btnB.className = "px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shadow-lg transition";
+        btnF.className = "px-4 py-2 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 font-bold text-xs transition";
+      }
+      switchProductView(angle);
     }
 
     function playLuxuryChime() {
@@ -899,11 +962,13 @@
       if (currentLayout !== 'catalog') playStream(CHANNELS[key]);
     }
 
+    // تحديث المنتج والصورة والمعلومات المرافقة بشكل متزامن تماماً
     function updateProduct(index) {
       const p = PRODUCTS[index];
       document.getElementById('productTag').textContent = p.tag;
       document.getElementById('productTitle').textContent = p.title;
       document.getElementById('productPrice').textContent = p.price;
+      document.getElementById('productDescription').textContent = p.description;
 
       switchProductView('front');
 
@@ -968,7 +1033,7 @@
     }
 
     function closeAllModals() {
-      ['reserveModal', 'voiceSalesmanModal', 'callStaffModal', 'fitModal'].forEach(id => {
+      ['reserveModal', 'voiceSalesmanModal', 'callStaffModal', 'fitModal', 'zoomModal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
@@ -1072,6 +1137,7 @@
       if (k === 'm') toggleFitAdvisorModal();
       if (k === 'v') activateSalesmanVoice();
       if (k === 'c') triggerCallStaffModal();
+      if (k === 'z') openZoomModal();
       
       if (e.key === 'Escape') { 
         closeAllModals(); 
