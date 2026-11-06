@@ -66,13 +66,13 @@
       </button>
     </div>
 
-    <!-- أزرار القنوات الخمس -->
+    <!-- أزرار القنوات الخمس (تشمل قناة الكأس الرياضية) -->
     <div id="channelButtonsBar" class="flex items-center gap-1.5">
       <button onclick="changeChannel('quran')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن الكريم (Q)</button>
       <button onclick="changeChannel('sunnah')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="sunnah">السنة النبوية (S)</button>
       <button onclick="changeChannel('alarabiya')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="alarabiya">العربية (A)</button>
       <button onclick="changeChannel('aljazeera')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="aljazeera">الجزيرة (J)</button>
-      <button onclick="changeChannel('dw')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="dw">DW وثائقيات (D)</button>
+      <button onclick="changeChannel('alkass')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-600/90 text-white hover:bg-emerald-600" data-ch="alkass">الكأس الرياضية (K)</button>
     </div>
 
     <div class="flex items-center gap-3">
@@ -212,10 +212,10 @@
         type: "iframe",
         url: "https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&mute=1&playsinline=1"
       },
-      dw: {
-        name: "قناة DW وثائقيات وعلوم (مباشر)",
+      alkass: {
+        name: "قناة الكأس الرياضية (مباشر)",
         type: "iframe",
-        url: "https://www.youtube-nocookie.com/embed/d3U7x7G8a28?autoplay=1&mute=1&playsinline=1"
+        url: "https://www.youtube-nocookie.com/embed/live_stream?channel=UCBfGvT9K4-s6gP8d7U-2wAg&autoplay=1&mute=1&playsinline=1"
       }
     };
 
@@ -374,7 +374,7 @@
       if (key === 's') changeChannel('sunnah');
       if (key === 'a') changeChannel('alarabiya');
       if (key === 'j') changeChannel('aljazeera');
-      if (key === 'd') changeChannel('dw');
+      if (key === 'k') changeChannel('alkass');
     });
 
     // تشغيل القناة الأولى عند فتح الصفحة
