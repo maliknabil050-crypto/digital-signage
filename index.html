@@ -3,16 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>عِـزوة • Autonomous AI Salesman Signage OS</title>
-  <!-- Tailwind CSS -->
+  <title>عِـزوة • Smart Signage Light OS</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- HLS.js -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <!-- QRCode.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <!-- خط Cairo -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -22,22 +17,16 @@
     body { font-family: 'Cairo', sans-serif; background-color: #030712; color: #f3f4f6; overflow: hidden; user-select: none; width: 100vw; height: 100vh; }
     .fade-transition { transition: all 0.25s ease-out; }
     .timer-ring { transform: rotate(-90deg); transform-origin: 50% 50%; }
-    .glass-card { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .glass-card { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.08); }
     .gold-gradient { background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    
-    @keyframes pulseAura {
-      0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.2); }
-      50% { box-shadow: 0 0 25px rgba(245, 158, 11, 0.45); }
-    }
-    .seller-active { animation: pulseAura 3s infinite ease-in-out; }
   </style>
 </head>
 <body id="screenBody" class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden" onclick="handleFirstUserInteraction()">
 
-  <!-- ==================== شريط علوي بنظام التبويبات ==================== -->
+  <!-- الشريط العلوي النظيف -->
   <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-md px-6 py-2.5 flex items-center justify-between border-b border-slate-900 shadow-xl">
     
-    <!-- يمين الشريط: أنماط العرض وقنوات البث -->
+    <!-- يمين الشريط: أنماط العرض وقنوات البث المباشر -->
     <div class="flex items-center gap-2">
       <button onclick="setScreenLayout('catalog')" id="btnCatalog" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-1.5">
         <i class="fa-solid fa-shirt text-[11px]"></i>
@@ -49,7 +38,7 @@
         <span>المزدوج (2)</span>
       </button>
 
-      <!-- تبويب البث المباشر (القرآن، السنة، العربية، الجزيرة) -->
+      <!-- تبويب قنوات البث المباشر الأربع -->
       <div class="relative">
         <button onclick="toggleDropdown('tvDropdown')" id="btnTVTab" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-2 border border-slate-800">
           <i class="fa-solid fa-tv text-[11px] text-amber-400"></i>
@@ -82,29 +71,18 @@
           </button>
         </div>
       </div>
-
-      <button onclick="setScreenLayout('lounge')" id="btnLounge" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-amber-300 hover:bg-slate-800 transition flex items-center gap-1.5 border border-slate-800/80">
-        <i class="fa-solid fa-gem text-[10px]"></i>
-        <span>اللاونج (L)</span>
-      </button>
-
-      <!-- زر تجربة ترحيب البائع الصوتي -->
-      <button onclick="triggerSalesmanGreeting(true)" class="px-3 py-1 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-bold flex items-center gap-1.5 hover:bg-amber-500 hover:text-slate-950 transition">
-        <i class="fa-solid fa-volume-high text-amber-400"></i>
-        <span>ترحيب البائع (P)</span>
-      </button>
     </div>
 
     <!-- يسار الشريط: مستشار المقاسات + تحدث مع البائع + نداء الطاقم + مواقيت الصلاة -->
     <div class="flex items-center gap-2">
-      <!-- زر مستشار المقاسات المباشر -->
+      <!-- مستشار المقاسات -->
       <button onclick="toggleFitAdvisorModal()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex items-center gap-1.5 shadow">
         <i class="fa-solid fa-ruler-combined text-[11px]"></i>
         <span>المقاسات (M)</span>
       </button>
 
-      <!-- زر التحدث الفوري مع البائع الرقمي -->
-      <button onclick="activateSalesmanVoice()" class="px-3 py-1.5 rounded-xl text-xs font-black bg-amber-500 text-slate-950 hover:bg-amber-400 transition flex items-center gap-1.5 shadow">
+      <!-- تحدث مع البائع (المدمج بترحيب واستماع فوري) -->
+      <button onclick="activateSalesmanVoice()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-amber-500 text-slate-950 hover:bg-amber-400 transition flex items-center gap-1.5 shadow">
         <i class="fa-solid fa-microphone-lines text-xs"></i>
         <span>تحدث مع البائع (V)</span>
       </button>
@@ -133,7 +111,7 @@
     </div>
   </header>
 
-  <!-- ==================== مساحة العرض الرئيسية ==================== -->
+  <!-- مساحة العرض الرئيسية -->
   <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-12 fade-transition">
 
     <!-- 1. قسم الكتالوج وبوابة البائع الرقمي -->
@@ -165,7 +143,7 @@
         </p>
 
         <!-- صندوق توجيه وترحيب البائع المباشر -->
-        <div id="salesmanDialogBox" class="mt-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs text-slate-200 seller-active">
+        <div id="salesmanDialogBox" class="mt-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs text-slate-200">
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-amber-400 font-black flex items-center gap-2 text-xs">
               <i class="fa-solid fa-comment-dots text-sm animate-pulse text-amber-400"></i>
@@ -181,29 +159,29 @@
           </p>
         </div>
 
-        <!-- أزرار صلاحيات البائع الفورية -->
+        <!-- أزرار صلاحيات البائع الفورية الثلاث المعتمدة -->
         <div class="mt-4 pt-3 border-t border-slate-900">
-          <span class="text-[11px] text-slate-400 font-bold block mb-2">صلاحيات وخدمات البائع الفورية:</span>
+          <span class="text-[11px] text-slate-400 font-bold block mb-2">خدمات وصلاحيات المعرض الفورية:</span>
           <div class="grid grid-cols-4 gap-2">
-            <!-- 1. مستشار المقاسات -->
+            <!-- مستشار المقاسات -->
             <button onclick="toggleFitAdvisorModal()" class="p-2.5 rounded-xl bg-slate-900 border border-amber-500/40 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex flex-col items-center justify-center text-center shadow">
               <i class="fa-solid fa-ruler-combined text-sm mb-1 text-amber-400"></i>
               <span class="font-bold text-[11px]">المقاسات (M)</span>
             </button>
 
-            <!-- 2. خصم المعرض الفوري -->
+            <!-- خصم المعرض الفوري -->
             <button onclick="applySalesmanDiscount()" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
               <i class="fa-solid fa-tag text-sm mb-1 text-emerald-400"></i>
               <span class="font-bold text-[11px]">خصم 10% فوري</span>
             </button>
 
-            <!-- 3. حجز القطعة -->
+            <!-- حجز القطعة -->
             <button onclick="openReserveModal()" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
               <i class="fa-solid fa-bookmark text-sm mb-1 text-purple-400"></i>
               <span class="font-bold text-[11px]">حجز القطعة</span>
             </button>
 
-            <!-- 4. شرح السدو NFC -->
+            <!-- شرح السدو والـ NFC -->
             <button onclick="salesmanExplainNFC()" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
               <i class="fa-solid fa-wifi rotate-90 text-sm mb-1 text-amber-400"></i>
               <span class="font-bold text-[11px]">توثيق الـ NFC</span>
@@ -337,7 +315,7 @@
           تحدث معي مباشرة باللغة العربية؛ اسألني عن القطع، الخصومات، التنسيق، أو اطلب حجز مقاسك فوراً:
         </p>
         <div id="salesmanLiveTranscript" class="my-4 p-3 rounded-2xl bg-slate-900 border border-slate-800 text-xs text-amber-300 font-mono min-h-[48px] flex items-center justify-center">
-          "جاري تهيئة الاتصال الصوتي..."
+          "جاري الاستماع لصوتك الآن..."
         </div>
         <div class="flex items-center justify-center gap-3 mt-4">
           <button onclick="startSalesmanHearing()" class="px-6 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition flex items-center gap-2 shadow-lg">
@@ -390,7 +368,7 @@
         </div>
         <h3 class="text-lg font-black text-white">نداء المشرف بالمعرض</h3>
         <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">فريق عِـزوة حاضر في المعرض لمساعدتك فوراً</p>
-        <button onclick="playLuxuryWelcomeSound(); alert('تم إشعار المشرف وسيكون معك خلال لحظات!'); closeAllModals();" class="w-full mt-4 p-3 rounded-2xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg">
+        <button onclick="playChimeSound(); alert('تم إشعار المشرف وسيكون معك خلال لحظات!'); closeAllModals();" class="w-full mt-4 p-3 rounded-2xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg">
           تنبيه المشرف الآن
         </button>
       </div>
@@ -413,15 +391,7 @@
       </div>
     </div>
 
-    <!-- وضع اللاونج الفاخر -->
-    <div id="loungeOverlay" class="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between p-12 fade-transition opacity-0">
-      <div class="glass-card p-6 rounded-3xl max-w-sm pointer-events-auto border border-amber-500/20">
-        <span class="text-amber-400 text-xs font-bold tracking-widest uppercase">عِـزوة • الرياض</span>
-        <h2 class="text-2xl font-black gold-gradient mt-1">أصالة نجد برؤية عصرية</h2>
-      </div>
-    </div>
-
-    <!-- لافتة الترحيب المباشرة -->
+    <!-- لافتة الترحيب المباشرة لفك حظر الصوت -->
     <div id="firstInteractionNotice" class="absolute bottom-6 right-6 z-50 glass-card border border-amber-500/50 rounded-2xl p-4 shadow-2xl flex items-center gap-3 fade-transition cursor-pointer" onclick="handleFirstUserInteraction()">
       <div class="w-10 h-10 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-lg animate-bounce">
         <i class="fa-solid fa-hand-wave"></i>
@@ -433,6 +403,10 @@
     </div>
 
   </main>
+
+  <!-- كاميرا الرادار المجهرية الخفية محلياً (16x12 فقط لتوفير الأداء التام) -->
+  <video id="radarCamera" class="hidden" autoplay playsinline muted></video>
+  <canvas id="radarCanvas" class="hidden" width="16" height="12"></canvas>
 
   <!-- ==================== المحرك البرمجي ==================== -->
   <script>
@@ -484,8 +458,6 @@
     let currentSalesmanSpeech = "حيّاك الله في عِـزوة! أنا بائعك الرقمي المعتمد، تفضل باختيار قطعتك المناسبة وأنا معك لأي استفسار أو خصم أو سداد فوري.";
 
     let audioCtx = null;
-    const localWelcomeAudio = new Audio('./welcome.mp3');
-
     function unlockAudioContext() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -498,7 +470,7 @@
 
       if (!hasInteracted) {
         hasInteracted = true;
-        triggerSalesmanGreeting(false);
+        playChimeSound();
       }
     }
 
@@ -527,19 +499,17 @@
       window.speechSynthesis.speak(ut);
     }
 
-    function playLuxuryWelcomeSound() {
+    function playChimeSound() {
       unlockAudioContext();
       try {
         if (audioCtx) {
           const now = audioCtx.currentTime;
-          const notes = [523.25, 659.25, 783.99, 1046.50];
-          notes.forEach((freq, idx) => {
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            osc.type = 'sine';
             osc.frequency.setValueAtTime(freq, now + (idx * 0.12));
             gain.gain.setValueAtTime(0.001, now + (idx * 0.12));
-            gain.gain.exponentialRampToValueAtTime(0.2, now + (idx * 0.12) + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.18, now + (idx * 0.12) + 0.05);
             gain.gain.exponentialRampToValueAtTime(0.0001, now + (idx * 0.12) + 1.1);
             osc.connect(gain);
             gain.connect(audioCtx.destination);
@@ -548,20 +518,14 @@
           });
         }
       } catch (e) {}
-
-      setTimeout(() => {
-        localWelcomeAudio.currentTime = 0;
-        localWelcomeAudio.volume = 1.0;
-        localWelcomeAudio.play().catch(() => {});
-      }, 650);
     }
 
     function triggerSalesmanGreeting(forceSpeech = false) {
-      playLuxuryWelcomeSound();
+      playChimeSound();
       setTimeout(() => {
         document.getElementById('salesmanSpeechText').textContent = currentSalesmanSpeech;
         speakSalesmanText(currentSalesmanSpeech);
-      }, 1000);
+      }, 900);
     }
 
     // ==================== مستشار المقاسات ====================
@@ -680,10 +644,15 @@
       speakSalesmanText(currentSalesmanSpeech);
     }
 
+    // زر "تحدث مع البائع" المدمج
     function activateSalesmanVoice() {
       closeAllModals();
       document.getElementById('voiceSalesmanModal').classList.remove('opacity-0', 'pointer-events-none');
-      startSalesmanHearing();
+      // ترحيب صوتي فوري عند الضغط، ثم بدء الاستماع للعميل
+      speakSalesmanText("أهلاً بك في عِـزوة! تفضل بسؤالك، أنا استمع إليك الآن.");
+      setTimeout(() => {
+        startSalesmanHearing();
+      }, 2500);
     }
 
     let salesmanSpeechRec = null;
@@ -807,16 +776,13 @@
       const tvSec = document.getElementById('tvSection');
       const video = document.getElementById('hlsVideo');
       const iframe = document.getElementById('iframeVideo');
-      const loungeOverlay = document.getElementById('loungeOverlay');
       
       const btnCatalog = document.getElementById('btnCatalog');
       const btnSplit = document.getElementById('btnSplit');
-      const btnLounge = document.getElementById('btnLounge');
 
-      [btnCatalog, btnSplit, btnLounge].forEach(b => {
+      [btnCatalog, btnSplit].forEach(b => {
         b.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-1.5";
       });
-      loungeOverlay.classList.add('opacity-0', 'pointer-events-none');
 
       if (mode === 'catalog') {
         btnCatalog.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
@@ -835,12 +801,6 @@
       } else if (mode === 'tv') {
         tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-100 z-20 bg-black flex items-center justify-center";
         prodSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
-        playStream(CHANNELS[activeChannelKey]);
-      } else if (mode === 'lounge') {
-        btnLounge.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
-        tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-100 z-20 bg-black flex items-center justify-center";
-        prodSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
-        loungeOverlay.classList.remove('opacity-0', 'pointer-events-none');
         playStream(CHANNELS[activeChannelKey]);
       }
     }
@@ -866,7 +826,6 @@
       document.getElementById('productTag').textContent = p.tag;
       document.getElementById('productTitle').textContent = p.title;
       document.getElementById('productPrice').textContent = p.price;
-      document.getElementById('stylingText').textContent = p.styling;
 
       const qrBox = document.getElementById('qrcodeBox');
       qrBox.innerHTML = '';
@@ -936,6 +895,56 @@
       dismissPrayerOverlay();
     }
 
+    // ==================== الرادار المجهري الخفيف مع فترة صمت 60 ثانية ====================
+    let radarStream = null;
+    let radarTimer = null;
+    let lastFrame = null;
+    let cooldownTimer = 0;
+
+    async function initUltraLightRadar() {
+      try {
+        radarStream = await navigator.mediaDevices.getUserMedia({ 
+          video: { width: 16, height: 12 } 
+        });
+        document.getElementById('radarCamera').srcObject = radarStream;
+        startRadarLoop();
+      } catch (e) {
+        console.log("كاميرا الرادار غير متوفرة أو لم يتم منح الإذن.");
+      }
+    }
+
+    function startRadarLoop() {
+      const v = document.getElementById('radarCamera');
+      const c = document.getElementById('radarCanvas');
+      const ctx = c.getContext('2d', { willReadFrequently: true });
+
+      radarTimer = setInterval(() => {
+        // إدارة فترة الصمت (60 ثانية) بعد كل ترحيب
+        if (cooldownTimer > 0) {
+          cooldownTimer -= 2;
+          return;
+        }
+
+        if (v.readyState !== 4) return;
+        ctx.drawImage(v, 0, 0, 16, 12);
+        const frame = ctx.getImageData(0, 0, 16, 12);
+
+        if (lastFrame) {
+          let diff = 0;
+          for (let i = 0; i < frame.data.length; i += 16) {
+            diff += Math.abs(frame.data[i] - lastFrame.data[i]);
+          }
+
+          // استشعار اقتراب شخص
+          if (diff > 1200) {
+            triggerSalesmanGreeting(true);
+            cooldownTimer = 60; // صمت تام للرادار لمدة 60 ثانية لمنع الإزعاج وتبريد المعالج
+          }
+        }
+        lastFrame = frame;
+      }, 2000); // فحص خفيف كل ثانيتين فقط
+    }
+
     function toggleFullScreen() {
       unlockAudioContext();
       if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
@@ -950,19 +959,17 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // اختصارات لوحة المفاتيح
+    // اختصارات لوحة المفاتيح المعتمدة
     window.addEventListener('keydown', (e) => {
       unlockAudioContext();
       const k = e.key.toLowerCase();
       if (k === '1') setScreenLayout('catalog');
       if (k === '2') setScreenLayout('split');
       if (k === '3') setScreenLayout('tv');
-      if (k === 'l') setScreenLayout('lounge');
       
       if (k === 'm') toggleFitAdvisorModal();
       if (k === 'v') activateSalesmanVoice();
       if (k === 'c') triggerCallStaffModal();
-      if (k === 'p') triggerSalesmanGreeting(true);
       
       if (e.key === 'Escape') { 
         closeAllModals(); 
@@ -979,6 +986,7 @@
     startTimerLoop();
     setScreenLayout('split');
     recalcAccurateFit();
+    initUltraLightRadar();
   </script>
 </body>
 </html>
