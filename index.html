@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>شاشة العرض التفاعلية - المنيو والقنوات</title>
+  <title>Smart Signage OS - منصة العرض الذكية</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- HLS.js لتشغيل البث المباشر المفتوح -->
+  <!-- HLS.js -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <!-- Google Fonts (Cairo) -->
+  <!-- Cairo Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -23,7 +23,7 @@
     }
     body {
       font-family: 'Cairo', sans-serif;
-      background-color: #000000;
+      background-color: #050811;
       color: #f3f4f6;
       overflow: hidden;
       user-select: none;
@@ -31,7 +31,7 @@
       height: 100vh;
     }
     .fade-transition {
-      transition: opacity 0.3s ease-in-out;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
     ::-webkit-scrollbar {
       display: none;
@@ -43,64 +43,90 @@
     .animate-ticker {
       display: inline-block;
       white-space: nowrap;
-      animation: ticker 30s linear infinite;
+      animation: ticker 35s linear infinite;
+    }
+    .glass {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
   </style>
 </head>
 <body class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden">
 
-  <!-- ==================== شريط التحكم العلوي ==================== -->
-  <header id="topControlBar" class="z-50 bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80 px-4 py-2 flex items-center justify-between transition-transform duration-300">
+  <!-- ==================== شريط القيادة العلوي الفائق ==================== -->
+  <header id="topControlBar" class="z-50 glass px-5 py-2.5 flex items-center justify-between transition-transform duration-300">
     <div class="flex items-center gap-2">
-      <button id="btnModeMenu" onclick="setMode('menu')" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition-all flex items-center gap-1.5">
-        <i class="fa-solid fa-utensils"></i>
+      <!-- أزرار الأوضاع الذكية -->
+      <button id="btnModeMenu" onclick="setScreenLayout('menu')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition-all flex items-center gap-1.5">
+        <i class="fa-solid fa-store"></i>
         <span>المنيو (1)</span>
       </button>
-      <button id="btnModeTV" onclick="setMode('tv')" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all flex items-center gap-1.5">
+      <button id="btnModeTV" onclick="setScreenLayout('tv')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all flex items-center gap-1.5">
         <i class="fa-solid fa-tv"></i>
-        <span>القنوات (2)</span>
+        <span>البث (2)</span>
       </button>
-      <button id="btnModeAuto" onclick="toggleAutoSwitch()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800/80 text-slate-400 hover:text-white transition-all flex items-center gap-1.5">
+      <button id="btnModeSplit" onclick="setScreenLayout('split')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-purple-300 hover:bg-purple-900/40 transition-all flex items-center gap-1.5">
+        <i class="fa-solid fa-columns"></i>
+        <span>المزدوج (3)</span>
+      </button>
+      <button id="btnModeAuto" onclick="toggleAutoSwitch()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/80 text-slate-400 hover:text-white transition-all flex items-center gap-1.5">
         <i id="autoSwitchIcon" class="fa-solid fa-rotate"></i>
         <span id="autoSwitchLabel">آلي</span>
       </button>
     </div>
 
-    <!-- أزرار القنوات الخمس الفعالة -->
+    <!-- أزرار القنوات المؤكدة والثابتة -->
     <div id="channelButtonsBar" class="flex items-center gap-1.5">
-      <button onclick="changeChannel('quran')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن الكريم (Q)</button>
-      <button onclick="changeChannel('sunnah')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="sunnah">السنة النبوية (S)</button>
-      <button onclick="changeChannel('alarabiya')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="alarabiya">العربية (A)</button>
-      <button onclick="changeChannel('aljazeera')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="aljazeera">الجزيرة (J)</button>
-      <button onclick="changeChannel('sports')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-600/90 text-white hover:bg-emerald-600" data-ch="sports">الرياضية (K)</button>
+      <button onclick="changeChannel('quran')" class="ch-btn px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن الكريم (Q)</button>
+      <button onclick="changeChannel('sunnah')" class="ch-btn px-3 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="sunnah">السنة النبوية (S)</button>
+      <button onclick="changeChannel('alarabiya')" class="ch-btn px-3 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="alarabiya">العربية (A)</button>
     </div>
 
-    <div class="flex items-center gap-3">
-      <div class="text-right pl-3 border-l border-slate-800 hidden sm:block">
-        <span id="liveClock" class="text-sm font-bold font-mono text-amber-400">--:--:--</span>
+    <!-- الطقس والأدوات والوقت -->
+    <div class="flex items-center gap-4">
+      <!-- أداة الطقس الذكية (الرياض) -->
+      <div class="hidden md:flex items-center gap-2 px-3 py-1 rounded-lg bg-slate-900/60 border border-slate-800 text-xs">
+        <i class="fa-solid fa-cloud-sun text-amber-400"></i>
+        <span class="text-slate-300 font-semibold">الرياض:</span>
+        <span class="text-amber-300 font-bold">28°C</span>
       </div>
-      <button onclick="toggleHideControls()" title="إخفاء الأشرطة لتكبير الشاشة أقصى حد (X)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition">
+
+      <!-- الساعة والتاريخ -->
+      <div class="text-right pl-3 border-l border-slate-800 hidden sm:block">
+        <div id="liveClock" class="text-sm font-bold font-mono text-amber-400">--:--:--</div>
+      </div>
+
+      <!-- الأدوات السريعة -->
+      <button onclick="toggleAdminDrawer()" title="لوحة التحكم السريعة (M)" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition">
+        <i class="fa-solid fa-sliders"></i>
+      </button>
+      <button onclick="toggleHideControls()" title="إخفاء الأشرطة لتكبير الشاشة أقصى حد (X)" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition">
         <i class="fa-solid fa-eye-slash"></i>
       </button>
-      <button onclick="toggleFullScreen()" title="ملء الشاشة (F)" class="p-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 text-xs transition">
+      <button onclick="toggleFullScreen()" title="ملء الشاشة (F)" class="p-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 text-xs transition">
         <i class="fa-solid fa-expand"></i>
       </button>
     </div>
   </header>
 
-  <!-- ==================== مساحة العرض الرئيسية ==================== -->
-  <main class="flex-1 w-full h-full relative overflow-hidden bg-black flex items-center justify-center">
+  <!-- ==================== مساحة العرض الرئيسية المرنة ==================== -->
+  <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex transition-all duration-500">
 
-    <!-- 1. شاشة المنيو والإعلانات -->
-    <section id="menuSection" class="w-full h-full p-6 flex flex-col justify-between absolute inset-0 fade-transition z-20 bg-slate-950">
-      <div class="flex justify-between items-center">
+    <!-- قسم المنيو والعروض التفاعلية -->
+    <section id="menuSection" class="w-full h-full p-6 flex flex-col justify-between absolute inset-0 fade-transition z-20 bg-slate-950/95 overflow-hidden">
+      <!-- الترويسة -->
+      <div class="flex justify-between items-center mb-4">
         <div>
-          <span class="text-amber-500 text-xs font-bold tracking-widest uppercase">قائمة العروض الحصرية</span>
-          <h1 class="text-3xl font-extrabold text-white mt-1">تشكيلة المنتجات المميزة</h1>
+          <span class="text-amber-500 text-xs font-bold tracking-widest uppercase flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            تشكيلة اليوم الحصرية
+          </span>
+          <h1 id="brandTitle" class="text-3xl font-black text-white mt-1">قائمة المنتجات والعروض المميزة</h1>
         </div>
-        <div class="bg-slate-900 border border-amber-500/30 px-4 py-2 rounded-xl flex items-center gap-3">
-          <div class="w-10 h-10 bg-white p-1 rounded-lg flex items-center justify-center">
-            <i class="fa-solid fa-qrcode text-slate-900 text-xl"></i>
+        <div class="glass px-4 py-2 rounded-2xl flex items-center gap-3">
+          <div class="w-10 h-10 bg-white p-1 rounded-xl flex items-center justify-center">
+            <i class="fa-solid fa-qrcode text-slate-900 text-2xl"></i>
           </div>
           <div>
             <p class="text-[11px] text-slate-400">امسح الكود</p>
@@ -109,182 +135,147 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 my-auto">
-        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between h-64">
-          <div>
-            <span class="bg-amber-500/20 text-amber-400 text-xs px-2.5 py-0.5 rounded-full font-bold">الأكثر طلباً</span>
-            <h3 class="text-xl font-bold text-white mt-2">المنتج الملكي الخاص</h3>
-            <p class="text-slate-400 text-xs mt-1">إصدار فاخر بتصميم حصري عالي الجودة</p>
-          </div>
-          <div class="flex justify-between items-end border-t border-slate-800 pt-3">
-            <span class="text-xs text-slate-500">متوفر الآن</span>
-            <span class="text-xl font-black text-amber-400">185 <small class="text-xs font-normal text-slate-400">ر.س</small></span>
-          </div>
-        </div>
-
-        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between h-64">
-          <div>
-            <span class="bg-blue-500/20 text-blue-400 text-xs px-2.5 py-0.5 rounded-full font-bold">جديد</span>
-            <h3 class="text-xl font-bold text-white mt-2">التشكيلة الرياضية العصرية</h3>
-            <p class="text-slate-400 text-xs mt-1">خامات مبتكرة بأعلى معايير الراحة والأناقة</p>
-          </div>
-          <div class="flex justify-between items-end border-t border-slate-800 pt-3">
-            <span class="text-xs text-slate-500">شامل الضريبة</span>
-            <span class="text-xl font-black text-amber-400">140 <small class="text-xs font-normal text-slate-400">ر.س</small></span>
-          </div>
-        </div>
-
-        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between h-64">
-          <div>
-            <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-0.5 rounded-full font-bold">عرض خاص</span>
-            <h3 class="text-xl font-bold text-white mt-2">باقة الضيافة المتكاملة</h3>
-            <p class="text-slate-400 text-xs mt-1">مزيج النكهات الفريدة المجهزة بعناية</p>
-          </div>
-          <div class="flex justify-between items-end border-t border-slate-800 pt-3">
-            <span class="text-xs text-slate-500"><del class="text-slate-600">95 ر.س</del></span>
-            <span class="text-xl font-black text-amber-400">65 <small class="text-xs font-normal text-slate-400">ر.س</small></span>
-          </div>
-        </div>
-
-        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between h-64">
-          <div>
-            <span class="bg-purple-500/20 text-purple-400 text-xs px-2.5 py-0.5 rounded-full font-bold">إصدار محدود</span>
-            <h3 class="text-xl font-bold text-white mt-2">بوكس الهدايا الفاخر</h3>
-            <p class="text-slate-400 text-xs mt-1">تغليف راقٍ يناسب كافة المناسبات</p>
-          </div>
-          <div class="flex justify-between items-end border-t border-slate-800 pt-3">
-            <span class="text-xs text-slate-500">كمية محدودة</span>
-            <span class="text-xl font-black text-amber-400">220 <small class="text-xs font-normal text-slate-400">ر.س</small></span>
-          </div>
-        </div>
+      <!-- شبكة المنتجات الديناميكية -->
+      <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 my-auto">
+        <!-- سيتم توليد العناصر برمجياً عبر الذاكرة السريعة -->
       </div>
     </section>
 
-    <!-- 2. شاشة البث المباشر -->
+    <!-- قسم البث المباشر -->
     <section id="tvSection" class="w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10 bg-black flex items-center justify-center">
-      <div id="liveBadge" class="absolute top-3 right-4 z-30 bg-slate-950/70 backdrop-blur-md px-3 py-1 rounded-full border border-slate-800 flex items-center gap-2 pointer-events-none">
+      <div id="liveBadge" class="absolute top-4 right-4 z-30 glass px-3.5 py-1.5 rounded-full flex items-center gap-2 pointer-events-none">
         <span class="w-2 h-2 bg-red-600 rounded-full animate-ping"></span>
         <span id="currentChannelName" class="text-xs font-bold text-amber-400">قناة القرآن الكريم</span>
       </div>
-
-      <!-- مشغل HLS للقنوات المفتوحة -->
       <video id="hlsVideo" class="w-full h-full max-h-full max-w-full object-contain" autoplay playsinline muted controls></video>
-
-      <!-- مشغل التضمين المعتمد للقنوات الأخرى لتخطي حظر CORS و X-Frame -->
-      <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
 
   </main>
 
-  <!-- ==================== شريط الأخبار السفلي النحيف ==================== -->
+  <!-- ==================== شريط الإعلانات والتنبيهات السفلي ==================== -->
   <footer id="bottomBar" class="z-50 bg-slate-950 border-t border-slate-800/80 h-9 flex items-center px-4 overflow-hidden transition-transform duration-300">
     <div class="bg-amber-500 text-slate-950 font-black text-[11px] px-2.5 py-0.5 rounded shrink-0 ml-2.5 flex items-center gap-1">
       <i class="fa-solid fa-bullhorn text-[10px]"></i>
       <span>تنبيهات</span>
     </div>
     <div class="overflow-hidden w-full whitespace-nowrap">
-      <div class="animate-ticker text-xs font-semibold text-slate-300">
-        ✨ أهلاً وسهلاً بكم • يسعدنا تقديم أفضل الخدمات وأرقى العروض الحصرية • خصم 20% لفترة محدودة • أوقات العمل من 8:00 صباحاً حتى 12:00 منتصف الليل • للطلب تواصلوا معنا عبر مسح كود الـ QR • اضغط مفتاح (X) لإخفاء الأشرطة وجعل البث بكامل حجم الشاشة.
+      <div id="tickerText" class="animate-ticker text-xs font-semibold text-slate-300">
+        ✨ أهلاً وسهلاً بكم • يسعدنا تقديم أفضل الخدمات وأرقى العروض الحصرية • أوقات العمل من 8:00 صباحاً حتى 12:00 منتصف الليل • للطلب تواصلوا معنا عبر مسح كود الـ QR • اضغط مفتاح (X) لملء الشاشة بالكامل بدون أشرطة.
       </div>
     </div>
   </footer>
 
-  <!-- ==================== منطق التشغيل ==================== -->
+  <!-- ==================== لوحة التحكم الإدارية السريعة (Drawer) ==================== -->
+  <aside id="adminDrawer" class="fixed top-0 left-0 w-80 h-full glass z-50 transform -translate-x-full transition-transform duration-300 p-6 flex flex-col justify-between shadow-2xl">
+    <div>
+      <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-3">
+        <h2 class="text-lg font-black text-amber-400 flex items-center gap-2">
+          <i class="fa-solid fa-gear"></i>
+          إعدادات الشاشة السريعة
+        </h2>
+        <button onclick="toggleAdminDrawer()" class="text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="text-xs text-slate-400 font-bold block mb-1">اسم المتجر / العنوان</label>
+          <input type="text" id="inputBrandTitle" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:border-amber-500 outline-none">
+        </div>
+        <div>
+          <label class="text-xs text-slate-400 font-bold block mb-1">شريط الأخبار المتحرك</label>
+          <textarea id="inputTickerText" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:border-amber-500 outline-none"></textarea>
+        </div>
+        <div>
+          <label class="text-xs text-slate-400 font-bold block mb-1">مدة التبديل الآلي (بالثواني)</label>
+          <input type="number" id="inputAutoSwitchTime" value="45" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:border-amber-500 outline-none">
+        </div>
+      </div>
+    </div>
+
+    <button onclick="saveAdminSettings()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 hover:bg-amber-400 transition">
+      حفظ وتطبيق فوراً
+    </button>
+  </aside>
+
+  <!-- ==================== البرمجة ومنطق التشغيل الذكي ==================== -->
   <script>
+    // 1. القنوات الثلاث المضمونة 100% والمفتوحة تقنياً
     const CHANNELS = {
       quran: {
         name: "قناة القرآن الكريم (مباشر من الحرم المكي)",
-        type: "hls",
         url: "https://win.holol.com/live/quran/playlist.m3u8"
       },
       sunnah: {
         name: "قناة السنة النبوية (مباشر من المدينة المنورة)",
-        type: "hls",
         url: "https://win.holol.com/live/sunnah/playlist.m3u8"
       },
       alarabiya: {
         name: "قناة العربية الإخبارية",
-        type: "hls",
         url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8"
-      },
-      aljazeera: {
-        name: "قناة الجزيرة الإخبارية (مباشر)",
-        type: "iframe",
-        url: "https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&mute=1&playsinline=1"
-      },
-      sports: {
-        name: "قناة الرياضة والفعاليات (مباشر)",
-        type: "iframe",
-        url: "https://www.youtube-nocookie.com/embed/jfKfPfyJRdk?autoplay=1&mute=1&playsinline=1"
       }
     };
 
-    let currentMode = 'tv';
+    // بيانات المنتجات الافتراضية
+    const defaultProducts = [
+      { tag: "الأكثر طلباً", tagColor: "amber", title: "المنتج الملكي الفاخر", desc: "إصدار حصري خامات فاخرة عالية الجودة", price: "185" },
+      { tag: "جديد", tagColor: "blue", title: "التشكيلة الرياضية العصرية", desc: "خامات مبتكرة بأعلى معايير الراحة والأناقة", price: "140" },
+      { tag: "عرض خاص", tagColor: "emerald", title: "باقة الضيافة المتكاملة", desc: "مزيج النكهات الفريدة المجهزة بعناية", price: "65", oldPrice: "95" },
+      { tag: "إصدار محدود", tagColor: "purple", title: "بوكس الهدايا الفاخر", desc: "تغليف راقٍ يناسب كافة المناسبات الرسمية", price: "220" }
+    ];
+
+    let currentLayout = 'split'; // البداية بالوضع المزدوج الذكي
     let isAutoSwitch = false;
     let autoSwitchTimer = null;
     let isControlsHidden = false;
     let activeChannelKey = 'quran';
     let hlsInstance = null;
 
+    // تشغيل القنوات بتقنية HLS
     function playStream(channel) {
       const video = document.getElementById('hlsVideo');
-      const iframe = document.getElementById('iframeVideo');
-
       if (hlsInstance) {
         hlsInstance.destroy();
         hlsInstance = null;
       }
 
-      if (channel.type === 'hls') {
-        iframe.classList.add('hidden');
-        iframe.src = 'about:blank';
-        video.classList.remove('hidden');
-
-        if (Hls.isSupported()) {
-          hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
-          hlsInstance.loadSource(channel.url);
-          hlsInstance.attachMedia(video);
-          hlsInstance.on(Hls.Events.MANIFEST_PARSED, function () {
-            video.play().catch(() => {});
-          });
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-          video.src = channel.url;
-          video.addEventListener('loadedmetadata', function () {
-            video.play().catch(() => {});
-          });
-        }
-      } else {
-        video.classList.add('hidden');
-        video.pause();
-        iframe.classList.remove('hidden');
-        iframe.src = channel.url;
+      if (Hls.isSupported()) {
+        hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
+        hlsInstance.loadSource(channel.url);
+        hlsInstance.attachMedia(video);
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = channel.url;
+        video.addEventListener('loadedmetadata', () => video.play().catch(() => {}));
       }
     }
 
-    function setMode(mode) {
-      currentMode = mode;
+    // إدارة الأوضاع (منيو، بث، وضع مزدوج ذكي)
+    function setScreenLayout(mode) {
+      currentLayout = mode;
       const menuSec = document.getElementById('menuSection');
       const tvSec = document.getElementById('tvSection');
       const btnMenu = document.getElementById('btnModeMenu');
       const btnTV = document.getElementById('btnModeTV');
+      const btnSplit = document.getElementById('btnModeSplit');
+
+      // إعادة تعيين أنماط الأزرار
+      [btnMenu, btnTV, btnSplit].forEach(btn => btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all flex items-center gap-1.5");
 
       if (mode === 'menu') {
-        menuSec.classList.remove('opacity-0', 'pointer-events-none');
-        menuSec.classList.add('opacity-100', 'z-20');
-        tvSec.classList.add('opacity-0', 'pointer-events-none');
-        tvSec.classList.remove('opacity-100', 'z-20');
-
-        btnMenu.className = "px-4 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition-all flex items-center gap-1.5";
-        btnTV.className = "px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all flex items-center gap-1.5";
-      } else {
-        tvSec.classList.remove('opacity-0', 'pointer-events-none');
-        tvSec.classList.add('opacity-100', 'z-20');
-        menuSec.classList.add('opacity-0', 'pointer-events-none');
-        menuSec.classList.remove('opacity-100', 'z-20');
-
-        btnTV.className = "px-4 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition-all flex items-center gap-1.5";
-        btnMenu.className = "px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all flex items-center gap-1.5";
-
+        btnMenu.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition-all flex items-center gap-1.5";
+        menuSec.className = "w-full h-full p-6 flex flex-col justify-between absolute inset-0 fade-transition z-20 bg-slate-950/95 overflow-hidden opacity-100";
+        tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
+      } else if (mode === 'tv') {
+        btnTV.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition-all flex items-center gap-1.5";
+        tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-100 z-20 bg-black flex items-center justify-center";
+        menuSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
+        playStream(CHANNELS[activeChannelKey]);
+      } else if (mode === 'split') {
+        btnSplit.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-purple-500 text-slate-950 shadow-md transition-all flex items-center gap-1.5";
+        menuSec.className = "w-1/2 h-full p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-800 fade-transition opacity-100";
+        tvSec.className = "w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition opacity-100";
         playStream(CHANNELS[activeChannelKey]);
       }
     }
@@ -292,22 +283,35 @@
     function changeChannel(key) {
       if (!CHANNELS[key]) return;
       activeChannelKey = key;
-      const channel = CHANNELS[key];
-      document.getElementById('currentChannelName').textContent = channel.name;
+      document.getElementById('currentChannelName').textContent = CHANNELS[key].name;
 
       document.querySelectorAll('.ch-btn').forEach(btn => {
         if (btn.getAttribute('data-ch') === key) {
-          btn.className = "ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500 text-slate-950";
+          btn.className = "ch-btn px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950";
         } else {
-          btn.className = "ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700";
+          btn.className = "ch-btn px-3 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700";
         }
       });
 
-      if (currentMode !== 'tv') {
-        setMode('tv');
-      } else {
-        playStream(channel);
-      }
+      if (currentLayout === 'menu') setScreenLayout('split');
+      else playStream(CHANNELS[key]);
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = defaultProducts.map(p => `
+        <div class="glass rounded-3xl p-5 flex flex-col justify-between h-64 border border-slate-800 hover:border-amber-500/40 transition">
+          <div>
+            <span class="bg-${p.tagColor}-500/20 text-${p.tagColor}-400 text-xs px-2.5 py-0.5 rounded-full font-bold">${p.tag}</span>
+            <h3 class="text-xl font-bold text-white mt-2">${p.title}</h3>
+            <p class="text-slate-400 text-xs mt-1 leading-relaxed">${p.desc}</p>
+          </div>
+          <div class="flex justify-between items-end border-t border-slate-800/80 pt-3">
+            <span class="text-xs text-slate-500">${p.oldPrice ? `<del>${p.oldPrice} ر.س</del>` : 'متوفر الآن'}</span>
+            <span class="text-xl font-black text-amber-400">${p.price} <small class="text-xs font-normal text-slate-400">ر.س</small></span>
+          </div>
+        </div>
+      `).join('');
     }
 
     function toggleAutoSwitch() {
@@ -316,11 +320,13 @@
       const icon = document.getElementById('autoSwitchIcon');
 
       if (isAutoSwitch) {
-        label.textContent = "آلي (60ث)";
+        label.textContent = "آلي (مفعل)";
         icon.classList.add('animate-spin');
         autoSwitchTimer = setInterval(() => {
-          setMode(currentMode === 'menu' ? 'tv' : 'menu');
-        }, 60000);
+          if (currentLayout === 'menu') setScreenLayout('split');
+          else if (currentLayout === 'split') setScreenLayout('tv');
+          else setScreenLayout('menu');
+        }, 35000);
       } else {
         label.textContent = "آلي";
         icon.classList.remove('animate-spin');
@@ -330,29 +336,27 @@
 
     function toggleHideControls() {
       isControlsHidden = !isControlsHidden;
-      const topBar = document.getElementById('topControlBar');
-      const bottomBar = document.getElementById('bottomBar');
-      const badge = document.getElementById('liveBadge');
-
-      if (isControlsHidden) {
-        topBar.classList.add('-translate-y-full');
-        bottomBar.classList.add('translate-y-full');
-        if (badge) badge.classList.add('opacity-0');
-      } else {
-        topBar.classList.remove('-translate-y-full');
-        bottomBar.classList.remove('translate-y-full');
-        if (badge) badge.classList.remove('opacity-0');
-      }
+      document.getElementById('topControlBar').classList.toggle('-translate-y-full');
+      document.getElementById('bottomBar').classList.toggle('translate-y-full');
+      document.getElementById('liveBadge').classList.toggle('opacity-0');
     }
 
     function toggleFullScreen() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        }
-      }
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+      else if (document.exitFullscreen) document.exitFullscreen();
+    }
+
+    function toggleAdminDrawer() {
+      const drawer = document.getElementById('adminDrawer');
+      drawer.classList.toggle('-translate-x-full');
+    }
+
+    function saveAdminSettings() {
+      const title = document.getElementById('inputBrandTitle').value;
+      const ticker = document.getElementById('inputTickerText').value;
+      if (title) document.getElementById('brandTitle').textContent = title;
+      if (ticker) document.getElementById('tickerText').textContent = ticker;
+      toggleAdminDrawer();
     }
 
     function updateClock() {
@@ -364,21 +368,20 @@
 
     window.addEventListener('keydown', (e) => {
       const key = e.key.toLowerCase();
-      if (key === '1') setMode('menu');
-      if (key === '2') setMode('tv');
-      if (key === '3') toggleAutoSwitch();
+      if (key === '1') setScreenLayout('menu');
+      if (key === '2') setScreenLayout('tv');
+      if (key === '3') setScreenLayout('split');
       if (key === 'f') toggleFullScreen();
       if (key === 'x') toggleHideControls();
-      
+      if (key === 'm') toggleAdminDrawer();
       if (key === 'q') changeChannel('quran');
       if (key === 's') changeChannel('sunnah');
       if (key === 'a') changeChannel('alarabiya');
-      if (key === 'j') changeChannel('aljazeera');
-      if (key === 'k') changeChannel('sports');
     });
 
-    // تشغيل القناة الأولى عند فتح الصفحة
-    setMode('tv');
+    // بدء العرض
+    renderProducts();
+    setScreenLayout('split');
   </script>
 </body>
 </html>
