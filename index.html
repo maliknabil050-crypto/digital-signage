@@ -16,7 +16,7 @@
     body { font-family: 'Cairo', sans-serif; background-color: #030712; color: #f3f4f6; overflow: hidden; user-select: none; width: 100vw; height: 100vh; }
     .fade-transition { transition: all 0.25s ease-out; }
     .glass-card { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.08); }
-    .wheel-rotate { transition: transform 3s cubic-bezier(0.15, 0.9, 0.25, 1); }
+    .wheel-spin { transition: transform 4s cubic-bezier(0.15, 0.95, 0.2, 1); }
   </style>
 </head>
 <body id="screenBody" class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden" onclick="handleFirstUserInteraction()">
@@ -72,7 +72,7 @@
 
     <!-- يسار الشريط -->
     <div class="flex items-center gap-2">
-      <!-- زر فال عِـزوة (عجلة الحظ التفاعلية) -->
+      <!-- زر فال عِـزوة -->
       <button onclick="openFortuneWheelModal()" class="px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1.5 shadow">
         <i class="fa-solid fa-gift text-[11px]"></i>
         <span>فال عِـزوة</span>
@@ -91,12 +91,12 @@
       </button>
 
       <!-- تحدث مع البائع -->
-      <button onclick="activateSalesmanVoice()" class="px-3 py-1.5 rounded-xl text-xs font-black bg-amber-500 text-slate-950 hover:bg-amber-400 transition flex items-center gap-1.5 shadow">
+      <button onclick="activateSalesmanVoice()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-amber-500 text-slate-950 hover:bg-amber-400 transition flex items-center gap-1.5 shadow">
         <i class="fa-solid fa-microphone-lines text-xs"></i>
         <span>تحدث (V)</span>
       </button>
 
-      <!-- نداء البائع -->
+      <!-- نداء البائع (نافذة داخلية هادئة) -->
       <button onclick="openSellerModal()" title="نداء البائع عبر الواتساب" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
         <i class="fa-solid fa-user-tag text-[11px] text-amber-400"></i>
         <span>نداء البائع (C)</span>
@@ -126,7 +126,7 @@
     <!-- 1. قسم الكتالوج والمنتج -->
     <section id="productSection" class="w-1/2 h-full p-4 lg:p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition overflow-y-auto">
       
-      <!-- ترويسة المتجر مع حائط المقتنين (مؤشر الندرة FOMO) -->
+      <!-- ترويسة المتجر وحائط المقتنين -->
       <div class="flex items-center justify-between border-b border-slate-900 pb-2.5">
         <div class="flex items-center gap-3">
           <img src="./logo.jpeg" alt="EZWA Logo" class="w-9 h-9 object-contain rounded-xl border border-amber-500/20 bg-slate-900 p-0.5 shadow-md">
@@ -185,10 +185,10 @@
             <div>
               <div class="flex items-center justify-between">
                 <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md">الإصدار الأكثر طلباً</span>
-                <!-- زر قصة المصمك الصوتية -->
-                <button onclick="playMasmakStoryAudio()" class="px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 text-[10px] font-bold flex items-center gap-1 transition">
+                <!-- زر قصة المصمك الصوتية الفورية (مرتبط بـ story.mp3.mp3) -->
+                <button onclick="playMasmakStoryAudio()" id="btnStoryAudio" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 text-[10px] font-bold flex items-center gap-1.5 transition border border-amber-500/30 shadow">
                   <i class="fa-solid fa-volume-high text-[10px]"></i>
-                  <span>قصة التصميم (30 ثانية)</span>
+                  <span id="storyBtnLabel">قصة التصميم (30 ثانية)</span>
                 </button>
               </div>
 
@@ -203,7 +203,7 @@
                 مستوحى من قصر المصمك الشاهد على ملحمة توحيد المملكة؛ قماش قطني معالج عالي الكثافة، طبعة خلفية فاخرة غير قابلة للتشقق، وشريحة NFC مشفرة بحاشية السدو.
               </p>
 
-              <!-- ميزة منسق مظهر نجد التفاعلي (Style Matcher) -->
+              <!-- منسق مظهر نجد التفاعلي -->
               <div class="mt-3 p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
                 <div class="text-[10px] font-bold text-amber-400 mb-1.5 flex items-center gap-1">
                   <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
@@ -220,7 +220,7 @@
               </div>
             </div>
 
-            <!-- ميزة السدو الذكية وزر التحقق الفوري التفاعلي -->
+            <!-- ميزة السدو الذكية والتحقق -->
             <div class="mt-2.5 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <i class="fa-solid fa-wifi rotate-90 text-amber-400 text-sm"></i>
@@ -288,7 +288,7 @@
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
 
-    <!-- ==================== نافذة تجربة التحقق من الـ NFC التفاعلية ==================== -->
+    <!-- ==================== نافذة تجربة التحقق من الـ NFC ==================== -->
     <div id="nfcVerifyModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-md w-full border-2 border-emerald-500/40 text-center relative shadow-2xl">
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
@@ -312,32 +312,60 @@
       </div>
     </div>
 
-    <!-- ==================== نافذة فال عِـزوة (عجلة الحظ التفاعلية) ==================== -->
+    <!-- ==================== نافذة فال عِـزوة (عجلة الهدايا المرتبة هندسياً) ==================== -->
     <div id="fortuneModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-sm w-full border-2 border-amber-500/40 text-center relative shadow-2xl">
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
           <i class="fa-solid fa-xmark"></i>
         </button>
-        <div class="w-14 h-14 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto mb-2 text-amber-400 text-xl">
+        
+        <div class="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto mb-2 text-amber-400 text-xl">
           <i class="fa-solid fa-gift"></i>
         </div>
         <h3 class="text-lg font-black text-white">جرّب فالك مع عِـزوة!</h3>
-        <p class="text-[11px] text-slate-300 mt-1">انقر لتدوير العجلة والحصول على هديتك الفورية في المعرض:</p>
+        <p class="text-[11px] text-slate-300 mt-0.5">انقر لتدوير العجلة واحصل على هديتك الفورية في المعرض:</p>
         
-        <!-- العجلة الرمزية الخفيفة -->
-        <div class="relative w-44 h-44 mx-auto my-4 flex items-center justify-center">
-          <div id="fortuneWheel" class="w-full h-full rounded-full border-4 border-amber-500/40 bg-slate-900 flex items-center justify-center wheel-rotate shadow-2xl overflow-hidden relative">
-            <div class="absolute inset-0 flex items-center justify-center text-[10px] font-black text-amber-400">
-              <span class="transform rotate-0 translate-y-[-50px]">خصم 10%</span>
-              <span class="transform rotate-90 translate-x-[50px]">تغليف مجاني</span>
-              <span class="transform rotate-180 translate-y-[50px]">استيكر سدو</span>
-              <span class="transform rotate-270 translate-x-[-50px]">نقاط مضاعفة</span>
+        <!-- العجلة الدائرية المنظمة هندسياً بالأقسام -->
+        <div class="relative w-48 h-48 mx-auto my-4 flex items-center justify-center">
+          <!-- مؤشر السهم العلوي الثابت -->
+          <div class="absolute -top-2 z-20 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[18px] border-t-amber-400 drop-shadow-md"></div>
+
+          <!-- قرص العجلة المقسم إلى 4 أرباع واضحة -->
+          <div id="fortuneWheel" class="w-full h-full rounded-full border-4 border-amber-500/60 bg-slate-900 wheel-spin shadow-2xl overflow-hidden relative">
+            
+            <!-- القسم 1: أعلى (خصم 10%) -->
+            <div class="absolute inset-0 flex items-start justify-center pt-3">
+              <span class="text-[11px] font-black text-amber-300">خصم 10%</span>
+            </div>
+
+            <!-- القسم 2: أسفل (استيكر سدو) -->
+            <div class="absolute inset-0 flex items-end justify-center pb-3">
+              <span class="text-[11px] font-black text-amber-300">استيكر سدو</span>
+            </div>
+
+            <!-- القسم 3: يمين (تغليف فاخر) -->
+            <div class="absolute inset-0 flex items-center justify-end pr-3">
+              <span class="text-[11px] font-black text-amber-300">تغليف فاخر</span>
+            </div>
+
+            <!-- القسم 4: يسار (نقاط مضاعفة) -->
+            <div class="absolute inset-0 flex items-center justify-start pl-3">
+              <span class="text-[11px] font-black text-amber-300">نقاط VIP</span>
+            </div>
+
+            <!-- خطوط التقسيم الذهبية -->
+            <div class="absolute inset-0 w-full h-[1px] bg-amber-500/30 my-auto"></div>
+            <div class="absolute inset-0 h-full w-[1px] bg-amber-500/30 mx-auto"></div>
+
+            <!-- المركز الدائري الذهبي -->
+            <div class="absolute inset-0 m-auto w-10 h-10 rounded-full bg-amber-500 border-2 border-slate-950 flex items-center justify-center text-slate-950 text-xs shadow-md">
+              <i class="fa-solid fa-star"></i>
             </div>
           </div>
-          <div class="absolute top-0 w-3 h-5 bg-amber-400 rounded-b-md shadow-md z-10"></div>
         </div>
 
-        <div id="fortuneResult" class="text-xs font-bold text-emerald-400 min-h-[24px]"></div>
+        <!-- خانة النتيجة -->
+        <div id="fortuneResult" class="text-xs font-bold text-emerald-400 min-h-[26px] flex items-center justify-center"></div>
 
         <button onclick="spinFortuneWheel()" id="btnSpin" class="w-full mt-2 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg">
           سحب الفال الآن
@@ -357,7 +385,7 @@
           </div>
           <div>
             <h3 class="text-base font-black text-white">التحويل المباشر • مصرف الراجحي</h3>
-            <span class="text-[10px] text-slate-400">حساب مؤسسة عِـزوة للتجارة</span>
+            <span class="text-[10px] text-slate-400">حساب مؤسسة عِـزوة الرسمي</span>
           </div>
         </div>
         <div class="space-y-2.5 text-xs bg-slate-900/80 p-3.5 rounded-2xl border border-slate-800">
@@ -651,6 +679,8 @@
     let selectedStyle = 'regular';
 
     const welcomeAudio = new Audio('./welcome.mp3');
+    // ملف قصة المصمك بالاسم المرفوع تحديداً
+    const storyAudioFile = new Audio('./story.mp3.mp3');
     let audioCtx = null;
 
     function unlockAudioContext() {
@@ -658,12 +688,34 @@
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    // ==================== ميزة 1: قصة المصمك الصوتية ====================
+    // ==================== تشغيل ملف قصة المصمك الصوتي ====================
     function playMasmakStoryAudio() {
-      speakSalesmanText("قصر المصمك، شاهدٌ على فجر التوحيد وعراقة نجد. حوّلنا تفاصيل بوابته وحصونه لقطعة أزياء عصرية، بخامة قطنية ثقيلة وقصة بوكس فيت مربعة، تعكس شموخ أجدادك في إطلالتك اليومية.");
+      unlockAudioContext();
+      playLuxuryChime();
+      
+      storyAudioFile.currentTime = 0;
+      storyAudioFile.volume = 1.0;
+      
+      storyAudioFile.play().then(() => {
+        const btnLabel = document.getElementById('storyBtnLabel');
+        if (btnLabel) {
+          btnLabel.textContent = "جاري الاستماع للقصة...";
+          setTimeout(() => { btnLabel.textContent = "قصة التصميم (30 ثانية)"; }, 30000);
+        }
+      }).catch(err => {
+        console.warn("تشغيل القصة عبر المحرك البديل:", err);
+        // محرك بديل فوري في حال تعثر تحميل الملف
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const ut = new SpeechSynthesisUtterance("هُنَا ابْتَدَأَتِ الحِكَايَة، مِنْ قَصْرِ المَصْمَك.. شَاهِدِ المَلْحَمَةِ وَفَجْرِ التَّأْسِيس. فِي عِـزْوَة، لَمْ نَصْنَعْ مُجَرَّدَ تِيشِيرْت، بَلْ نَقَلْنَا شُمُوخَ التَّارِيخِ إِلَى تَفَاصِيلِ يَوْمِك؛ قَصَّةُ بُوكْس فِيتْ مُتَّزِنَة، قُطْنٌ مُعَالَج، وَشَرِيحَةُ سَدْوٍ ذَكِيَّةٍ تَرْبِطُ عَرَاقَةَ المَاضِي بِتِقْنِيَّةِ المُسْتَقْبَل. المَجْدُ يُحْكَى.. وَمَعَ عِـزْوَة يُعَاش.");
+          ut.lang = 'ar-SA';
+          ut.rate = 0.92;
+          window.speechSynthesis.speak(ut);
+        }
+      });
     }
 
-    // ==================== ميزة 2: منسق مظهر نجد ====================
+    // ==================== منسق مظهر نجد ====================
     function setStyleTip(type) {
       const el = document.getElementById('styleTipText');
       if (type === 'daily') {
@@ -675,14 +727,14 @@
       }
     }
 
-    // ==================== ميزة 3: تجربة توثيق الـ NFC التفاعلية ====================
+    // ==================== تجربة توثيق الـ NFC التفاعلية ====================
     function simulateNfcVerification() {
       closeAllModals();
       playLuxuryChime();
       document.getElementById('nfcVerifyModal').classList.remove('opacity-0', 'pointer-events-none');
     }
 
-    // ==================== ميزة 4: عجلة فال عِـزوة ====================
+    // ==================== عجلة فال عِـزوة المحسنة ====================
     function openFortuneWheelModal() {
       closeAllModals();
       document.getElementById('fortuneResult').textContent = '';
@@ -690,6 +742,7 @@
     }
 
     let isSpinning = false;
+    let currentWheelAngle = 0;
     function spinFortuneWheel() {
       if (isSpinning) return;
       isSpinning = true;
@@ -697,21 +750,27 @@
       const res = document.getElementById('fortuneResult');
       res.textContent = "جاري تدوير فال عِـزوة...";
 
-      const degrees = 1440 + Math.floor(Math.random() * 360);
-      wheel.style.transform = `rotate(${degrees}deg)`;
+      // زوايا الجوائز الأربع الدقيقة (الأعلى تحت السهم)
+      const segments = [
+        { name: "مبروك! حصلت على خصم 10% فوري على القطعة", angle: 0 },
+        { name: "مبروك! ربحت نقاط VIP مضاعفة في عِـزوة", angle: 90 },
+        { name: "مبروك! ربحت استيكر السدو التراثي الأصلي", angle: 180 },
+        { name: "مبروك! ربحت تغليفاً فاخراً مجانياً لطلبك", angle: 270 }
+      ];
+
+      const randomIndex = Math.floor(Math.random() * segments.length);
+      const chosen = segments[randomIndex];
+
+      // إضافة 5 دورات كاملة (1800 درجة) مع ضبط الزاوية بدقة تحت المؤشر
+      currentWheelAngle += 1800 + (360 - (currentWheelAngle % 360)) + chosen.angle;
+      wheel.style.transform = `rotate(${currentWheelAngle}deg)`;
 
       setTimeout(() => {
         isSpinning = false;
-        const prizes = [
-          "مبروك! حصلت على خصم 10% فوري على القطعة",
-          "مبروك! ربحت تغليفاً فاخراً مجانياً لطلبك",
-          "مبروك! ربحت استيكر السدو التراثي مع طلبيتك",
-          "مبروك! نقاط مضاعفة في عضوية أركان عِـزوة"
-        ];
-        const selected = prizes[Math.floor(Math.random() * prizes.length)];
-        res.textContent = selected;
-        speakSalesmanText(`ما شاء الله! ${selected}`);
-      }, 3100);
+        res.textContent = chosen.name;
+        playLuxuryChime();
+        speakSalesmanText(`ما شاء الله! ${chosen.name}`);
+      }, 4100);
     }
 
     // ==================== باركود مصرف الراجحي ====================
@@ -1328,5 +1387,3 @@
   </script>
 </body>
 </html>
-
-
