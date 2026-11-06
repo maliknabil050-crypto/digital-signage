@@ -8,7 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- HLS.js لتشغيل البث التلفزيوني الحي بدون قيود يوتيوب -->
+  <!-- HLS.js لتشغيل البث المباشر -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <!-- Google Fonts (Cairo) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -179,19 +179,9 @@
         </div>
       </div>
 
-      <!-- مشغل الفيديو المتعدد (HLS Direct Video + Embed Frame) -->
+      <!-- مشغل الفيديو الحي المباشر بتقنية HLS -->
       <div class="flex-1 w-full h-full relative bg-black flex items-center justify-center">
-        <!-- مشغل البث التلفزيوني الرقمي المباشر -->
-        <video id="hlsVideo" class="w-full h-full object-cover hidden" autoplay playsinline muted controls></video>
-        <!-- مشغل يوتيوب -->
-        <iframe 
-          id="tvFrame"
-          class="w-full h-full border-0 absolute inset-0"
-          src="" 
-          title="بث تلفزيوني مباشر"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-          allowfullscreen>
-        </iframe>
+        <video id="hlsVideo" class="w-full h-full object-cover" autoplay playsinline muted controls></video>
       </div>
     </section>
 
@@ -212,32 +202,27 @@
 
   <!-- ==================== البرمجة ==================== -->
   <script>
-    // مصادر البث الحية الموثوقة: بث HLS مباشر أو روابط مشغلات رسمية
+    // روابط البث المباشر الشاملة بنظام HLS المعتمد دولياً لجميع القنوات الخمس
     const CHANNELS = {
       quran: {
         name: "قناة القرآن الكريم (مباشر من الحرم المكي)",
-        type: "hls",
         url: "https://win.holol.com/live/quran/playlist.m3u8"
       },
       alarabiya: {
         name: "قناة العربية الإخبارية",
-        type: "hls",
         url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8"
       },
       aljazeera: {
         name: "قناة الجزيرة الإخبارية",
-        type: "hls",
         url: "https://live-hls-web-aje.getaj.net/AJE/01.m3u8"
       },
       ekhbariya: {
         name: "قناة الإخبارية السعودية",
-        type: "hls",
-        url: "https://shd-al-ekhbariya.shahid.net/out/u/al_ekhbariya_sec.m3u8"
+        url: "https://d2e1asnsl7br7b.cloudfront.net/7782/master.m3u8"
       },
       alkass: {
         name: "قناة الكأس الرياضية",
-        type: "iframe",
-        url: "https://www.shoof.alkass.net/shoof/live/live_1.php"
+        url: "https://alkass-live.ercdn.net/alkassone/alkassone.m3u8"
       }
     };
 
@@ -250,36 +235,24 @@
 
     function playStream(channel) {
       const video = document.getElementById('hlsVideo');
-      const iframe = document.getElementById('tvFrame');
 
       if (hlsInstance) {
         hlsInstance.destroy();
         hlsInstance = null;
       }
 
-      if (channel.type === 'hls') {
-        iframe.classList.add('hidden');
-        iframe.src = 'about:blank';
-        video.classList.remove('hidden');
-
-        if (Hls.isSupported()) {
-          hlsInstance = new Hls({ enableWorker: true });
-          hlsInstance.loadSource(channel.url);
-          hlsInstance.attachMedia(video);
-          hlsInstance.on(Hls.Events.MANIFEST_PARSED, function () {
-            video.play().catch(() => {});
-          });
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-          video.src = channel.url;
-          video.addEventListener('loadedmetadata', function () {
-            video.play().catch(() => {});
-          });
-        }
-      } else {
-        video.classList.add('hidden');
-        video.pause();
-        iframe.classList.remove('hidden');
-        iframe.src = channel.url;
+      if (Hls.isSupported()) {
+        hlsInstance = new Hls({ enableWorker: true });
+        hlsInstance.loadSource(channel.url);
+        hlsInstance.attachMedia(video);
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, function () {
+          video.play().catch(() => {});
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = channel.url;
+        video.addEventListener('loadedmetadata', function () {
+          video.play().catch(() => {});
+        });
       }
     }
 
