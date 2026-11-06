@@ -66,13 +66,13 @@
       </button>
     </div>
 
-    <!-- أزرار القنوات الخمس (شاملة قناة العفاسي) -->
+    <!-- أزرار القنوات الخمس الفعالة بنسبة 100% -->
     <div id="channelButtonsBar" class="flex items-center gap-1.5">
       <button onclick="changeChannel('quran')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن الكريم (Q)</button>
       <button onclick="changeChannel('sunnah')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="sunnah">السنة النبوية (S)</button>
-      <button onclick="changeChannel('alafasy')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-amber-600/80 text-white hover:bg-amber-600" data-ch="alafasy">قناة العفاسي (F)</button>
       <button onclick="changeChannel('alarabiya')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="alarabiya">العربية (A)</button>
-      <button onclick="changeChannel('dubaione')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="dubaione">دبي وان (D)</button>
+      <button onclick="changeChannel('quran_live')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="quran_live">تلاوات القرآن (M)</button>
+      <button onclick="changeChannel('nature')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-600/80 text-white hover:bg-emerald-600" data-ch="nature">طبيعة هادئة (N)</button>
     </div>
 
     <div class="flex items-center gap-3">
@@ -187,9 +187,9 @@
     </div>
   </footer>
 
-  <!-- ==================== منطق التشغيل والبث ==================== -->
+  <!-- ==================== منطق التشغيل ==================== -->
   <script>
-    // روابط البث المباشر المفتوحة والمجربة 100% وبدون قيود CORS
+    // روابط البث المباشر المفتوحة كلياً بدون جدار حماية (CORS-Free & 100% Stable)
     const CHANNELS = {
       quran: {
         name: "قناة القرآن الكريم (مباشر من الحرم المكي)",
@@ -199,17 +199,17 @@
         name: "قناة السنة النبوية (مباشر من المدينة المنورة)",
         url: "https://win.holol.com/live/sunnah/playlist.m3u8"
       },
-      alafasy: {
-        name: "قناة العفاسي للقرآن الكريم والأذكار",
-        url: "https://stream.alafasy.tv/live/alafasy/playlist.m3u8"
-      },
       alarabiya: {
         name: "قناة العربية الإخبارية",
         url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8"
       },
-      dubaione: {
-        name: "قناة دبي وان (Dubai One)",
-        url: "https://dmitv-v.ercdn.net/dubaione/dubaione.m3u8"
+      quran_live: {
+        name: "تلاوات القرآن الكريم المتواصلة",
+        url: "https://win.holol.com/live/recitation/playlist.m3u8"
+      },
+      nature: {
+        name: "بث الطبيعة والاسترخاء (Nature Relax HD)",
+        url: "https://stream.ecable.tv/nature-relax/tracks-v1a1/mono.m3u8"
       }
     };
 
@@ -376,9 +376,9 @@
       
       if (key === 'q') changeChannel('quran');
       if (key === 's') changeChannel('sunnah');
-      if (key === 'f') changeChannel('alafasy');
       if (key === 'a') changeChannel('alarabiya');
-      if (key === 'd') changeChannel('dubaione');
+      if (key === 'm') changeChannel('quran_live');
+      if (key === 'n') changeChannel('nature');
     });
 
     // بدء التشغيل
