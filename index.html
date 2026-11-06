@@ -78,7 +78,7 @@
       <!-- زر الرادار -->
       <button id="radarBtn" onclick="togglePresenceRadar()" title="رادار الحضور البصري (R)" class="px-2 py-1 rounded-lg text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
         <span id="radarDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
-        <span>الرادار (R)</span>
+        <span id="radarStatusText">الرادار (R)</span>
       </button>
 
       <!-- الساعة وملء الشاشة -->
@@ -286,8 +286,9 @@
         <span class="text-amber-400 text-xs font-bold tracking-widest uppercase">عِـزوة • الرياض</span>
         <h2 class="text-2xl font-black gold-gradient mt-1">أصالة نجد برؤية عصرية</h2>
       </div>
-      <div class="text-xs text-slate-400 glass-card px-4 py-2 rounded-xl self-start pointer-events-auto">
-        اضغط مفتاح (3) للعودة للوضع المزدوج
+      <div class="text-xs text-slate-400 glass-card px-4 py-2 rounded-xl self-start pointer-events-auto flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+        <span>الرادار نشط • اقترب من الشاشة لتفعيل المنتجات</span>
       </div>
     </div>
 
@@ -363,16 +364,23 @@
       const prodSec = document.getElementById('productSection');
       const tvSec = document.getElementById('tvSection');
       const loungeOverlay = document.getElementById('loungeOverlay');
+      const btnSplit = document.getElementById('btnSplit');
+      const btnTV = document.getElementById('btnTV');
+      const btnLounge = document.getElementById('btnLounge');
 
+      [btnSplit, btnTV, btnLounge].forEach(b => b.className = "px-3 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300");
       loungeOverlay.classList.add('opacity-0', 'pointer-events-none');
 
       if (mode === 'tv') {
+        btnTV.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950";
         tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-100 z-20 bg-black flex items-center justify-center";
         prodSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
       } else if (mode === 'split') {
+        btnSplit.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950";
         prodSec.className = "w-1/2 h-full p-10 lg:p-12 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100";
         tvSec.className = "w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition opacity-100";
       } else if (mode === 'lounge') {
+        btnLounge.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950";
         tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-100 z-20 bg-black flex items-center justify-center";
         prodSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
         loungeOverlay.classList.remove('opacity-0', 'pointer-events-none');
@@ -463,20 +471,23 @@
       document.getElementById('modalFitNote').textContent = desc;
     }
 
-    // رادار الحضور البصري
+    // ==================== محرك الرادار البصري الذكي ====================
     let isRadarOn = false;
     let radarStream = null;
     let radarTimer = null;
     let lastFrame = null;
+    let idleSec = 0;
 
     async function togglePresenceRadar() {
       const dot = document.getElementById('radarDot');
+      const label = document.getElementById('radarStatusText');
       if (!isRadarOn) {
         try {
           radarStream = await navigator.mediaDevices.getUserMedia({ video: { width: 64, height: 48 } });
           document.getElementById('radarCamera').srcObject = radarStream;
           isRadarOn = true;
           dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-ping";
+          label.textContent = "الرادار: يعمل";
           startRadarDetect();
         } catch (e) { alert("يتطلب إذن الكاميرا لتشغيل الرادار."); }
       } else {
@@ -484,6 +495,7 @@
         clearInterval(radarTimer);
         isRadarOn = false;
         dot.className = "w-2 h-2 rounded-full bg-slate-500";
+        label.textContent = "الرادار (R)";
       }
     }
 
@@ -491,14 +503,32 @@
       const v = document.getElementById('radarCamera');
       const c = document.getElementById('radarCanvas');
       const ctx = c.getContext('2d');
+      idleSec = 0;
+
       radarTimer = setInterval(() => {
         if (!isRadarOn || v.readyState !== 4) return;
         ctx.drawImage(v, 0, 0, 64, 48);
         const frame = ctx.getImageData(0, 0, 64, 48);
+
         if (lastFrame) {
           let diff = 0;
-          for (let i = 0; i < frame.data.length; i += 4) diff += Math.abs(frame.data[i] - lastFrame.data[i]);
-          if (diff > 45000 && currentLayout === 'lounge') setScreenLayout('split');
+          for (let i = 0; i < frame.data.length; i += 4) {
+            diff += Math.abs(frame.data[i] - lastFrame.data[i]);
+          }
+
+          // عند رصد حركة اقتراب زائر (حساسية ناعمة وسريعة)
+          if (diff > 12000) {
+            idleSec = 0;
+            if (currentLayout === 'lounge') {
+              setScreenLayout('split');
+            }
+          } else {
+            // عند هدوء المكان لمدة 25 ثانية، تعود الشاشة تلقائياً لوضع اللاونج الفاخر
+            idleSec++;
+            if (idleSec >= 25 && currentLayout === 'split') {
+              setScreenLayout('lounge');
+            }
+          }
         }
         lastFrame = frame;
       }, 1000);
