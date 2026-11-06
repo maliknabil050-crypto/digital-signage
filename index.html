@@ -75,7 +75,7 @@
 
     <!-- يسار الشريط -->
     <div class="flex items-center gap-2">
-      <!-- زر الرادار مع الحفظ في الذاكرة لمنع العمل التلقائي بعد التحديث -->
+      <!-- زر الرادار مع الحفظ الدائم للحالة -->
       <button onclick="togglePresenceRadar()" id="btnRadarToggle" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 transition flex items-center gap-2 shadow">
         <span id="radarStatusDot" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
         <span id="radarBtnText">الرادار: متوقف (R)</span>
@@ -93,8 +93,8 @@
         <span>تحدث مع البائع (V)</span>
       </button>
 
-      <!-- نداء البائع في الشريط العلوي (رقم البائع: 966510205330) -->
-      <button onclick="directCallSeller()" title="نداء البائع عبر الواتساب" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+      <!-- نداء البائع بالشريط العلوي (يفتح نافذة داخلية هادئة) -->
+      <button onclick="openSellerModal()" title="نداء البائع عبر الواتساب" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
         <i class="fa-solid fa-user-tag text-[11px] text-amber-400"></i>
         <span>نداء البائع (C)</span>
       </button>
@@ -120,7 +120,7 @@
   <!-- مساحة العرض الرئيسية -->
   <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-12 fade-transition">
 
-    <!-- 1. قسم الكتالوج (مثبت على قصر المصمك ليتطابق مع الصور تماماً) -->
+    <!-- 1. قسم الكتالوج -->
     <section id="productSection" class="w-1/2 h-full p-5 lg:p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition overflow-y-auto">
       
       <!-- ترويسة المتجر -->
@@ -138,7 +138,7 @@
         </span>
       </div>
 
-      <!-- منطقة عرض المنتج (المصمك مع صوره الدقيقة) -->
+      <!-- مساحة عرض تيشيرت قصر المصمك المطابقة للصور -->
       <div class="my-auto py-2">
         <div class="grid grid-cols-12 gap-5 items-stretch">
           
@@ -171,7 +171,7 @@
             </div>
           </div>
 
-          <!-- تفاصيل قصر المصمك المطابقة 100% للصورة -->
+          <!-- تفاصيل قصر المصمك -->
           <div class="col-span-6 flex flex-col justify-between py-1">
             <div>
               <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md inline-block">الإصدار الأكثر طلباً</span>
@@ -209,8 +209,8 @@
         <div class="mt-4 pt-3 border-t border-slate-900">
           <span class="text-[11px] text-slate-400 font-bold block mb-2">خدمات وصلاحيات المعرض الفورية:</span>
           <div class="grid grid-cols-4 gap-2">
-            <!-- نداء المشرف (رقم المشرف: 966502777884) -->
-            <button onclick="triggerCallStaffModal()" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
+            <!-- نداء المشرف (يفتح نافذة المشرف الداخلية) -->
+            <button onclick="triggerCallSupervisorModal()" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
               <i class="fa-solid fa-headset text-sm mb-1 text-amber-400"></i>
               <span class="font-bold text-[10px]">نداء المشرف</span>
             </button>
@@ -221,7 +221,7 @@
               <span class="font-bold text-[10px]">خصم 10% فوري</span>
             </button>
 
-            <!-- طلب وحجز القطعة (مرتبط بالمشرف: 966502777884) -->
+            <!-- طلب القطعة (يفتح نافذة المشرف) -->
             <button onclick="openReserveModal()" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
               <i class="fa-solid fa-bookmark text-sm mb-1 text-purple-400"></i>
               <span class="font-bold text-[10px]">طلب القطعة</span>
@@ -372,7 +372,57 @@
       </div>
     </div>
 
-    <!-- نافذة طلب القطعة وحجزها (مرتبطة بويندوز واتساب المشرف: +966502777884) -->
+    <!-- 1. نافذة نداء البائع (Modal داخل الشاشة بدون فتح صفحة وبدون أي نغمة) -->
+    <div id="sellerCallModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-sm w-full border border-amber-500/40 text-center relative shadow-2xl">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="w-14 h-14 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto mb-3 text-amber-400 text-xl">
+          <i class="fa-solid fa-user-tag"></i>
+        </div>
+        <h3 class="text-lg font-black text-white">نداء البائع المعتمد</h3>
+        <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+          تواصل مع بائع المعرض مباشرة للمساعدة الفورية في المقاس أو الطلب:
+        </p>
+        <div class="mt-4 space-y-2">
+          <button onclick="confirmSellerWhatsApp()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg flex items-center justify-center gap-2">
+            <i class="fa-brands fa-whatsapp text-sm"></i>
+            <span>مراسلة البائع (+966510205330)</span>
+          </button>
+          <button onclick="closeAllModals()" class="w-full py-2 rounded-xl bg-slate-900 text-slate-400 text-xs hover:text-white transition">
+            إلغاء والعودة للشاشة (Esc)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. نافذة نداء المشرف (Modal داخل الشاشة) -->
+    <div id="callStaffModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-sm w-full border border-rose-500/40 text-center relative shadow-2xl">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="w-14 h-14 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center mx-auto mb-3 text-rose-400 text-xl">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+        <h3 class="text-lg font-black text-white">نداء مشرف المعرض</h3>
+        <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+          إشعار مباشر إلى جوال المشرف للحضور إليك عند الشاشة فوراً
+        </p>
+        <div class="mt-4 space-y-2">
+          <button onclick="confirmSupervisorWhatsApp()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg flex items-center justify-center gap-2">
+            <i class="fa-brands fa-whatsapp text-sm"></i>
+            <span>إشعار المشرف (+966502777884)</span>
+          </button>
+          <button onclick="closeAllModals()" class="w-full py-2 rounded-xl bg-slate-900 text-slate-400 text-xs hover:text-white transition">
+            إلغاء والعودة للشاشة (Esc)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. نافذة طلب القطعة وحجزها (مع المشرف) -->
     <div id="reserveModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/40 text-right shadow-2xl relative">
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
@@ -396,26 +446,6 @@
         <button onclick="submitReservationToSupervisor()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg flex items-center justify-center gap-2">
           <i class="fa-brands fa-whatsapp text-sm"></i>
           <span>تأكيد وإرسال لواتساب المشرف</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- نافذة نداء المشرف (مرتبطة بويندوز واتساب المشرف: +966502777884) -->
-    <div id="callStaffModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card rounded-3xl p-6 max-w-sm w-full border border-rose-500/40 text-center relative shadow-2xl">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <div class="w-14 h-14 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center mx-auto mb-3 text-rose-400 text-xl">
-          <i class="fa-solid fa-bell"></i>
-        </div>
-        <h3 class="text-lg font-black text-white">نداء مشرف المعرض</h3>
-        <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
-          إشعار مباشر إلى جوال **المشرف (+966502777884)** للحضور إليك عند الشاشة فوراً
-        </p>
-        <button onclick="sendSupervisorWhatsAppAlert()" class="w-full mt-4 p-3 rounded-2xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg flex items-center justify-center gap-2">
-          <i class="fa-brands fa-whatsapp text-sm"></i>
-          <span>إرسال إشعار فوري لواتساب المشرف</span>
         </button>
       </div>
     </div>
@@ -453,9 +483,8 @@
   <video id="radarCamera" class="hidden" autoplay playsinline muted></video>
   <canvas id="radarCanvas" class="hidden" width="16" height="12"></canvas>
 
-  <!-- ==================== المحرك البرمجي ==================== -->
+  <!-- المحرك البرمجي -->
   <script>
-    // الأرقام المنفصلة
     const SUPERVISOR_PHONE = "966502777884"; // المشرف
     const SELLER_PHONE = "966510205330";     // البائع
 
@@ -466,7 +495,6 @@
       aljazeera: { name: "الجزيرة", short: "الجزيرة", type: "iframe", url: "https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&mute=1&playsinline=1" }
     };
 
-    // منتج قصر المصمك الثابت والمتوافق 100% مع صور model-front و model-back
     const MASMAK_PRODUCT = {
       title: "تيشيرت بوكس فيت - قصر المصمك",
       price: "185",
@@ -494,26 +522,31 @@
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    // ==================== 1. نداء البائع بالشريط العلوي (واتساب البائع: 966510205330) ====================
-    function directCallSeller() {
-      playGreetingSequence();
-      const msg = encodeURIComponent("السلام عليكم، مطلوب حضور البائع عند الشاشة التفاعلية لخدمة عميل الآن.");
-      const waUrl = `https://api.whatsapp.com/send?phone=${SELLER_PHONE}&text=${msg}`;
-      window.open(waUrl, '_blank');
-      alert('تم إرسال إشعار فوري لواتساب البائع (+966510205330)');
+    // ==================== 1. فتح نافذة نداء البائع (Modal بدون نغمة وبدون فتح صفحة تلقائية) ====================
+    function openSellerModal() {
+      closeAllModals();
+      document.getElementById('sellerCallModal').classList.remove('opacity-0', 'pointer-events-none');
     }
 
-    // ==================== 2. نداء المشرف بالسفلي (واتساب المشرف: 966502777884) ====================
-    function sendSupervisorWhatsAppAlert() {
-      playGreetingSequence();
-      const msg = encodeURIComponent("نداء عاجل لمشرف المعرض!\nيوجد عميل عند الشاشة التفاعلية يطلب مساعدة المشرف أمام معروضات قصر المصمك.");
-      const waUrl = `https://api.whatsapp.com/send?phone=${SUPERVISOR_PHONE}&text=${msg}`;
-      window.open(waUrl, '_blank');
-      alert('تم إرسال إشعار فوري لمشرف المعرض (+966502777884)');
+    function confirmSellerWhatsApp() {
+      const msg = encodeURIComponent("السلام عليكم، مطلوب حضور البائع عند الشاشة التفاعلية لخدمة عميل الآن.");
+      window.open(`https://api.whatsapp.com/send?phone=${SELLER_PHONE}&text=${msg}`, '_blank');
       closeAllModals();
     }
 
-    // ==================== 3. طلب القطعة وحجزها (واتساب المشرف: 966502777884) ====================
+    // ==================== 2. فتح نافذة نداء المشرف (Modal بدون نغمة) ====================
+    function triggerCallSupervisorModal() {
+      closeAllModals();
+      document.getElementById('callStaffModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function confirmSupervisorWhatsApp() {
+      const msg = encodeURIComponent("نداء عاجل لمشرف المعرض!\nيوجد عميل عند الشاشة التفاعلية يطلب مساعدة المشرف أمام معروضات قصر المصمك.");
+      window.open(`https://api.whatsapp.com/send?phone=${SUPERVISOR_PHONE}&text=${msg}`, '_blank');
+      closeAllModals();
+    }
+
+    // ==================== 3. طلب القطعة وإرسالها للمشرف ====================
     function submitReservationToSupervisor() {
       const name = document.getElementById('reserveName').value.trim();
       const phone = document.getElementById('reservePhone').value.trim();
@@ -524,12 +557,10 @@
       }
 
       closeAllModals();
-      speakSalesmanText(`تم يا ${name}! تم إرسال طلب حجز مقاسك لمشرف المعرض مباشرة لمدة ساعتين. خذ راحتك في التجول ويسعدنا خدمتك!`);
+      speakSalesmanText(`تم يا ${name}! تم إرسال طلب حجز مقاسك لمشرف المعرض مباشرة لمدة ساعتين.`);
 
       const text = encodeURIComponent(`طلب حجز وتجهيز قطعة جديد:\n• اسم العميل: ${name}\n• رقم الجوال: ${phone}\n• الصنف: ${MASMAK_PRODUCT.title}\n• السعر: ${MASMAK_PRODUCT.price} ريال\nيرجى تجهيز المقاس في المعرض.`);
-      const waUrl = `https://api.whatsapp.com/send?phone=${SUPERVISOR_PHONE}&text=${text}`;
-      window.open(waUrl, '_blank');
-      alert(`تم إرسال طلب الحجز بنجاح لمشرف المعرض (+966502777884) باسم: ${name}`);
+      window.open(`https://api.whatsapp.com/send?phone=${SUPERVISOR_PHONE}&text=${text}`, '_blank');
     }
 
     // ==================== 4. التبديل بين الواجهة الأمامية والخلفية ====================
@@ -553,8 +584,7 @@
       }
     }
 
-    // ==================== 5. التحكم المطلق بالرادار مع الحفظ الدائم ====================
-    // قراءة الحالة السابقة من الذاكرة (الافتراضي متوقف لتجنب الترحيب المزعج)
+    // ==================== 5. التحكم المطلق بالرادار وحفظ حالته ====================
     let isRadarActive = localStorage.getItem('ezwa_radar_state') === 'true';
     let radarStream = null;
     let radarInterval = null;
@@ -575,7 +605,7 @@
 
     async function togglePresenceRadar() {
       isRadarActive = !isRadarActive;
-      localStorage.setItem('ezwa_radar_state', isRadarActive); // حفظ الحالة دائماً حتى لو تحدثت الصفحة
+      localStorage.setItem('ezwa_radar_state', isRadarActive);
       renderRadarUI();
 
       if (isRadarActive) {
@@ -618,7 +648,7 @@
 
             if (diff > 1200) {
               playGreetingSequence();
-              cooldownTimer = 60; // صمت دقيقة
+              cooldownTimer = 60; // صمت دقيقة كاملة
             }
           }
           lastFrame = frame;
@@ -709,7 +739,6 @@
 
       if (!hasInteracted) {
         hasInteracted = true;
-        // لا يشغل الترحيب عند فتح الصفحة إلا إذا كان الرادار نشطاً فعلاً
         if (isRadarActive) playGreetingSequence();
       }
     }
@@ -826,11 +855,6 @@
     function openReserveModal() {
       closeAllModals();
       document.getElementById('reserveModal').classList.remove('opacity-0', 'pointer-events-none');
-    }
-
-    function triggerCallStaffModal() {
-      closeAllModals();
-      document.getElementById('callStaffModal').classList.remove('opacity-0', 'pointer-events-none');
     }
 
     function salesmanExplainNFC() {
@@ -1033,7 +1057,7 @@
     }
 
     function closeAllModals() {
-      ['reserveModal', 'voiceSalesmanModal', 'callStaffModal', 'fitModal', 'zoomModal'].forEach(id => {
+      ['reserveModal', 'voiceSalesmanModal', 'callStaffModal', 'sellerCallModal', 'fitModal', 'zoomModal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
@@ -1064,7 +1088,7 @@
       if (k === 'r') togglePresenceRadar();
       if (k === 'm') toggleFitAdvisorModal();
       if (k === 'v') activateSalesmanVoice();
-      if (k === 'c') directCallSeller();
+      if (k === 'c') openSellerModal();
       if (k === 'z') openZoomModal();
       
       if (e.key === 'Escape') { 
@@ -1079,7 +1103,7 @@
       if (k === 'j') changeChannel('aljazeera');
     });
 
-    // تهيئة الباركود لمصمك
+    // إنشاء كود QR لمصمك
     const qrBox = document.getElementById('qrcodeBox');
     qrBox.innerHTML = '';
     new QRCode(qrBox, { text: MASMAK_PRODUCT.qrUrl, width: 64, height: 64, colorDark: "#020617", colorLight: "#ffffff" });
