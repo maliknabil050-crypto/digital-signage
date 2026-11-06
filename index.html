@@ -216,7 +216,7 @@
           <span id="stylingText">كارجو بلون بيج رملي أو فحمي، مع سنيكرز أبيض لإبراز حاشية السدو.</span>
         </div>
 
-        <!-- الابتكار: شريط كاسر التردد التلقائي -->
+        <!-- شريط كاسر التردد -->
         <div id="hesitationBreaker" class="mt-4 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-300 flex items-center gap-2 opacity-0 fade-transition max-w-lg">
           <i class="fa-solid fa-shield-halved text-amber-400"></i>
           <span>قطن معالج ضد الانكماش يدوم طويلاً • إمكانية التبديل الفوري خلال 14 يوماً.</span>
@@ -408,17 +408,27 @@
       </div>
     </div>
 
-    <!-- شاشة أوقات الصلاة بالرياض -->
+    <!-- شاشة أوقات الصلاة بالرياض (مع زر إغلاق وتخطي فوري) -->
     <div id="prayerOverlay" class="absolute inset-0 bg-slate-950/95 z-50 backdrop-blur-md flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none">
-      <div class="text-center p-8 glass-card rounded-3xl border border-amber-500/30 max-w-sm mx-4 shadow-2xl">
+      <div class="text-center p-8 glass-card rounded-3xl border border-amber-500/30 max-w-sm mx-4 shadow-2xl relative">
+        <!-- زر إغلاق فوري -->
+        <button onclick="dismissPrayerOverlay()" title="إغلاق فوري (Esc)" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
         <div class="w-16 h-16 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
           <i class="fa-solid fa-mosque"></i>
         </div>
         <h2 id="prayerOverlayTitle" class="text-xl font-bold text-white">حان الآن موعد الصلاة</h2>
         <p class="text-slate-400 text-xs mt-1.5 leading-relaxed">حسب التوقيت المحلي لمدينة الرياض • تقبل الله طاعتكم</p>
-        <div class="mt-5 pt-3 border-t border-slate-800 text-amber-400 text-xs font-semibold">
+        <div class="mt-4 pt-3 border-t border-slate-800 text-amber-400 text-xs font-semibold">
           تم التحويل تلقائياً إلى بث الحرم المكي الشريف
         </div>
+
+        <button onclick="dismissPrayerOverlay()" class="mt-5 px-4 py-2 rounded-xl bg-amber-500 text-slate-950 text-xs font-bold hover:bg-amber-400 transition shadow-lg flex items-center gap-2 mx-auto">
+          <span>تخطي ومتابعة المعرض</span>
+          <kbd class="text-[9px] bg-slate-950/20 px-1 py-0.5 rounded font-mono">Esc</kbd>
+        </button>
       </div>
     </div>
 
@@ -481,7 +491,6 @@
     let currentH = 'med';
     let currentW = 'fit';
 
-    // ==================== استدعاء ملف الصوت المباشر ====================
     let audioCtx = null;
     const localWelcomeAudio = new Audio('./welcome.mp3');
 
@@ -496,8 +505,6 @@
 
     function playLuxuryWelcomeSound() {
       unlockAudioContext();
-      
-      // 1. عزف نغمة الشايم الفاخرة
       try {
         if (audioCtx) {
           const now = audioCtx.currentTime;
@@ -518,13 +525,10 @@
         }
       } catch (e) {}
 
-      // 2. تشغيل الملف الصوتي المرفوع بجانب الكود فوراً
       setTimeout(() => {
         localWelcomeAudio.currentTime = 0;
         localWelcomeAudio.volume = 1.0;
-        localWelcomeAudio.play().catch(err => {
-          console.warn("لم يتم العثور على welcome.mp3 بجانب الملف، أو حظره المتصفح:", err);
-        });
+        localWelcomeAudio.play().catch(() => {});
       }, 650);
     }
 
@@ -668,25 +672,7 @@
       }, 1000);
     }
 
-    // ==================== دوال الابتكارات ====================
-
-    function toggleGhostMirror() {
-      closeAllModals();
-      document.getElementById('ghostMirrorModal').classList.remove('opacity-0', 'pointer-events-none');
-    }
-
-    function simulateNFCTap() {
-      const body = document.getElementById('screenBody');
-      body.classList.add('flash-active');
-      setTimeout(() => body.classList.remove('flash-active'), 1200);
-
-      currentProductIndex = 0;
-      updateProduct(currentProductIndex);
-      if (currentLayout !== 'split') setScreenLayout('split');
-      playLuxuryWelcomeSound();
-    }
-
-    // مواقيت الصلاة بالرياض
+    // ==================== دوال الصلاة والخروج الفوري ====================
     const prayerTimesRiyadh = [
       { name: "الفجر", time: "04:55" },
       { name: "الظهر", time: "11:42" },
@@ -694,6 +680,15 @@
       { name: "المغرب", time: "17:15" },
       { name: "العشاء", time: "18:45" }
     ];
+
+    let dismissedPrayerName = null;
+    let currentPrayerActive = null;
+
+    function dismissPrayerOverlay() {
+      const overlay = document.getElementById('prayerOverlay');
+      if (overlay) overlay.classList.add('opacity-0', 'pointer-events-none');
+      dismissedPrayerName = currentPrayerActive; // حفظ اسم الصلاة لمنع فتحها ثانية في نفس الوقت
+    }
 
     function checkPrayer() {
       const now = new Date();
@@ -718,15 +713,37 @@
 
       const overlay = document.getElementById('prayerOverlay');
       if (activePrayer) {
-        document.getElementById('prayerOverlayTitle').textContent = `حان الآن موعد صلاة ${activePrayer.name}`;
-        overlay.classList.remove('opacity-0', 'pointer-events-none');
-        if (activeChannelKey !== 'quran') changeChannel('quran');
+        currentPrayerActive = activePrayer.name;
+        // إذا لم يضغط المستخدم على تخطي
+        if (dismissedPrayerName !== activePrayer.name) {
+          document.getElementById('prayerOverlayTitle').textContent = `حان الآن موعد صلاة ${activePrayer.name}`;
+          overlay.classList.remove('opacity-0', 'pointer-events-none');
+          if (activeChannelKey !== 'quran') changeChannel('quran');
+        }
       } else {
+        currentPrayerActive = null;
+        dismissedPrayerName = null;
         overlay.classList.add('opacity-0', 'pointer-events-none');
       }
     }
 
-    // النوافذ المنبثقة
+    // ==================== دوال الابتكارات ====================
+    function toggleGhostMirror() {
+      closeAllModals();
+      document.getElementById('ghostMirrorModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function simulateNFCTap() {
+      const body = document.getElementById('screenBody');
+      body.classList.add('flash-active');
+      setTimeout(() => body.classList.remove('flash-active'), 1200);
+
+      currentProductIndex = 0;
+      updateProduct(currentProductIndex);
+      if (currentLayout !== 'split') setScreenLayout('split');
+      playLuxuryWelcomeSound();
+    }
+
     function triggerVIPModal() {
       closeAllModals();
       document.getElementById('vipModal').classList.remove('opacity-0', 'pointer-events-none');
@@ -749,6 +766,7 @@
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
+      dismissPrayerOverlay();
     }
 
     function calcFit(h, w) {
@@ -867,7 +885,12 @@
       if (k === 'v') triggerVIPModal();
       if (k === 'n') triggerNFCModal();
       if (k === 'm') toggleFitAdvisorModal();
-      if (e.key === 'Escape') { closeAllModals(); closeAllDropdowns(); }
+      
+      // زر الهروب يغلق النوافذ والصلاة فوراً
+      if (e.key === 'Escape') { 
+        closeAllModals(); 
+        closeAllDropdowns(); 
+      }
 
       if (k === 'r') togglePresenceRadar();
       if (k === 'f') toggleFullScreen();
