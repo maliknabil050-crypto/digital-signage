@@ -481,8 +481,10 @@
     let currentH = 'med';
     let currentW = 'fit';
 
-    // ==================== محرك الصوت البشري المباشر ====================
+    // ==================== استدعاء ملف الصوت المباشر ====================
     let audioCtx = null;
+    const localWelcomeAudio = new Audio('./welcome.mp3');
+
     function unlockAudioContext() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -516,19 +518,12 @@
         }
       } catch (e) {}
 
-      // 2. تشغيل نطق العبارة الصوتية مباشرة من مصدر صوتي عربي موثوق
+      // 2. تشغيل الملف الصوتي المرفوع بجانب الكود فوراً
       setTimeout(() => {
-        const voiceUrl = "https://translate.google.com/translate_tts?ie=UTF-8&q=" + encodeURIComponent("أهلاً بك في عِـزوة") + "&tl=ar&client=tw-ob";
-        const speechAudio = new Audio(voiceUrl);
-        speechAudio.volume = 1.0;
-        speechAudio.play().catch(() => {
-          // بديل المتصفح الداخلي
-          if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            const ut = new SpeechSynthesisUtterance("أهلاً بك في عِـزوة");
-            ut.lang = 'ar';
-            window.speechSynthesis.speak(ut);
-          }
+        localWelcomeAudio.currentTime = 0;
+        localWelcomeAudio.volume = 1.0;
+        localWelcomeAudio.play().catch(err => {
+          console.warn("لم يتم العثور على welcome.mp3 بجانب الملف، أو حظره المتصفح:", err);
         });
       }, 650);
     }
