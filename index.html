@@ -12,9 +12,7 @@
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <!-- QRCode.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <!-- PeerJS -->
-  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-  <!-- Cairo Font -->
+  <!-- خط Cairo -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -24,13 +22,27 @@
     body { font-family: 'Cairo', sans-serif; background-color: #030712; color: #f3f4f6; overflow: hidden; user-select: none; width: 100vw; height: 100vh; }
     .fade-transition { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
     .timer-ring { transform: rotate(-90deg); transform-origin: 50% 50%; }
-    .glass-card { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .glass-card { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
     .gold-gradient { background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    
+    /* رادار تقنية NFC */
+    @keyframes radarWave {
+      0% { transform: scale(0.9); opacity: 1; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+    .radar-pulse::before {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border: 2px solid #f59e0b;
+      border-radius: 9999px;
+      animation: radarWave 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    }
   </style>
 </head>
 <body class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden">
 
-  <!-- ==================== شريط خدمات علوي أنيق وهادئ ==================== -->
+  <!-- ==================== شريط خدمات علوي مدمج ونظيف ==================== -->
   <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/80 backdrop-blur-md px-6 py-2.5 flex items-center justify-between border-b border-slate-900">
     <!-- الأوضاع والقنوات -->
     <div class="flex items-center gap-1.5">
@@ -43,18 +55,30 @@
       <button onclick="changeChannel('alarabiya')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300" data-ch="alarabiya">العربية (A)</button>
     </div>
 
-    <!-- مركز الخدمات الذكية -->
-    <div class="flex items-center gap-2.5">
-      <!-- زر تشغيل الرادار -->
-      <button id="radarBtn" onclick="togglePresenceRadar()" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
-        <span id="radarDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
-        <span>الرادار (R)</span>
+    <!-- مركز الأوضاع الخاصة والخدمات -->
+    <div class="flex items-center gap-2">
+      <!-- زر النمط السري VIP -->
+      <button onclick="triggerVIPModal()" title="عرض عضوية النخبة (V)" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500/10 border border-amber-500/30 text-amber-300 hover:bg-amber-500/20 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-crown text-[11px]"></i>
+        <span>VIP (V)</span>
       </button>
 
-      <!-- زر نافذة المقاسات والتنسيق -->
-      <button onclick="toggleFitAdvisorModal()" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
-        <i class="fa-solid fa-ruler-combined text-amber-400"></i>
-        <span>المقاسات (M)</span>
+      <!-- زر استعراض NFC -->
+      <button onclick="triggerNFCModal()" title="استعراض تقنية NFC (N)" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+        <i class="fa-solid fa-wifi rotate-90 text-[11px] text-amber-400"></i>
+        <span>NFC (N)</span>
+      </button>
+
+      <!-- زر نافذة المقاسات -->
+      <button onclick="toggleFitAdvisorModal()" title="مستشار المقاسات (M)" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+        <i class="fa-solid fa-ruler-combined text-amber-400 text-[11px]"></i>
+        <span>المقاس (M)</span>
+      </button>
+
+      <!-- زر الرادار -->
+      <button id="radarBtn" onclick="togglePresenceRadar()" title="رادار الحضور البصري (R)" class="px-2 py-1 rounded-lg text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+        <span id="radarDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+        <span>الرادار (R)</span>
       </button>
 
       <!-- الساعة وملء الشاشة -->
@@ -68,7 +92,7 @@
   <!-- ==================== مساحة العرض الرئيسية ==================== -->
   <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-11">
 
-    <!-- 1. قسم الكتالوج والعرض الفاخر -->
+    <!-- 1. قسم الكتالوج والعرض الفاخر النظيف -->
     <section id="productSection" class="w-1/2 h-full p-10 lg:p-12 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition">
       <div>
         <span class="text-amber-400 text-[11px] font-bold tracking-widest uppercase">أزياء الشارع الراقية المبتكرة</span>
@@ -96,7 +120,7 @@
         </div>
       </div>
 
-      <!-- الباركود المزدوج (طلب + ريموت تحكم الجوال) -->
+      <!-- الباركود والتنقل -->
       <div class="flex items-center justify-between border-t border-slate-900 pt-4">
         <div class="flex items-center gap-3.5">
           <div class="relative p-1 bg-white rounded-xl shadow-md shrink-0">
@@ -109,8 +133,8 @@
             </div>
           </div>
           <div class="text-right">
-            <span class="text-xs font-bold text-white block">امسح للطلب أو للتحكم بهاتفك</span>
-            <span class="text-[10px] text-slate-500">يتغير العرض تلقائياً • متصل بالريموت</span>
+            <span class="text-xs font-bold text-white block">امسح للطلب أو المعاينة</span>
+            <span class="text-[10px] text-slate-500">يتغير العرض تلقائياً كل 15 ثانية</span>
           </div>
         </div>
 
@@ -131,7 +155,91 @@
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
 
-    <!-- 3. نافذة مستشار المقاسات المنبثقة الذكية (تفتح بـ M) -->
+    <!-- ==================== النوافذ المنبثقة الذكية والسرية ==================== -->
+
+    <!-- 1. نافذة وضع كبار الشخصيات VIP (تفتح بـ V) -->
+    <div id="vipModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-8 max-w-2xl w-full border border-amber-500/40 text-center relative shadow-2xl">
+        <button onclick="closeAllModals()" class="absolute top-5 left-5 text-slate-400 hover:text-white text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl text-amber-400">
+          <i class="fa-solid fa-crown"></i>
+        </div>
+        <span class="text-[11px] font-black tracking-widest text-amber-400 uppercase">VIP Membership Tier</span>
+        <h2 class="text-3xl font-black gold-gradient mt-1">أركان عِـزوة • النخبة</h2>
+        <p class="text-slate-300 text-xs mt-2 max-w-lg mx-auto leading-relaxed">
+          عضوية دائمة استثنائية مخصصة للأعضاء المؤسسين من <span class="text-amber-400 font-bold font-mono">#01 إلى #10</span>. تمنحك أولوية اقتناء الإصدارات المرقمة المحدودة وخدمات التخصيص الخاص.
+        </p>
+
+        <div class="grid grid-cols-3 gap-3 my-6 text-right">
+          <div class="bg-slate-900/80 p-3 rounded-2xl border border-amber-500/20">
+            <i class="fa-solid fa-fingerprint text-amber-400 text-base mb-1"></i>
+            <h4 class="text-xs font-bold text-white">شريحة مشفرة</h4>
+            <p class="text-[10px] text-slate-400 mt-0.5">توثيق رقمي فوري</p>
+          </div>
+          <div class="bg-slate-900/80 p-3 rounded-2xl border border-amber-500/20">
+            <i class="fa-solid fa-shirt text-amber-400 text-base mb-1"></i>
+            <h4 class="text-xs font-bold text-white">إصدارات مرقمة</h4>
+            <p class="text-[10px] text-slate-400 mt-0.5">تطريز سدو يدوي</p>
+          </div>
+          <div class="bg-slate-900/80 p-3 rounded-2xl border border-amber-500/20">
+            <i class="fa-solid fa-gem text-amber-400 text-base mb-1"></i>
+            <h4 class="text-xs font-bold text-white">أولوية المعارض</h4>
+            <p class="text-[10px] text-slate-400 mt-0.5">دعوات المعارض الحصرية</p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between border-t border-slate-800/80 pt-4 text-xs">
+          <span class="text-slate-400">المقاعد المتبقية: <strong class="text-rose-400 mr-1">مقعدين فقط (#08, #09)</strong></span>
+          <button onclick="closeAllModals()" class="px-4 py-1.5 rounded-xl bg-amber-500 text-slate-950 font-bold hover:bg-amber-400 transition">
+            إغلاق (Esc)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. نافذة استعراض تقنية الـ NFC التفاعلية (تفتح بـ N) -->
+    <div id="nfcModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-8 max-w-xl w-full border border-amber-500/30 text-center relative shadow-2xl">
+        <button onclick="closeAllModals()" class="absolute top-5 left-5 text-slate-400 hover:text-white text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="relative w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+          <div class="absolute inset-0 bg-amber-500/10 rounded-full radar-pulse"></div>
+          <div class="w-14 h-14 bg-slate-900 border-2 border-amber-500 rounded-full flex items-center justify-center text-2xl text-amber-400 shadow-xl z-10">
+            <i class="fa-solid fa-wifi rotate-90"></i>
+          </div>
+        </div>
+
+        <span class="text-[11px] font-bold text-amber-400 uppercase tracking-widest">NTAG215 / NTAG216 Embedded</span>
+        <h2 class="text-2xl font-black text-white mt-1">كيف تعمل تقنية عِـزوة الذكية؟</h2>
+        <p class="text-slate-300 text-xs mt-2 max-w-md mx-auto leading-relaxed">
+          تم دمج رقاقة اتصال المدى القريب (NFC) باحترافية كاملة داخل حاشية السدو السفلية للتيشيرت، دون أي بطاريات أو حاجة للشحن.
+        </p>
+
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 my-5 text-right flex items-center justify-between">
+          <div>
+            <h4 class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+              <i class="fa-solid fa-mobile-screen-button"></i>
+              تجربة حية فورية:
+            </h4>
+            <p class="text-[11px] text-slate-300 mt-1">قرّب ظهر هاتفك الذكي من طرف شريط السدو السفلي ليفتح رابط توثيق القطعة والتجربة السحابية فوراً.</p>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-base shrink-0 mr-3">
+            <i class="fa-solid fa-arrow-down animate-bounce"></i>
+          </div>
+        </div>
+
+        <button onclick="closeAllModals()" class="text-xs text-slate-400 hover:text-white transition">
+          إغلاق النافذة (Esc)
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. نافذة مستشار المقاسات (تفتح بـ M) -->
     <div id="fitModal" class="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/30 text-right">
         <div class="flex justify-between items-center mb-4">
@@ -139,7 +247,7 @@
             <i class="fa-solid fa-ruler-combined text-amber-400"></i>
             مستشار المقاسات الحاسم
           </h3>
-          <button onclick="toggleFitAdvisorModal()" class="text-slate-400 hover:text-white text-sm">
+          <button onclick="closeAllModals()" class="text-slate-400 hover:text-white text-sm">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
@@ -189,7 +297,7 @@
   <video id="radarCamera" class="hidden" autoplay playsinline muted></video>
   <canvas id="radarCanvas" class="hidden" width="64" height="48"></canvas>
 
-  <!-- ==================== البرمجة والمنطق ==================== -->
+  <!-- ==================== المحرك والمنطق ==================== -->
   <script>
     const CHANNELS = {
       quran: { name: "القرآن الكريم", type: "hls", url: "https://win.holol.com/live/quran/playlist.m3u8" },
@@ -251,6 +359,7 @@
 
     function setScreenLayout(mode) {
       currentLayout = mode;
+      closeAllModals();
       const prodSec = document.getElementById('productSection');
       const tvSec = document.getElementById('tvSection');
       const loungeOverlay = document.getElementById('loungeOverlay');
@@ -316,15 +425,29 @@
       }, 1000);
     }
 
-    // نافذة المقاسات المنبثقة
+    // إدارة النوافذ المنبثقة
+    function triggerVIPModal() {
+      closeAllModals();
+      document.getElementById('vipModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function triggerNFCModal() {
+      closeAllModals();
+      document.getElementById('nfcModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
     function toggleFitAdvisorModal() {
       const modal = document.getElementById('fitModal');
       const isVisible = !modal.classList.contains('opacity-0');
-      if (isVisible) {
-        modal.classList.add('opacity-0', 'pointer-events-none');
-      } else {
-        modal.classList.remove('opacity-0', 'pointer-events-none');
-      }
+      closeAllModals();
+      if (!isVisible) modal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeAllModals() {
+      ['vipModal', 'nfcModal', 'fitModal'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('opacity-0', 'pointer-events-none');
+      });
     }
 
     function calcFit(h, w) {
@@ -393,20 +516,22 @@
     setInterval(updateClock, 1000);
     updateClock();
 
+    // اختصارات لوحة المفاتيح
     window.addEventListener('keydown', (e) => {
       const k = e.key.toLowerCase();
+      if (k === 'v') triggerVIPModal();
+      if (k === 'n') triggerNFCModal();
+      if (k === 'm') toggleFitAdvisorModal();
+      if (e.key === 'Escape') closeAllModals();
+
       if (k === '2') setScreenLayout('tv');
       if (k === '3') setScreenLayout('split');
       if (k === 'l') setScreenLayout('lounge');
-      if (k === 'm') toggleFitAdvisorModal();
       if (k === 'r') togglePresenceRadar();
       if (k === 'f') toggleFullScreen();
       if (k === 'q') changeChannel('quran');
       if (k === 's') changeChannel('sunnah');
       if (k === 'a') changeChannel('alarabiya');
-      if (e.key === 'Escape') {
-        document.getElementById('fitModal').classList.add('opacity-0', 'pointer-events-none');
-      }
     });
 
     startTimerLoop();
