@@ -43,11 +43,12 @@
 
   <!-- ==================== شريط خدمات علوي مدمج ونظيف ==================== -->
   <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/80 backdrop-blur-md px-6 py-2.5 flex items-center justify-between border-b border-slate-900">
-    <!-- الأوضاع والقنوات -->
+    <!-- أنماط العرض الثلاثة والقنوات -->
     <div class="flex items-center gap-1.5">
-      <button onclick="setScreenLayout('split')" id="btnSplit" class="px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950">المزدوج (3)</button>
-      <button onclick="setScreenLayout('tv')" id="btnTV" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300">البث (2)</button>
-      <button onclick="setScreenLayout('lounge')" id="btnLounge" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-900 text-amber-300">اللاونج (L)</button>
+      <button onclick="setScreenLayout('catalog')" id="btnCatalog" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition">المنتجات (1)</button>
+      <button onclick="setScreenLayout('split')" id="btnSplit" class="px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition">المزدوج (2)</button>
+      <button onclick="setScreenLayout('tv')" id="btnTV" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition">البث (3)</button>
+      <button onclick="setScreenLayout('lounge')" id="btnLounge" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-900 text-amber-300 hover:bg-slate-800 transition">اللاونج (L)</button>
       <span class="text-slate-700 mx-1">|</span>
       <button onclick="changeChannel('quran')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن (Q)</button>
       <button onclick="changeChannel('sunnah')" class="ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300" data-ch="sunnah">السنة (S)</button>
@@ -99,38 +100,38 @@
   <!-- ==================== مساحة العرض الرئيسية ==================== -->
   <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-11">
 
-    <!-- 1. قسم الكتالوج والعرض الفاخر النظيف -->
-    <section id="productSection" class="w-1/2 h-full p-10 lg:p-12 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition">
+    <!-- 1. قسم الكتالوج والمنتجات (يدعم الشاشة الكاملة ونصف الشاشة) -->
+    <section id="productSection" class="w-1/2 h-full p-10 lg:p-14 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition">
       <div>
         <span class="text-amber-400 text-[11px] font-bold tracking-widest uppercase">أزياء الشارع الراقية المبتكرة</span>
-        <h1 class="text-2xl font-black text-white mt-0.5">عِـزوة • EZWA</h1>
+        <h1 class="text-2xl lg:text-3xl font-black text-white mt-0.5">عِـزوة • EZWA</h1>
       </div>
 
       <!-- محتوى القطعة النشطة -->
-      <div class="my-auto py-4">
+      <div class="my-auto py-4 max-w-2xl">
         <span id="productTag" class="text-xs font-bold text-amber-400/90">الإصدار الأكثر طلباً</span>
-        <h2 id="productTitle" class="text-3xl font-black text-white mt-1.5">تيشيرت بوكس فيت - قصر المصمك</h2>
+        <h2 id="productTitle" class="text-3xl lg:text-5xl font-black text-white mt-2 leading-tight">تيشيرت بوكس فيت - قصر المصمك</h2>
         
-        <div class="flex items-baseline gap-2.5 mt-3">
-          <span id="productPrice" class="text-3xl font-black text-amber-400">185</span>
-          <span class="text-xs text-slate-400">ر.س</span>
+        <div class="flex items-baseline gap-3 mt-4">
+          <span id="productPrice" class="text-3xl lg:text-4xl font-black text-amber-400">185</span>
+          <span class="text-sm text-slate-400 font-bold">ريال سعودي</span>
         </div>
 
-        <p class="text-slate-400 text-xs mt-3 leading-relaxed max-w-md">
-          خامة قطنية ثقيلة، ياقة مزدوجة الغرزة لا ترتخي، مع رقاقة NFC مدمجة في حاشية السدو السفلية.
+        <p class="text-slate-400 text-xs lg:text-sm mt-4 leading-relaxed max-w-xl">
+          خامة قطنية ثقيلة، ياقة مزدوجة الغرزة لا ترتخي مع الغسيل، وقصة أوفر سايز متزنة مع رقاقة NFC مدمجة باحترافية في حاشية السدو السفلية.
         </p>
 
         <!-- اقتراح التنسيق الهادئ -->
-        <div class="mt-4 p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-300">
-          <span class="text-amber-400 font-bold block mb-0.5">التنسيق الموصى به:</span>
-          <span id="stylingText">كارجو بلون بيج رملي أو فحمي، مع سنيكرز أبيض.</span>
+        <div class="mt-6 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs text-slate-300 max-w-lg">
+          <span class="text-amber-400 font-bold block mb-1">التنسيق الموصى به:</span>
+          <span id="stylingText">كارجو بلون بيج رملي أو فحمي، مع سنيكرز أبيض لإبراز حاشية السدو.</span>
         </div>
       </div>
 
       <!-- الباركود والتنقل -->
-      <div class="flex items-center justify-between border-t border-slate-900 pt-4">
-        <div class="flex items-center gap-3.5">
-          <div class="relative p-1 bg-white rounded-xl shadow-md shrink-0">
+      <div class="flex items-center justify-between border-t border-slate-900 pt-4 max-w-2xl">
+        <div class="flex items-center gap-4">
+          <div class="relative p-1.5 bg-white rounded-xl shadow-md shrink-0">
             <div id="qrcodeBox"></div>
             <div class="absolute -top-1.5 -right-1.5 w-5 h-5">
               <svg class="w-full h-full timer-ring" viewBox="0 0 36 36">
@@ -146,17 +147,17 @@
         </div>
 
         <div class="flex gap-2">
-          <button onclick="prevProduct()" class="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
+          <button onclick="prevProduct()" class="w-9 h-9 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
             <i class="fa-solid fa-arrow-right text-xs"></i>
           </button>
-          <button onclick="nextProduct()" class="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
+          <button onclick="nextProduct()" class="w-9 h-9 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
             <i class="fa-solid fa-arrow-left text-xs"></i>
           </button>
         </div>
       </div>
     </section>
 
-    <!-- 2. قسم البث الحي التلفزيوني -->
+    <!-- 2. قسم البث الحي التلفزيوني (يدعم الشاشة الكاملة ونصف الشاشة) -->
     <section id="tvSection" class="w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition">
       <video id="hlsVideo" class="w-full h-full max-h-full max-w-full object-contain" autoplay playsinline muted controls></video>
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -387,34 +388,45 @@
       }
     }
 
+    // إدارة أنماط الشاشة الثلاثة: كتالوج كامل، مزدوج، بث كامل، أو لاونج
     function setScreenLayout(mode) {
       currentLayout = mode;
       closeAllModals();
       const prodSec = document.getElementById('productSection');
       const tvSec = document.getElementById('tvSection');
       const loungeOverlay = document.getElementById('loungeOverlay');
+      
+      const btnCatalog = document.getElementById('btnCatalog');
       const btnSplit = document.getElementById('btnSplit');
       const btnTV = document.getElementById('btnTV');
       const btnLounge = document.getElementById('btnLounge');
 
-      [btnSplit, btnTV, btnLounge].forEach(b => b.className = "px-3 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300");
+      [btnCatalog, btnSplit, btnTV, btnLounge].forEach(b => {
+        b.className = "px-3 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition";
+      });
       loungeOverlay.classList.add('opacity-0', 'pointer-events-none');
 
-      if (mode === 'tv') {
-        btnTV.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950";
+      if (mode === 'catalog') {
+        btnCatalog.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition";
+        prodSec.className = "w-full h-full p-10 lg:p-14 flex flex-col justify-between absolute inset-0 fade-transition z-20 bg-slate-950 overflow-hidden opacity-100";
+        tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
+      } else if (mode === 'split') {
+        btnSplit.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition";
+        prodSec.className = "w-1/2 h-full p-10 lg:p-14 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100";
+        tvSec.className = "w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition opacity-100";
+        playStream(CHANNELS[activeChannelKey]);
+      } else if (mode === 'tv') {
+        btnTV.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition";
         tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-100 z-20 bg-black flex items-center justify-center";
         prodSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
-      } else if (mode === 'split') {
-        btnSplit.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950";
-        prodSec.className = "w-1/2 h-full p-10 lg:p-12 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100";
-        tvSec.className = "w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition opacity-100";
+        playStream(CHANNELS[activeChannelKey]);
       } else if (mode === 'lounge') {
-        btnLounge.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950";
+        btnLounge.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition";
         tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-100 z-20 bg-black flex items-center justify-center";
         prodSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
         loungeOverlay.classList.remove('opacity-0', 'pointer-events-none');
+        playStream(CHANNELS[activeChannelKey]);
       }
-      playStream(CHANNELS[activeChannelKey]);
     }
 
     function changeChannel(key) {
@@ -425,7 +437,7 @@
           ? "ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950" 
           : "ch-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 text-slate-300";
       });
-      playStream(CHANNELS[key]);
+      if (currentLayout !== 'catalog') playStream(CHANNELS[key]);
     }
 
     function updateProduct(index) {
@@ -540,7 +552,7 @@
       document.getElementById('modalFitNote').textContent = desc;
     }
 
-    // ==================== محرك الرادار البصري الذكي ====================
+    // محرك الرادار البصري
     let isRadarOn = false;
     let radarStream = null;
     let radarTimer = null;
@@ -617,14 +629,16 @@
     // اختصارات لوحة المفاتيح
     window.addEventListener('keydown', (e) => {
       const k = e.key.toLowerCase();
+      if (k === '1') setScreenLayout('catalog'); // المنتجات شاشة كاملة
+      if (k === '2') setScreenLayout('split');   // الوضع المزدوج
+      if (k === '3') setScreenLayout('tv');      // البث التلفزيوني شاشة كاملة
+      if (k === 'l') setScreenLayout('lounge');  // اللاونج
+      
       if (k === 'v') triggerVIPModal();
       if (k === 'n') triggerNFCModal();
       if (k === 'm') toggleFitAdvisorModal();
       if (e.key === 'Escape') closeAllModals();
 
-      if (k === '2') setScreenLayout('tv');
-      if (k === '3') setScreenLayout('split');
-      if (k === 'l') setScreenLayout('lounge');
       if (k === 'r') togglePresenceRadar();
       if (k === 'f') toggleFullScreen();
       if (k === 'q') changeChannel('quran');
