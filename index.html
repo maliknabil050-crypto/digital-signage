@@ -73,15 +73,21 @@
       </div>
     </div>
 
-    <!-- يسار الشريط: مستشار المقاسات + تحدث مع البائع + نداء الطاقم + مواقيت الصلاة -->
+    <!-- يسار الشريط: الرادار + المقاسات + تحدث مع البائع + نداء الطاقم + مواقيت الصلاة -->
     <div class="flex items-center gap-2">
+      <!-- زر الرادار المرئي في الشريط العلوي -->
+      <button onclick="togglePresenceRadar()" id="btnRadarToggle" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-2 shadow">
+        <span id="radarStatusDot" class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+        <span id="radarBtnText">الرادار: نشط (R)</span>
+      </button>
+
       <!-- مستشار المقاسات -->
       <button onclick="toggleFitAdvisorModal()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex items-center gap-1.5 shadow">
         <i class="fa-solid fa-ruler-combined text-[11px]"></i>
         <span>المقاسات (M)</span>
       </button>
 
-      <!-- تحدث مع البائع (المدمج بترحيب واستماع فوري) -->
+      <!-- تحدث مع البائع -->
       <button onclick="activateSalesmanVoice()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-amber-500 text-slate-950 hover:bg-amber-400 transition flex items-center gap-1.5 shadow">
         <i class="fa-solid fa-microphone-lines text-xs"></i>
         <span>تحدث مع البائع (V)</span>
@@ -142,16 +148,16 @@
           خامة قطنية ثقيلة، ياقة مزدوجة الغرزة لا ترتخي مع الغسيل، وقصة أوفر سايز متزنة مع رقاقة NFC مدمجة باحترافية في حاشية السدو السفلية.
         </p>
 
-        <!-- صندوق توجيه وترحيب البائع المباشر -->
+        <!-- صندوق توجيه وترحيب البائع المباشر الواضح -->
         <div id="salesmanDialogBox" class="mt-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs text-slate-200">
           <div class="flex items-center justify-between mb-1.5">
             <span class="text-amber-400 font-black flex items-center gap-2 text-xs">
               <i class="fa-solid fa-comment-dots text-sm animate-pulse text-amber-400"></i>
-              توجيه البائع الرقمي:
+              رسالة وترحيب البائع الرقمي:
             </span>
-            <button onclick="speakSalesmanText(currentSalesmanSpeech)" class="px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition text-[11px] font-bold flex items-center gap-1">
+            <button onclick="speakSalesmanText(currentSalesmanSpeech)" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition text-[11px] font-bold flex items-center gap-1">
               <i class="fa-solid fa-volume-high"></i>
-              <span>استمع</span>
+              <span>استمع مجدداً</span>
             </button>
           </div>
           <p id="salesmanSpeechText" class="leading-relaxed text-[12px] text-slate-200 font-medium">
@@ -159,7 +165,7 @@
           </p>
         </div>
 
-        <!-- أزرار صلاحيات البائع الفورية الثلاث المعتمدة -->
+        <!-- أزرار صلاحيات البائع الفورية -->
         <div class="mt-4 pt-3 border-t border-slate-900">
           <span class="text-[11px] text-slate-400 font-bold block mb-2">خدمات وصلاحيات المعرض الفورية:</span>
           <div class="grid grid-cols-4 gap-2">
@@ -391,7 +397,7 @@
       </div>
     </div>
 
-    <!-- لافتة الترحيب المباشرة لفك حظر الصوت -->
+    <!-- لافتة الترحيب المباشرة لفك حظر الصوت في المتصفحات -->
     <div id="firstInteractionNotice" class="absolute bottom-6 right-6 z-50 glass-card border border-amber-500/50 rounded-2xl p-4 shadow-2xl flex items-center gap-3 fade-transition cursor-pointer" onclick="handleFirstUserInteraction()">
       <div class="w-10 h-10 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-lg animate-bounce">
         <i class="fa-solid fa-hand-wave"></i>
@@ -458,6 +464,8 @@
     let currentSalesmanSpeech = "حيّاك الله في عِـزوة! أنا بائعك الرقمي المعتمد، تفضل باختيار قطعتك المناسبة وأنا معك لأي استفسار أو خصم أو سداد فوري.";
 
     let audioCtx = null;
+    const localWelcomeAudio = new Audio('./welcome.mp3');
+
     function unlockAudioContext() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -648,7 +656,6 @@
     function activateSalesmanVoice() {
       closeAllModals();
       document.getElementById('voiceSalesmanModal').classList.remove('opacity-0', 'pointer-events-none');
-      // ترحيب صوتي فوري عند الضغط، ثم بدء الاستماع للعميل
       speakSalesmanText("أهلاً بك في عِـزوة! تفضل بسؤالك، أنا استمع إليك الآن.");
       setTimeout(() => {
         startSalesmanHearing();
@@ -895,11 +902,26 @@
       dismissPrayerOverlay();
     }
 
-    // ==================== الرادار المجهري الخفيف مع فترة صمت 60 ثانية ====================
+    // ==================== الرادار المجهري الخفيف مع زر التحكم المرئي ====================
+    let isRadarEnabled = true;
     let radarStream = null;
     let radarTimer = null;
     let lastFrame = null;
     let cooldownTimer = 0;
+
+    function togglePresenceRadar() {
+      const dot = document.getElementById('radarStatusDot');
+      const txt = document.getElementById('radarBtnText');
+      isRadarEnabled = !isRadarEnabled;
+
+      if (isRadarEnabled) {
+        dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-ping";
+        txt.textContent = "الرادار: نشط (R)";
+      } else {
+        dot.className = "w-2 h-2 rounded-full bg-slate-500";
+        txt.textContent = "الرادار: متوقف (R)";
+      }
+    }
 
     async function initUltraLightRadar() {
       try {
@@ -910,6 +932,12 @@
         startRadarLoop();
       } catch (e) {
         console.log("كاميرا الرادار غير متوفرة أو لم يتم منح الإذن.");
+        const dot = document.getElementById('radarStatusDot');
+        const txt = document.getElementById('radarBtnText');
+        if (dot && txt) {
+          dot.className = "w-2 h-2 rounded-full bg-amber-500";
+          txt.textContent = "الرادار: غير متاح";
+        }
       }
     }
 
@@ -919,7 +947,9 @@
       const ctx = c.getContext('2d', { willReadFrequently: true });
 
       radarTimer = setInterval(() => {
-        // إدارة فترة الصمت (60 ثانية) بعد كل ترحيب
+        if (!isRadarEnabled) return;
+
+        // إدارة فترة الصمت (60 ثانية) بعد كل ترحيب لمنع الإزعاج
         if (cooldownTimer > 0) {
           cooldownTimer -= 2;
           return;
@@ -935,10 +965,10 @@
             diff += Math.abs(frame.data[i] - lastFrame.data[i]);
           }
 
-          // استشعار اقتراب شخص
+          // استشعار اقتراب الزائر
           if (diff > 1200) {
             triggerSalesmanGreeting(true);
-            cooldownTimer = 60; // صمت تام للرادار لمدة 60 ثانية لمنع الإزعاج وتبريد المعالج
+            cooldownTimer = 60; // صمت تام للرادار لمدة دقيقة لمنع التكرار وتبريد المعالج
           }
         }
         lastFrame = frame;
@@ -967,6 +997,7 @@
       if (k === '2') setScreenLayout('split');
       if (k === '3') setScreenLayout('tv');
       
+      if (k === 'r') togglePresenceRadar();
       if (k === 'm') toggleFitAdvisorModal();
       if (k === 'v') activateSalesmanVoice();
       if (k === 'c') triggerCallStaffModal();
