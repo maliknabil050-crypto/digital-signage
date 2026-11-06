@@ -8,7 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- HLS.js لتشغيل البث المباشر -->
+  <!-- HLS.js لتشغيل البث المباشر المفتوح -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <!-- Google Fonts (Cairo) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -160,18 +160,18 @@
       </div>
     </section>
 
-    <!-- 2. شاشة البث المباشر المزدوجة (فيديو أصلي + إطار محمي) -->
+    <!-- 2. شاشة البث المباشر -->
     <section id="tvSection" class="w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10 bg-black flex items-center justify-center">
       <div id="liveBadge" class="absolute top-3 right-4 z-30 bg-slate-950/70 backdrop-blur-md px-3 py-1 rounded-full border border-slate-800 flex items-center gap-2 pointer-events-none">
         <span class="w-2 h-2 bg-red-600 rounded-full animate-ping"></span>
         <span id="currentChannelName" class="text-xs font-bold text-amber-400">قناة القرآن الكريم</span>
       </div>
 
-      <!-- مشغل الفيديو للقنوات المفتوحة (HLS) -->
+      <!-- مشغل HLS للقنوات المفتوحة -->
       <video id="hlsVideo" class="w-full h-full max-h-full max-w-full object-contain" autoplay playsinline muted controls></video>
 
-      <!-- إطار العرض للقنوات المحمية (يتجاوز قيود CORS بالكامل) -->
-      <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
+      <!-- مشغل التضمين المعتمد للقنوات الأخرى مع تفادي حظر X-Frame -->
+      <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
 
   </main>
@@ -189,7 +189,7 @@
     </div>
   </footer>
 
-  <!-- ==================== منطق المشغل المزدوج ==================== -->
+  <!-- ==================== منطق التشغيل ==================== -->
   <script>
     const CHANNELS = {
       quran: {
@@ -208,14 +208,14 @@
         url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8"
       },
       aljazeera: {
-        name: "قناة الجزيرة الإخبارية (بث مباشر)",
+        name: "قناة الجزيرة الإخبارية (مباشر)",
         type: "iframe",
-        url: "https://www.aljazeera.net/live"
+        url: "https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&mute=1&playsinline=1"
       },
       dw: {
-        name: "قناة DW وثائقيات وثقافة (بث مباشر)",
+        name: "قناة DW وثائقيات وعلوم (مباشر)",
         type: "iframe",
-        url: "https://www.dw.com/ar/%D8%A7%D9%84%D8%A8%D8%AB-%D8%A7%D9%84%D9%85%D8%A8%D8%A7%D8%B4%D8%B1/s-100806"
+        url: "https://www.youtube-nocookie.com/embed/d3U7x7G8a28?autoplay=1&mute=1&playsinline=1"
       }
     };
 
@@ -254,7 +254,6 @@
           });
         }
       } else {
-        // تشغيل عبر إطار التضمين لتخطي حظر CORS تماماً
         video.classList.add('hidden');
         video.pause();
         iframe.classList.remove('hidden');
@@ -378,7 +377,7 @@
       if (key === 'd') changeChannel('dw');
     });
 
-    // بدء التشغيل
+    // تشغيل القناة الأولى عند فتح الصفحة
     setMode('tv');
   </script>
 </body>
