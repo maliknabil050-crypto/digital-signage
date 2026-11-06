@@ -7,7 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -16,9 +15,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Cairo', sans-serif; background-color: #030712; color: #f3f4f6; overflow: hidden; user-select: none; width: 100vw; height: 100vh; }
     .fade-transition { transition: all 0.25s ease-out; }
-    .timer-ring { transform: rotate(-90deg); transform-origin: 50% 50%; }
     .glass-card { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.08); }
-    .gold-gradient { background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   </style>
 </head>
 <body id="screenBody" class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden" onclick="handleFirstUserInteraction()">
@@ -26,7 +23,6 @@
   <!-- الشريط العلوي -->
   <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-md px-6 py-2.5 flex items-center justify-between border-b border-slate-900 shadow-xl">
     
-    <!-- يمين الشريط -->
     <div class="flex items-center gap-2">
       <button onclick="setScreenLayout('catalog')" id="btnCatalog" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-1.5">
         <i class="fa-solid fa-shirt text-[11px]"></i>
@@ -75,7 +71,7 @@
 
     <!-- يسار الشريط -->
     <div class="flex items-center gap-2">
-      <!-- زر الرادار مع الحفظ الدائم للحالة -->
+      <!-- زر الرادار الثابت بالحفظ في الذاكرة -->
       <button onclick="togglePresenceRadar()" id="btnRadarToggle" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 transition flex items-center gap-2 shadow">
         <span id="radarStatusDot" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
         <span id="radarBtnText">الرادار: متوقف (R)</span>
@@ -93,7 +89,7 @@
         <span>تحدث مع البائع (V)</span>
       </button>
 
-      <!-- نداء البائع بالشريط العلوي (يفتح نافذة داخلية هادئة) -->
+      <!-- نداء البائع بالشريط العلوي (نافذة داخلية بدون صوت) -->
       <button onclick="openSellerModal()" title="نداء البائع عبر الواتساب" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
         <i class="fa-solid fa-user-tag text-[11px] text-amber-400"></i>
         <span>نداء البائع (C)</span>
@@ -120,7 +116,7 @@
   <!-- مساحة العرض الرئيسية -->
   <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-12 fade-transition">
 
-    <!-- 1. قسم الكتالوج -->
+    <!-- 1. قسم الكتالوج والعرض المثبت لقصر المصمك -->
     <section id="productSection" class="w-1/2 h-full p-5 lg:p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition overflow-y-auto">
       
       <!-- ترويسة المتجر -->
@@ -138,7 +134,7 @@
         </span>
       </div>
 
-      <!-- مساحة عرض تيشيرت قصر المصمك المطابقة للصور -->
+      <!-- مساحة عرض تيشيرت المصمك -->
       <div class="my-auto py-2">
         <div class="grid grid-cols-12 gap-5 items-stretch">
           
@@ -152,13 +148,12 @@
                 <i class="fa-solid fa-magnifying-glass-plus text-xs"></i>
               </button>
 
-              <!-- شارة الزاوية -->
               <span id="viewAngleBadge" class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-black/80 backdrop-blur-md text-[10px] font-bold text-amber-300 border border-amber-500/30 shadow-md">
                 المصمك • الواجهة الأمامية
               </span>
             </div>
 
-            <!-- أزرار التبديل بين الأمام والخلف -->
+            <!-- أزرار التبديل -->
             <div class="flex gap-2 mt-2.5 w-full justify-center">
               <button onclick="switchProductView('front')" id="btnFrontView" class="flex-1 py-1.5 rounded-xl bg-amber-500 text-slate-950 text-xs font-black shadow-md transition flex items-center justify-center gap-1.5">
                 <i class="fa-solid fa-shirt text-[11px]"></i>
@@ -171,7 +166,7 @@
             </div>
           </div>
 
-          <!-- تفاصيل قصر المصمك -->
+          <!-- تفاصيل القطعة والمعلومات -->
           <div class="col-span-6 flex flex-col justify-between py-1">
             <div>
               <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md inline-block">الإصدار الأكثر طلباً</span>
@@ -183,8 +178,8 @@
               </div>
 
               <div class="mt-2 inline-flex items-center gap-1.5 text-[11px] text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-lg font-bold border border-emerald-500/20">
-                <i class="fa-solid fa-shield-check"></i>
-                <span>دفع فوري بـ Apple Pay ومدى</span>
+                <i class="fa-solid fa-building-columns"></i>
+                <span>سداد فوري عبر مصرف الراجحي</span>
               </div>
 
               <p class="text-slate-300 text-xs mt-4 leading-relaxed bg-slate-900/60 p-3 rounded-xl border border-slate-800/80">
@@ -192,7 +187,7 @@
               </p>
             </div>
 
-            <!-- ميزة السدو -->
+            <!-- ميزة السدو الذكية -->
             <div class="mt-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-3">
               <div class="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-base shrink-0">
                 <i class="fa-solid fa-wifi rotate-90"></i>
@@ -209,7 +204,7 @@
         <div class="mt-4 pt-3 border-t border-slate-900">
           <span class="text-[11px] text-slate-400 font-bold block mb-2">خدمات وصلاحيات المعرض الفورية:</span>
           <div class="grid grid-cols-4 gap-2">
-            <!-- نداء المشرف (يفتح نافذة المشرف الداخلية) -->
+            <!-- نداء المشرف -->
             <button onclick="triggerCallSupervisorModal()" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
               <i class="fa-solid fa-headset text-sm mb-1 text-amber-400"></i>
               <span class="font-bold text-[10px]">نداء المشرف</span>
@@ -221,7 +216,7 @@
               <span class="font-bold text-[10px]">خصم 10% فوري</span>
             </button>
 
-            <!-- طلب القطعة (يفتح نافذة المشرف) -->
+            <!-- طلب القطعة للمشرف -->
             <button onclick="openReserveModal()" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
               <i class="fa-solid fa-bookmark text-sm mb-1 text-purple-400"></i>
               <span class="font-bold text-[10px]">طلب القطعة</span>
@@ -236,18 +231,21 @@
         </div>
       </div>
 
-      <!-- محطة السداد الذاتي والباركود الخاص بالمصمك -->
+      <!-- محطة السداد الذاتي المربوطة بحساب الراجحي -->
       <div class="border-t border-slate-900 pt-2.5">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <div class="relative p-1.5 bg-white rounded-xl shadow-md shrink-0">
-              <div id="qrcodeBox"></div>
+            <div class="relative p-1 bg-white rounded-xl shadow-md shrink-0 cursor-pointer hover:ring-2 hover:ring-amber-400 transition" onclick="openRajhiPaymentModal()" title="انقر لعرض تفاصيل التحويل المباشر">
+              <img id="qrPaymentImg" src="" alt="باركود التحويل لبنك الراجحي" class="w-14 h-14 object-contain">
             </div>
             <div class="text-right">
-              <span class="text-xs font-black text-white block">امسح لسداد واستلام تيشيرت المصمك</span>
-              <span class="text-[10px] text-slate-400 block mt-0.5">Apple Pay ومدى • استلم مقاسك من المعرض مباشرة</span>
+              <span class="text-xs font-black text-white block">امسح للسداد الفوري عبر بنك الراجحي</span>
+              <span class="text-[10px] text-slate-400 block mt-0.5">امسح بالكاميرا لنسخ الآيبان أو التحويل المباشر • 185 ريال</span>
             </div>
           </div>
+          <button onclick="openRajhiPaymentModal()" class="px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500 hover:text-slate-950 text-[10px] font-bold transition">
+            تفاصيل الحساب
+          </button>
         </div>
       </div>
     </section>
@@ -258,15 +256,139 @@
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
 
+    <!-- نافذة تفاصيل التحويل البنكي لحساب الراجحي لعِـزوة -->
+    <div id="rajhiModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/40 text-right shadow-2xl relative">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-lg">
+            <i class="fa-solid fa-building-columns"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black text-white">التحويل المباشر • مصرف الراجحي</h3>
+            <span class="text-[10px] text-slate-400">حساب مؤسسة عِـزوة الرسمي</span>
+          </div>
+        </div>
+
+        <div class="space-y-2.5 text-xs bg-slate-900/80 p-3.5 rounded-2xl border border-slate-800">
+          <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+            <span class="text-slate-400">اسم المستفيد:</span>
+            <span class="text-white font-bold" id="bankBeneficiary">مؤسسة عِـزوة للتجارة</span>
+          </div>
+          <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+            <span class="text-slate-400">المبلغ المطلوب:</span>
+            <span class="text-amber-400 font-bold font-mono text-sm" id="bankAmount">185 ريال</span>
+          </div>
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-slate-400">رقم الآيبان (IBAN):</span>
+              <button onclick="copyIbanToClipboard()" id="btnCopyIban" class="text-[10px] text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1">
+                <i class="fa-solid fa-copy"></i>
+                <span>نسخ الآيبان</span>
+              </button>
+            </div>
+            <div class="p-2 rounded-xl bg-black/60 font-mono text-amber-300 text-center text-xs tracking-wider border border-amber-500/20 select-all" id="ibanText">
+              SA0380000000000000000000
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 space-y-2">
+          <button onclick="sendReceiptToSeller()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg flex items-center justify-center gap-2">
+            <i class="fa-brands fa-whatsapp text-sm"></i>
+            <span>إرسال إشعار التحويل للبائع</span>
+          </button>
+          <button onclick="closeAllModals()" class="w-full py-2 rounded-xl bg-slate-900 text-slate-400 text-xs hover:text-white transition">
+            إغلاق (Esc)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- نافذة نداء البائع (Modal بدون نغمة وبدون فتح عشوائي) -->
+    <div id="sellerCallModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-sm w-full border border-amber-500/40 text-center relative shadow-2xl">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="w-14 h-14 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto mb-3 text-amber-400 text-xl">
+          <i class="fa-solid fa-user-tag"></i>
+        </div>
+        <h3 class="text-lg font-black text-white">نداء البائع المعتمد</h3>
+        <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">تواصل مع بائع المعرض مباشرة للمساعدة الفورية:</p>
+        <div class="mt-4 space-y-2">
+          <button onclick="confirmSellerWhatsApp()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg flex items-center justify-center gap-2">
+            <i class="fa-brands fa-whatsapp text-sm"></i>
+            <span>مراسلة البائع (+966510205330)</span>
+          </button>
+          <button onclick="closeAllModals()" class="w-full py-2 rounded-xl bg-slate-900 text-slate-400 text-xs hover:text-white transition">
+            إلغاء (Esc)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- نافذة نداء المشرف -->
+    <div id="callStaffModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-sm w-full border border-rose-500/40 text-center relative shadow-2xl">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="w-14 h-14 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center mx-auto mb-3 text-rose-400 text-xl">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+        <h3 class="text-lg font-black text-white">نداء مشرف المعرض</h3>
+        <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">إشعار مباشر إلى جوال المشرف للحضور إليك فوراً:</p>
+        <div class="mt-4 space-y-2">
+          <button onclick="confirmSupervisorWhatsApp()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg flex items-center justify-center gap-2">
+            <i class="fa-brands fa-whatsapp text-sm"></i>
+            <span>إشعار المشرف (+966502777884)</span>
+          </button>
+          <button onclick="closeAllModals()" class="w-full py-2 rounded-xl bg-slate-900 text-slate-400 text-xs hover:text-white transition">
+            إلغاء (Esc)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- نافذة طلب القطعة وحجزها للمشرف -->
+    <div id="reserveModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/40 text-right shadow-2xl relative">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <span class="text-amber-400 text-[10px] font-bold uppercase tracking-widest block">EZWA Order Reservation</span>
+        <h3 class="text-lg font-black text-white mt-1">طلب وحجز القطعة</h3>
+        <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+          أدخل اسمك ورقم جوالك ليتم إرسال طلب الحجز إلى **مشرف المعرض (+966502777884)** لتجهيز مقاسك فوراً:
+        </p>
+        <div class="space-y-3 my-4 text-xs">
+          <div>
+            <label class="text-slate-400 block mb-1">الاسم الكريم:</label>
+            <input type="text" id="reserveName" placeholder="أدخل اسمك" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white focus:border-amber-400 outline-none" />
+          </div>
+          <div>
+            <label class="text-slate-400 block mb-1">رقم الجوال:</label>
+            <input type="tel" id="reservePhone" placeholder="05XXXXXXXX" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white focus:border-amber-400 outline-none font-mono text-left" dir="ltr" />
+          </div>
+        </div>
+        <button onclick="submitReservationToSupervisor()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg flex items-center justify-center gap-2">
+          <i class="fa-brands fa-whatsapp text-sm"></i>
+          <span>تأكيد وإرسال لواتساب المشرف</span>
+        </button>
+      </div>
+    </div>
+
     <!-- نافذة المعاينة المكبرة -->
     <div id="zoomModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
       <div class="relative max-w-3xl w-full h-[85vh] flex flex-col items-center justify-center">
         <button onclick="closeZoomModal()" class="absolute top-2 left-2 z-50 w-10 h-10 rounded-full bg-slate-900/80 hover:bg-amber-500 text-white hover:text-slate-950 flex items-center justify-center text-lg border border-slate-700 transition">
           <i class="fa-solid fa-xmark"></i>
         </button>
-
         <img id="zoomedProductImage" src="./model-front.png" alt="Zoomed View" class="max-w-full max-h-full object-contain rounded-2xl shadow-2xl">
-        
         <div class="mt-4 flex items-center gap-3">
           <button onclick="switchZoomView('front')" id="zoomBtnFront" class="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shadow-lg transition">معاينة الواجهة الأمامية</button>
           <button onclick="switchZoomView('back')" id="zoomBtnBack" class="px-4 py-2 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 font-bold text-xs transition">معاينة الواجهة الخلفية</button>
@@ -372,84 +494,6 @@
       </div>
     </div>
 
-    <!-- 1. نافذة نداء البائع (Modal داخل الشاشة بدون فتح صفحة وبدون أي نغمة) -->
-    <div id="sellerCallModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card rounded-3xl p-6 max-w-sm w-full border border-amber-500/40 text-center relative shadow-2xl">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <div class="w-14 h-14 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto mb-3 text-amber-400 text-xl">
-          <i class="fa-solid fa-user-tag"></i>
-        </div>
-        <h3 class="text-lg font-black text-white">نداء البائع المعتمد</h3>
-        <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
-          تواصل مع بائع المعرض مباشرة للمساعدة الفورية في المقاس أو الطلب:
-        </p>
-        <div class="mt-4 space-y-2">
-          <button onclick="confirmSellerWhatsApp()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg flex items-center justify-center gap-2">
-            <i class="fa-brands fa-whatsapp text-sm"></i>
-            <span>مراسلة البائع (+966510205330)</span>
-          </button>
-          <button onclick="closeAllModals()" class="w-full py-2 rounded-xl bg-slate-900 text-slate-400 text-xs hover:text-white transition">
-            إلغاء والعودة للشاشة (Esc)
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 2. نافذة نداء المشرف (Modal داخل الشاشة) -->
-    <div id="callStaffModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card rounded-3xl p-6 max-w-sm w-full border border-rose-500/40 text-center relative shadow-2xl">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <div class="w-14 h-14 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center mx-auto mb-3 text-rose-400 text-xl">
-          <i class="fa-solid fa-bell"></i>
-        </div>
-        <h3 class="text-lg font-black text-white">نداء مشرف المعرض</h3>
-        <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
-          إشعار مباشر إلى جوال المشرف للحضور إليك عند الشاشة فوراً
-        </p>
-        <div class="mt-4 space-y-2">
-          <button onclick="confirmSupervisorWhatsApp()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg flex items-center justify-center gap-2">
-            <i class="fa-brands fa-whatsapp text-sm"></i>
-            <span>إشعار المشرف (+966502777884)</span>
-          </button>
-          <button onclick="closeAllModals()" class="w-full py-2 rounded-xl bg-slate-900 text-slate-400 text-xs hover:text-white transition">
-            إلغاء والعودة للشاشة (Esc)
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3. نافذة طلب القطعة وحجزها (مع المشرف) -->
-    <div id="reserveModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/40 text-right shadow-2xl relative">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <span class="text-amber-400 text-[10px] font-bold uppercase tracking-widest block">EZWA Order Reservation</span>
-        <h3 class="text-lg font-black text-white mt-1">طلب وحجز القطعة</h3>
-        <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-          أدخل اسمك ورقم جوالك ليتم إرسال طلب الحجز إلى **مشرف المعرض (+966502777884)** لتجهيز مقاسك فوراً:
-        </p>
-        <div class="space-y-3 my-4 text-xs">
-          <div>
-            <label class="text-slate-400 block mb-1">الاسم الكريم:</label>
-            <input type="text" id="reserveName" placeholder="أدخل اسمك" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white focus:border-amber-400 outline-none" />
-          </div>
-          <div>
-            <label class="text-slate-400 block mb-1">رقم الجوال:</label>
-            <input type="tel" id="reservePhone" placeholder="05XXXXXXXX" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white focus:border-amber-400 outline-none font-mono text-left" dir="ltr" />
-          </div>
-        </div>
-        <button onclick="submitReservationToSupervisor()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg flex items-center justify-center gap-2">
-          <i class="fa-brands fa-whatsapp text-sm"></i>
-          <span>تأكيد وإرسال لواتساب المشرف</span>
-        </button>
-      </div>
-    </div>
-
     <!-- شاشة مواقيت الصلاة -->
     <div id="prayerOverlay" class="absolute inset-0 bg-slate-950/95 z-50 backdrop-blur-md flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none">
       <div class="text-center p-8 glass-card rounded-3xl border border-amber-500/30 max-w-sm mx-4 shadow-2xl relative">
@@ -483,10 +527,18 @@
   <video id="radarCamera" class="hidden" autoplay playsinline muted></video>
   <canvas id="radarCanvas" class="hidden" width="16" height="12"></canvas>
 
-  <!-- المحرك البرمجي -->
+  <!-- المحرك البرمجي المحدث -->
   <script>
     const SUPERVISOR_PHONE = "966502777884"; // المشرف
     const SELLER_PHONE = "966510205330";     // البائع
+
+    // بيانات حساب مصرف الراجحي لمؤسسة عِـزوة
+    const RAJHI_ACCOUNT = {
+      bank: "مصرف الراجحي",
+      beneficiary: "مؤسسة عِـزوة للتجارة",
+      iban: "SA0380000000000000000000", // يمكنك استبدال الأصفار برقم الآيبان الحقيقي
+      amount: "185"
+    };
 
     const CHANNELS = {
       quran: { name: "القرآن الكريم", short: "القرآن", type: "hls", url: "https://win.holol.com/live/quran/playlist.m3u8" },
@@ -500,8 +552,7 @@
       price: "185",
       originalPrice: "185",
       frontImg: "./model-front.png",
-      backImg: "./model-back.png",
-      qrUrl: "https://ezwa-store.com/p/almasmak"
+      backImg: "./model-back.png"
     };
 
     let currentLayout = 'split';
@@ -522,7 +573,37 @@
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    // ==================== 1. فتح نافذة نداء البائع (Modal بدون نغمة وبدون فتح صفحة تلقائية) ====================
+    // ==================== باركود مصرف الراجحي المباشر ====================
+    function initRajhiQR() {
+      const qrData = encodeURIComponent(`مصرف الراجحي - عِـزوة\nالمستفيد: ${RAJHI_ACCOUNT.beneficiary}\nالآيبان: ${RAJHI_ACCOUNT.iban}\nالمبلغ: ${MASMAK_PRODUCT.price} ريال`);
+      document.getElementById('qrPaymentImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${qrData}`;
+      document.getElementById('ibanText').textContent = RAJHI_ACCOUNT.iban;
+      document.getElementById('bankBeneficiary').textContent = RAJHI_ACCOUNT.beneficiary;
+      document.getElementById('bankAmount').textContent = `${MASMAK_PRODUCT.price} ريال`;
+    }
+
+    function openRajhiPaymentModal() {
+      closeAllModals();
+      document.getElementById('rajhiModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function copyIbanToClipboard() {
+      navigator.clipboard.writeText(RAJHI_ACCOUNT.iban).then(() => {
+        const btn = document.getElementById('btnCopyIban');
+        btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i><span class="text-emerald-400">تم النسخ!</span>';
+        setTimeout(() => {
+          btn.innerHTML = '<i class="fa-solid fa-copy"></i><span>نسخ الآيبان</span>';
+        }, 2000);
+      });
+    }
+
+    function sendReceiptToSeller() {
+      const msg = encodeURIComponent(`السلام عليكم، تم التحويل لحساب الراجحي بقيمة ${MASMAK_PRODUCT.price} ريال لتيشيرت قصر المصمك.\nمرفق إشعار التحويل لتأكيد الاستلام.`);
+      window.open(`https://api.whatsapp.com/send?phone=${SELLER_PHONE}&text=${msg}`, '_blank');
+      closeAllModals();
+    }
+
+    // ==================== نوافذ نداء البائع والمشرف ====================
     function openSellerModal() {
       closeAllModals();
       document.getElementById('sellerCallModal').classList.remove('opacity-0', 'pointer-events-none');
@@ -534,7 +615,6 @@
       closeAllModals();
     }
 
-    // ==================== 2. فتح نافذة نداء المشرف (Modal بدون نغمة) ====================
     function triggerCallSupervisorModal() {
       closeAllModals();
       document.getElementById('callStaffModal').classList.remove('opacity-0', 'pointer-events-none');
@@ -546,7 +626,6 @@
       closeAllModals();
     }
 
-    // ==================== 3. طلب القطعة وإرسالها للمشرف ====================
     function submitReservationToSupervisor() {
       const name = document.getElementById('reserveName').value.trim();
       const phone = document.getElementById('reservePhone').value.trim();
@@ -563,7 +642,7 @@
       window.open(`https://api.whatsapp.com/send?phone=${SUPERVISOR_PHONE}&text=${text}`, '_blank');
     }
 
-    // ==================== 4. التبديل بين الواجهة الأمامية والخلفية ====================
+    // ==================== تبديل صور الواجهة ====================
     function switchProductView(angle) {
       currentViewAngle = angle;
       const img = document.getElementById('mainProductImage');
@@ -584,7 +663,7 @@
       }
     }
 
-    // ==================== 5. التحكم المطلق بالرادار وحفظ حالته ====================
+    // ==================== التحكم الكامل بالرادار وحفظ حالته ====================
     let isRadarActive = localStorage.getItem('ezwa_radar_state') === 'true';
     let radarStream = null;
     let radarInterval = null;
@@ -648,7 +727,7 @@
 
             if (diff > 1200) {
               playGreetingSequence();
-              cooldownTimer = 60; // صمت دقيقة كاملة
+              cooldownTimer = 60; // صمت دقيقة
             }
           }
           lastFrame = frame;
@@ -843,13 +922,9 @@
       const discounted = Math.round(Number(MASMAK_PRODUCT.originalPrice) * 0.9);
       MASMAK_PRODUCT.price = String(discounted);
       document.getElementById('productPrice').textContent = MASMAK_PRODUCT.price;
-      
-      const newUrl = `${MASMAK_PRODUCT.qrUrl}?coupon=EXHIBITION10`;
-      const qrBox = document.getElementById('qrcodeBox');
-      qrBox.innerHTML = '';
-      new QRCode(qrBox, { text: newUrl, width: 64, height: 64, colorDark: "#020617", colorLight: "#ffffff" });
+      initRajhiQR();
 
-      speakSalesmanText(`أبشر! بصفتي ممثل مبيعات عِـزوة، طبقت لك خصم 10% فورياً تقديراً لحضورك في المعرض. أصبح السعر ${discounted} ريال بدلاً من ${MASMAK_PRODUCT.originalPrice}. امسح الكود واستلمها فوراً.`);
+      speakSalesmanText(`أبشر! بصفتي ممثل مبيعات عِـزوة، طبقت لك خصم 10% فورياً تقديراً لحضورك في المعرض. أصبح السعر ${discounted} ريال بدلاً من ${MASMAK_PRODUCT.originalPrice}.`);
     }
 
     function openReserveModal() {
@@ -919,10 +994,8 @@
         response = "فتحت لك مستشار المقاسات الدقيق؛ قوالب التيشيرتات مصممة بقصة بوكس فيت عريضة ومربعة الصدر، لذا خذ مقاسك المعتاد وسيعطيك راحة تامة.";
       } else if (query.includes("سدو") || query.includes("شريحة") || query.includes("تقنية") || query.includes("nfc")) {
         response = "شريحة السدو المدمجة في أسفل التيشيرت مشفرة وتعمل باللمس المباشر بالجوال، تثبت ملكيتك للقطعة وتمنحك نقاطاً لعضوية النخبة.";
-      } else if (query.includes("مصمك") || query.includes("طويق")) {
-        response = "هذه القطعة مستوحاة من عراقة نجد؛ قصر المصمك لرمزية التأسيس، والتطريز والطباعة ثابتان بأعلى معايير الجودة.";
       } else {
-        response = "أهلاً بك، أنا بائعك الرقمي المعتمد في عِـزوة؛ يسعدني خدمتك في الاستفسار عن تيشيرت المصمك، إعطائك خصم المعرض، أو إتمام الدفع لك بـ Apple Pay فوراً.";
+        response = "أهلاً بك، أنا بائعك الرقمي المعتمد في عِـزوة؛ يسعدني خدمتك في الاستفسار عن تيشيرت المصمك أو السداد الفوري عبر حساب الراجحي.";
       }
 
       speakSalesmanText(response);
@@ -1057,7 +1130,7 @@
     }
 
     function closeAllModals() {
-      ['reserveModal', 'voiceSalesmanModal', 'callStaffModal', 'sellerCallModal', 'fitModal', 'zoomModal'].forEach(id => {
+      ['reserveModal', 'voiceSalesmanModal', 'callStaffModal', 'sellerCallModal', 'rajhiModal', 'fitModal', 'zoomModal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
@@ -1103,10 +1176,8 @@
       if (k === 'j') changeChannel('aljazeera');
     });
 
-    // إنشاء كود QR لمصمك
-    const qrBox = document.getElementById('qrcodeBox');
-    qrBox.innerHTML = '';
-    new QRCode(qrBox, { text: MASMAK_PRODUCT.qrUrl, width: 64, height: 64, colorDark: "#020617", colorLight: "#ffffff" });
+    // توليد باركود الراجحي فوراً
+    initRajhiQR();
 
     // تطبيق حالة الرادار المحفوظة
     renderRadarUI();
