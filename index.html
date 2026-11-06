@@ -150,8 +150,9 @@
             <kbd class="text-[9px] text-slate-500 font-mono">N</kbd>
           </button>
 
-          <button onclick="toggleFitAdvisorModal(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-ruler-combined text-amber-400"></i> مستشار المقاسات</span>
+          <!-- مستشار المقاسات الحسابي للبوكس فيت -->
+          <button onclick="toggleFitAdvisorModal(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-amber-300">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-ruler-combined text-amber-400"></i> مستشار المقاسات (Boxy Fit)</span>
             <kbd class="text-[9px] text-slate-500 font-mono">M</kbd>
           </button>
           
@@ -367,42 +368,77 @@
       </div>
     </div>
 
-    <!-- نافذة مستشار المقاسات -->
-    <div id="fitModal" class="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/30 text-right">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-black text-white flex items-center gap-2">
-            <i class="fa-solid fa-ruler-combined text-amber-400"></i>
-            مستشار المقاسات الحاسم
-          </h3>
+    <!-- نافذة مستشار المقاسات الدقيق (هندسة البوكس فيت) -->
+    <div id="fitModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-lg w-full border border-amber-500/30 text-right shadow-2xl">
+        <div class="flex justify-between items-center mb-3">
+          <div>
+            <h3 class="text-lg font-black text-white flex items-center gap-2">
+              <i class="fa-solid fa-ruler-combined text-amber-400"></i>
+              مستشار قصة البوكس فيت (Boxy Fit)
+            </h3>
+            <span class="text-[11px] text-amber-400/90 font-bold block mt-0.5">
+              * قوالب البوكس فيت عريضة ومربعة الصدر بطبيعتها (Wide Chest - Box Cut)
+            </span>
+          </div>
           <button onclick="closeAllModals()" class="text-slate-400 hover:text-white text-sm">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
 
-        <div class="space-y-3 text-xs">
+        <div class="space-y-3.5 text-xs">
+          <!-- 1. الطول -->
           <div>
-            <label class="text-slate-400 block mb-1">حدد طولك التقريبي:</label>
-            <div class="grid grid-cols-3 gap-2">
-              <button onclick="calcFit('short', currentW)" class="p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800">160-172</button>
-              <button onclick="calcFit('med', currentW)" class="p-2 rounded-xl bg-amber-500 text-slate-950 font-bold">173-182</button>
-              <button onclick="calcFit('tall', currentW)" class="p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800">183+</button>
+            <label class="text-slate-400 block mb-1 font-bold">1. الطول التقريبي (سم):</label>
+            <div class="grid grid-cols-4 gap-1.5" id="heightGroup">
+              <button onclick="selectFitParam('height', 'short', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">160-168</button>
+              <button onclick="selectFitParam('height', 'med', this)" class="fit-btn p-2 rounded-xl bg-amber-500 text-slate-950 font-bold border border-amber-400 shadow">169-176</button>
+              <button onclick="selectFitParam('height', 'tall', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">177-184</button>
+              <button onclick="selectFitParam('height', 'xtall', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">185+</button>
             </div>
           </div>
 
+          <!-- 2. الوزن -->
           <div>
-            <label class="text-slate-400 block mb-1">حدد وزنك التقريبي:</label>
-            <div class="grid grid-cols-3 gap-2">
-              <button onclick="calcFit(currentH, 'slim')" class="p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800">60-72</button>
-              <button onclick="calcFit(currentH, 'fit')" class="p-2 rounded-xl bg-amber-500 text-slate-950 font-bold">73-85</button>
-              <button onclick="calcFit(currentH, 'plus')" class="p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800">86+</button>
+            <label class="text-slate-400 block mb-1 font-bold">2. الوزن التقريبي (كجم):</label>
+            <div class="grid grid-cols-5 gap-1.5" id="weightGroup">
+              <button onclick="selectFitParam('weight', 'w60', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">55-68</button>
+              <button onclick="selectFitParam('weight', 'w75', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">69-79</button>
+              <button onclick="selectFitParam('weight', 'w85', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">80-89</button>
+              <button onclick="selectFitParam('weight', 'w95', this)" class="fit-btn p-2 rounded-xl bg-amber-500 text-slate-950 font-bold border border-amber-400 shadow">90-102</button>
+              <button onclick="selectFitParam('weight', 'w110', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">103+</button>
             </div>
           </div>
 
-          <div class="p-3 bg-amber-500/10 rounded-2xl border border-amber-500/20 mt-4">
-            <span class="text-[11px] text-amber-400 font-bold block">النتيجة الموصى بها:</span>
-            <div id="modalFitResult" class="text-xl font-black text-white mt-0.5">المقاس المثالي: L</div>
-            <p id="modalFitNote" class="text-[11px] text-slate-300 mt-1">يعطيك قصة بوكس فيت مضبوطة وكتف منسدل متزن.</p>
+          <!-- 3. تفضيل القصة -->
+          <div>
+            <label class="text-slate-400 block mb-1 font-bold">3. النمط المفضل في اللبس:</label>
+            <div class="grid grid-cols-2 gap-2" id="styleGroup">
+              <button onclick="selectFitParam('style', 'regular', this)" class="fit-btn p-2 rounded-xl bg-amber-500 text-slate-950 font-bold border border-amber-400 shadow">
+                <span class="block font-bold">بوكس فيت مضبوط (Regular Boxy)</span>
+                <span class="text-[10px] text-slate-950 opacity-90">اتساع صدر متزن + طول مثالي عند الحزام</span>
+              </button>
+              <button onclick="selectFitParam('style', 'baggy', this)" class="fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700">
+                <span class="block font-bold">فضفاض حر (Streetwear Baggy)</span>
+                <span class="text-[10px] text-slate-400">أوفر سايز واسع جداً وكتف منسدل بعمق</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- بطاقة النتيجة الحسابية -->
+          <div class="p-3.5 bg-amber-500/10 rounded-2xl border border-amber-500/30 mt-3">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] text-amber-400 font-bold">المقاس الهندسي الموصى به:</span>
+              <span id="dimensionBadge" class="text-[10px] bg-slate-900 text-amber-300 border border-amber-500/20 px-2 py-0.5 rounded-md font-mono">الصدر: 128 سم | الطول: 74 سم</span>
+            </div>
+            
+            <div class="flex items-baseline gap-2 mt-1">
+              <div id="modalFitResult" class="text-3xl font-black text-amber-400 font-mono">XL</div>
+              <span class="text-xs text-slate-300 font-bold" id="fitCutTitle">(يعادل وسع 2XL في التيشيرت العادي)</span>
+            </div>
+            <p id="modalFitNote" class="text-[11px] text-slate-300 mt-1.5 leading-relaxed">
+              لأن باترون البوكس فيت عريض ومربع الصدر، فإن مقاس XL يمنحك راحة تامة في محيط البطن والصدر دون ملامسة للجسم، مع طول متناسق وملموم تماماً لطول 170 سم.
+            </p>
           </div>
         </div>
       </div>
@@ -411,7 +447,6 @@
     <!-- شاشة أوقات الصلاة بالرياض (مع زر إغلاق وتخطي فوري) -->
     <div id="prayerOverlay" class="absolute inset-0 bg-slate-950/95 z-50 backdrop-blur-md flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none">
       <div class="text-center p-8 glass-card rounded-3xl border border-amber-500/30 max-w-sm mx-4 shadow-2xl relative">
-        <!-- زر إغلاق فوري -->
         <button onclick="dismissPrayerOverlay()" title="إغلاق فوري (Esc)" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center transition">
           <i class="fa-solid fa-xmark"></i>
         </button>
@@ -488,8 +523,11 @@
     let activeChannelKey = 'quran';
     let hlsInstance = null;
     let timerElapsed = 0;
-    let currentH = 'med';
-    let currentW = 'fit';
+
+    // المتغيرات الافتراضية للقياس (مطابقة لقياسك 170 سم / 94 كجم)
+    let selectedH = 'med';         // 169-176
+    let selectedW = 'w95';         // 90-102
+    let selectedStyle = 'regular'; // بوكس فيت متزن
 
     let audioCtx = null;
     const localWelcomeAudio = new Audio('./welcome.mp3');
@@ -672,7 +710,7 @@
       }, 1000);
     }
 
-    // ==================== دوال الصلاة والخروج الفوري ====================
+    // ==================== مواقيت الصلاة والخروج الفوري ====================
     const prayerTimesRiyadh = [
       { name: "الفجر", time: "04:55" },
       { name: "الظهر", time: "11:42" },
@@ -687,7 +725,7 @@
     function dismissPrayerOverlay() {
       const overlay = document.getElementById('prayerOverlay');
       if (overlay) overlay.classList.add('opacity-0', 'pointer-events-none');
-      dismissedPrayerName = currentPrayerActive; // حفظ اسم الصلاة لمنع فتحها ثانية في نفس الوقت
+      dismissedPrayerName = currentPrayerActive;
     }
 
     function checkPrayer() {
@@ -714,7 +752,6 @@
       const overlay = document.getElementById('prayerOverlay');
       if (activePrayer) {
         currentPrayerActive = activePrayer.name;
-        // إذا لم يضغط المستخدم على تخطي
         if (dismissedPrayerName !== activePrayer.name) {
           document.getElementById('prayerOverlayTitle').textContent = `حان الآن موعد صلاة ${activePrayer.name}`;
           overlay.classList.remove('opacity-0', 'pointer-events-none');
@@ -725,6 +762,79 @@
         dismissedPrayerName = null;
         overlay.classList.add('opacity-0', 'pointer-events-none');
       }
+    }
+
+    // ==================== منطق مستشار البوكس فيت الدقيق ====================
+    function selectFitParam(type, val, btn) {
+      if (type === 'height') {
+        selectedH = val;
+        document.querySelectorAll('#heightGroup .fit-btn').forEach(b => {
+          b.className = "fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700";
+        });
+      } else if (type === 'weight') {
+        selectedW = val;
+        document.querySelectorAll('#weightGroup .fit-btn').forEach(b => {
+          b.className = "fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700";
+        });
+      } else if (type === 'style') {
+        selectedStyle = val;
+        document.querySelectorAll('#styleGroup .fit-btn').forEach(b => {
+          b.className = "fit-btn p-2 rounded-xl bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700";
+        });
+      }
+      btn.className = "fit-btn p-2 rounded-xl bg-amber-500 text-slate-950 font-bold border border-amber-400 shadow";
+      recalcAccurateFit();
+    }
+
+    function recalcAccurateFit() {
+      let finalSize = "XL";
+      let title = "(يعادل وسع 2XL في التيشيرت العادي)";
+      let dim = "الصدر: 128 سم | الطول: 74 سم";
+      let note = "";
+
+      // جدول قياسات البوكس فيت الحقيقي (قالب عريض الصدر، ملموم الطول)
+      const sizeSpecs = {
+        "S":   { chest: 114, len: 68 },
+        "M":   { chest: 118, len: 70 },
+        "L":   { chest: 122, len: 72 },
+        "XL":  { chest: 128, len: 74 },
+        "2XL": { chest: 134, len: 76 },
+        "3XL": { chest: 140, len: 78 }
+      };
+
+      if (selectedW === 'w60') {
+        finalSize = (selectedStyle === 'baggy') ? "M" : "S";
+      } else if (selectedW === 'w75') {
+        finalSize = (selectedStyle === 'baggy') ? "L" : "M";
+      } else if (selectedW === 'w85') {
+        finalSize = (selectedStyle === 'baggy') ? "XL" : "L";
+      } else if (selectedW === 'w95') {
+        // فئة 90-102 كجم (وزنك 94 كجم)
+        finalSize = (selectedStyle === 'baggy') ? "2XL" : "XL";
+      } else if (selectedW === 'w110') {
+        finalSize = (selectedStyle === 'baggy') ? "3XL" : "2XL";
+      }
+
+      // تعديل خاص بالطول المرتفع أو القصير
+      if (selectedH === 'xtall' && (finalSize === 'S' || finalSize === 'M')) {
+        finalSize = (finalSize === 'S') ? 'M' : 'L';
+      }
+
+      const sp = sizeSpecs[finalSize];
+      dim = `الصدر: ${sp.chest} سم | الطول: ${sp.len} سم`;
+
+      if (selectedStyle === 'baggy') {
+        title = `(اتساع أوفر سايز فضفاض يعادل ${finalSize === '2XL' ? '3XL' : 'أكبر بمقاس'} في العادي)`;
+        note = `بما أن باترون البوكس فيت مصمم بصدر عريض، فإن مقاس ${finalSize} سيمنحك وسعاً مريحاً جداً لا يلامس الجسم إطلاقاً وكتفاً منسدلاً بعمق أنيق.`;
+      } else {
+        title = `(يعادل وسع ${finalSize === 'XL' ? '2XL' : 'مقاس أكبر'} في التيشيرتات العادية)`;
+        note = `لأن قصة البوكس فيت عريضة ومربعة الصدر بطبيعتها؛ فإن مقاس ${finalSize} يمنحك راحة تامة في محيط الصدر والبطن دون شد، مع طول مثالي ملموم عند الحزام تماماً.`;
+      }
+
+      document.getElementById('modalFitResult').textContent = finalSize;
+      document.getElementById('fitCutTitle').textContent = title;
+      document.getElementById('dimensionBadge').textContent = dim;
+      document.getElementById('modalFitNote').textContent = note;
     }
 
     // ==================== دوال الابتكارات ====================
@@ -758,7 +868,10 @@
       const modal = document.getElementById('fitModal');
       const isVisible = !modal.classList.contains('opacity-0');
       closeAllModals();
-      if (!isVisible) modal.classList.remove('opacity-0', 'pointer-events-none');
+      if (!isVisible) {
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        recalcAccurateFit();
+      }
     }
 
     function closeAllModals() {
@@ -767,19 +880,6 @@
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
       dismissPrayerOverlay();
-    }
-
-    function calcFit(h, w) {
-      currentH = h;
-      currentW = w;
-      let res = "L";
-      let desc = "كتف منسدل وقصة بوكس فيت متزنة.";
-      if (h === 'short' && w === 'slim') { res = "S"; desc = "قصة مضبوطة بدون زيادة في الطول."; }
-      else if (h === 'short' || w === 'slim') { res = "M"; desc = "مظهر أوفر سايز رزين وعصري."; }
-      else if (h === 'tall' || w === 'plus') { res = "XL"; desc = "اتساع انسيابي مع راحة كاملة."; }
-
-      document.getElementById('modalFitResult').textContent = `المقاس المثالي: ${res}`;
-      document.getElementById('modalFitNote').textContent = desc;
     }
 
     // الرادار ومستشعر التردد
@@ -886,7 +986,6 @@
       if (k === 'n') triggerNFCModal();
       if (k === 'm') toggleFitAdvisorModal();
       
-      // زر الهروب يغلق النوافذ والصلاة فوراً
       if (e.key === 'Escape') { 
         closeAllModals(); 
         closeAllDropdowns(); 
@@ -902,6 +1001,7 @@
 
     startTimerLoop();
     setScreenLayout('split');
+    recalcAccurateFit();
   </script>
 </body>
 </html>
