@@ -26,6 +26,7 @@
   <!-- الشريط العلوي -->
   <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-md px-6 py-2.5 flex items-center justify-between border-b border-slate-900 shadow-xl">
     
+    <!-- يمين الشريط -->
     <div class="flex items-center gap-2">
       <button onclick="setScreenLayout('catalog')" id="btnCatalog" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-1.5">
         <i class="fa-solid fa-shirt text-[11px]"></i>
@@ -74,10 +75,10 @@
 
     <!-- يسار الشريط -->
     <div class="flex items-center gap-2">
-      <!-- زر تشغيل/إيقاف الرادار الحقيقي -->
+      <!-- زر الرادار مع الحفظ في الذاكرة لمنع العمل التلقائي بعد التحديث -->
       <button onclick="togglePresenceRadar()" id="btnRadarToggle" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 transition flex items-center gap-2 shadow">
-        <span id="radarStatusDot" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-        <span id="radarBtnText">الرادار: نشط (R)</span>
+        <span id="radarStatusDot" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
+        <span id="radarBtnText">الرادار: متوقف (R)</span>
       </button>
 
       <!-- مستشار المقاسات -->
@@ -92,10 +93,10 @@
         <span>تحدث مع البائع (V)</span>
       </button>
 
-      <!-- نداء المشرف (مباشر لرقم المشرف) -->
-      <button onclick="triggerCallStaffModal()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
-        <i class="fa-solid fa-bell text-[11px] text-rose-400"></i>
-        <span>نداء المشرف (C)</span>
+      <!-- نداء البائع في الشريط العلوي (رقم البائع: 966510205330) -->
+      <button onclick="directCallSeller()" title="نداء البائع عبر الواتساب" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+        <i class="fa-solid fa-user-tag text-[11px] text-amber-400"></i>
+        <span>نداء البائع (C)</span>
       </button>
 
       <!-- موعد الصلاة والساعة -->
@@ -119,10 +120,10 @@
   <!-- مساحة العرض الرئيسية -->
   <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-12 fade-transition">
 
-    <!-- 1. قسم الكتالوج والمنتج المعروض المتنقل كلياً -->
+    <!-- 1. قسم الكتالوج (مثبت على قصر المصمك ليتطابق مع الصور تماماً) -->
     <section id="productSection" class="w-1/2 h-full p-5 lg:p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition overflow-y-auto">
       
-      <!-- ترويسة المتجر مع الشعار -->
+      <!-- ترويسة المتجر -->
       <div class="flex items-center justify-between border-b border-slate-900 pb-2.5">
         <div class="flex items-center gap-3">
           <img src="./logo.jpeg" alt="EZWA Logo" class="w-9 h-9 object-contain rounded-xl border border-amber-500/20 bg-slate-900 p-0.5 shadow-md">
@@ -137,27 +138,27 @@
         </span>
       </div>
 
-      <!-- مساحة عرض المنتج الكبيرة (الصورة تتغير كلياً مع كل صنف) -->
+      <!-- منطقة عرض المنتج (المصمك مع صوره الدقيقة) -->
       <div class="my-auto py-2">
         <div class="grid grid-cols-12 gap-5 items-stretch">
           
           <!-- صورة المنتج -->
           <div class="col-span-6 flex flex-col items-center">
             <div class="w-full h-[380px] lg:h-[430px] rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-center p-2 relative overflow-hidden shadow-2xl group">
-              <img id="mainProductImage" src="./model-front.png" alt="Product View" class="w-full h-full object-contain rounded-xl fade-transition cursor-zoom-in" onclick="openZoomModal()">
+              <img id="mainProductImage" src="./model-front.png" alt="تيشيرت قصر المصمك" class="w-full h-full object-contain rounded-xl fade-transition cursor-zoom-in" onclick="openZoomModal()">
               
-              <!-- أيقونة عدسة التكبير -->
+              <!-- عدسة التكبير -->
               <button onclick="openZoomModal()" title="تكبير ومعاينة أدق التفاصيل" class="absolute top-3 left-3 w-8 h-8 rounded-xl bg-black/70 hover:bg-amber-500 text-white hover:text-slate-950 backdrop-blur-md border border-white/10 hover:border-amber-400 flex items-center justify-center transition shadow-lg">
                 <i class="fa-solid fa-magnifying-glass-plus text-xs"></i>
               </button>
 
-              <!-- شارة زاوية العرض واسم القطعة على الصورة لضمان التمييز -->
+              <!-- شارة الزاوية -->
               <span id="viewAngleBadge" class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-black/80 backdrop-blur-md text-[10px] font-bold text-amber-300 border border-amber-500/30 shadow-md">
-                الواجهة الأمامية
+                المصمك • الواجهة الأمامية
               </span>
             </div>
 
-            <!-- أزرار التبديل بين الواجهة الأمامية والخلفية -->
+            <!-- أزرار التبديل بين الأمام والخلف -->
             <div class="flex gap-2 mt-2.5 w-full justify-center">
               <button onclick="switchProductView('front')" id="btnFrontView" class="flex-1 py-1.5 rounded-xl bg-amber-500 text-slate-950 text-xs font-black shadow-md transition flex items-center justify-center gap-1.5">
                 <i class="fa-solid fa-shirt text-[11px]"></i>
@@ -170,14 +171,14 @@
             </div>
           </div>
 
-          <!-- تفاصيل القطعة المتزامنة -->
+          <!-- تفاصيل قصر المصمك المطابقة 100% للصورة -->
           <div class="col-span-6 flex flex-col justify-between py-1">
             <div>
-              <span id="productTag" class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md inline-block">إصدار شموخ نجد</span>
-              <h2 id="productTitle" class="text-2xl lg:text-3xl font-black text-white mt-2 leading-tight">تيشيرت بوكس فيت - جبل طويق</h2>
+              <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md inline-block">الإصدار الأكثر طلباً</span>
+              <h2 class="text-2xl lg:text-3xl font-black text-white mt-2 leading-tight">تيشيرت بوكس فيت - قصر المصمك</h2>
               
               <div class="flex items-baseline gap-2 mt-3">
-                <span id="productPrice" class="text-3xl lg:text-4xl font-black text-amber-400">195</span>
+                <span id="productPrice" class="text-3xl lg:text-4xl font-black text-amber-400">185</span>
                 <span class="text-xs text-slate-400 font-bold">ريال سعودي</span>
               </div>
 
@@ -186,8 +187,8 @@
                 <span>دفع فوري بـ Apple Pay ومدى</span>
               </div>
 
-              <p id="productDescription" class="text-slate-300 text-xs mt-4 leading-relaxed bg-slate-900/60 p-3 rounded-xl border border-slate-800/80">
-                مستوحى من شموخ جبال طويق الراسخة؛ خامة قطنية ثقيلة بياقة مزدوجة لا ترتخي، وقصة بوكس فيت متزنة مع رقاقة NFC مدمجة في حاشية السدو لتوثيق ملكية القطعة.
+              <p class="text-slate-300 text-xs mt-4 leading-relaxed bg-slate-900/60 p-3 rounded-xl border border-slate-800/80">
+                مستوحى من قصر المصمك الشاهد على ملحمة توحيد المملكة؛ قماش قطني معالج عالي الكثافة، طبعة خلفية فاخرة غير قابلة للتشقق، وشريحة NFC مشفرة بحاشية السدو لتوثيق أصالة القطعة.
               </p>
             </div>
 
@@ -208,7 +209,7 @@
         <div class="mt-4 pt-3 border-t border-slate-900">
           <span class="text-[11px] text-slate-400 font-bold block mb-2">خدمات وصلاحيات المعرض الفورية:</span>
           <div class="grid grid-cols-4 gap-2">
-            <!-- طلب مساعدة المشرف -->
+            <!-- نداء المشرف (رقم المشرف: 966502777884) -->
             <button onclick="triggerCallStaffModal()" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
               <i class="fa-solid fa-headset text-sm mb-1 text-amber-400"></i>
               <span class="font-bold text-[10px]">نداء المشرف</span>
@@ -220,10 +221,10 @@
               <span class="font-bold text-[10px]">خصم 10% فوري</span>
             </button>
 
-            <!-- حجز القطعة مع البائع -->
+            <!-- طلب وحجز القطعة (مرتبط بالمشرف: 966502777884) -->
             <button onclick="openReserveModal()" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 hover:text-white transition flex flex-col items-center justify-center text-center shadow">
               <i class="fa-solid fa-bookmark text-sm mb-1 text-purple-400"></i>
-              <span class="font-bold text-[10px]">حجز مع البائع</span>
+              <span class="font-bold text-[10px]">طلب القطعة</span>
             </button>
 
             <!-- شرح السدو والـ NFC -->
@@ -235,32 +236,17 @@
         </div>
       </div>
 
-      <!-- محطة السداد الذاتي والباركود -->
+      <!-- محطة السداد الذاتي والباركود الخاص بالمصمك -->
       <div class="border-t border-slate-900 pt-2.5">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
             <div class="relative p-1.5 bg-white rounded-xl shadow-md shrink-0">
               <div id="qrcodeBox"></div>
-              <div class="absolute -top-1.5 -right-1.5 w-5 h-5">
-                <svg class="w-full h-full timer-ring" viewBox="0 0 36 36">
-                  <path class="text-slate-800" stroke-width="4" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                  <path id="timerPath" class="text-amber-400" stroke-dasharray="100, 100" stroke-width="4" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                </svg>
-              </div>
             </div>
             <div class="text-right">
-              <span class="text-xs font-black text-white block">امسح للسداد والاستلام المباشر</span>
+              <span class="text-xs font-black text-white block">امسح لسداد واستلام تيشيرت المصمك</span>
               <span class="text-[10px] text-slate-400 block mt-0.5">Apple Pay ومدى • استلم مقاسك من المعرض مباشرة</span>
             </div>
-          </div>
-
-          <div class="flex gap-2">
-            <button onclick="prevProduct()" class="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
-              <i class="fa-solid fa-arrow-right text-xs"></i>
-            </button>
-            <button onclick="nextProduct()" class="w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
-              <i class="fa-solid fa-arrow-left text-xs"></i>
-            </button>
           </div>
         </div>
       </div>
@@ -386,16 +372,16 @@
       </div>
     </div>
 
-    <!-- نافذة حجز القطعة (مرتبطة بويندوز واتساب البائع المخصص) -->
+    <!-- نافذة طلب القطعة وحجزها (مرتبطة بويندوز واتساب المشرف: +966502777884) -->
     <div id="reserveModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/40 text-right shadow-2xl relative">
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
           <i class="fa-solid fa-xmark"></i>
         </button>
         <span class="text-amber-400 text-[10px] font-bold uppercase tracking-widest block">EZWA Order Reservation</span>
-        <h3 class="text-lg font-black text-white mt-1">حجز القطعة مع البائع</h3>
+        <h3 class="text-lg font-black text-white mt-1">طلب وحجز القطعة</h3>
         <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-          أدخل اسمك ورقم جوالك ليتلقى **البائع (+966510205330)** طلب الحجز فوراً عبر واتساب لحفظ مقاسك لمدة ساعتين:
+          أدخل اسمك ورقم جوالك ليتم إرسال طلب الحجز إلى **مشرف المعرض (+966502777884)** لتجهيز مقاسك فوراً:
         </p>
         <div class="space-y-3 my-4 text-xs">
           <div>
@@ -407,14 +393,14 @@
             <input type="tel" id="reservePhone" placeholder="05XXXXXXXX" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white focus:border-amber-400 outline-none font-mono text-left" dir="ltr" />
           </div>
         </div>
-        <button onclick="submitReservationToSeller()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg flex items-center justify-center gap-2">
+        <button onclick="submitReservationToSupervisor()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg flex items-center justify-center gap-2">
           <i class="fa-brands fa-whatsapp text-sm"></i>
-          <span>تأكيد وإرسال لواتساب البائع</span>
+          <span>تأكيد وإرسال لواتساب المشرف</span>
         </button>
       </div>
     </div>
 
-    <!-- نافذة نداء المشرف (مرتبطة بويندوز واتساب المشرف المخصص) -->
+    <!-- نافذة نداء المشرف (مرتبطة بويندوز واتساب المشرف: +966502777884) -->
     <div id="callStaffModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-sm w-full border border-rose-500/40 text-center relative shadow-2xl">
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
@@ -434,7 +420,7 @@
       </div>
     </div>
 
-    <!-- شاشة أوقات الصلاة -->
+    <!-- شاشة مواقيت الصلاة -->
     <div id="prayerOverlay" class="absolute inset-0 bg-slate-950/95 z-50 backdrop-blur-md flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none">
       <div class="text-center p-8 glass-card rounded-3xl border border-amber-500/30 max-w-sm mx-4 shadow-2xl relative">
         <button onclick="dismissPrayerOverlay()" title="إغلاق فوري (Esc)" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center transition">
@@ -467,11 +453,11 @@
   <video id="radarCamera" class="hidden" autoplay playsinline muted></video>
   <canvas id="radarCanvas" class="hidden" width="16" height="12"></canvas>
 
-  <!-- ==================== المحرك البرمجي المستقل والمفصول تماماً ==================== -->
+  <!-- ==================== المحرك البرمجي ==================== -->
   <script>
-    // الأرقام المفصولة بدقة
-    const SUPERVISOR_PHONE = "966502777884"; // رقم المشرف
-    const SELLER_PHONE = "966510205330";     // رقم البائع
+    // الأرقام المنفصلة
+    const SUPERVISOR_PHONE = "966502777884"; // المشرف
+    const SELLER_PHONE = "966510205330";     // البائع
 
     const CHANNELS = {
       quran: { name: "القرآن الكريم", short: "القرآن", type: "hls", url: "https://win.holol.com/live/quran/playlist.m3u8" },
@@ -480,54 +466,19 @@
       aljazeera: { name: "الجزيرة", short: "الجزيرة", type: "iframe", url: "https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&mute=1&playsinline=1" }
     };
 
-    // مصفوفة المنتجات المتنقلة بوضوح
-    const PRODUCTS = [
-      {
-        tag: "إصدار شموخ نجد",
-        title: "تيشيرت بوكس فيت - جبل طويق",
-        price: "195",
-        originalPrice: "195",
-        description: "مستوحى من شموخ جبال طويق الراسخة؛ خامة قطنية ثقيلة بياقة مزدوجة لا ترتخي، وقصة بوكس فيت متزنة مع رقاقة NFC مدمجة في حاشية السدو لتوثيق ملكية القطعة.",
-        frontImg: "./model-front.png",
-        backImg: "./model-back.png",
-        badge: "طويق • الواجهة الأمامية",
-        badgeBack: "طويق • الواجهة الخلفية",
-        filter: "none",
-        qrUrl: "https://ezwa-store.com/p/tuwaiq"
-      },
-      {
-        tag: "الإصدار الأكثر طلباً",
-        title: "تيشيرت بوكس فيت - قصر المصمك",
-        price: "185",
-        originalPrice: "185",
-        description: "مستوحى من قصر المصمك الشاهد على ملحمة توحيد المملكة؛ قماش قطني معالج عالي الكثافة، طبعة خلفية فاخرة غير قابلة للتشقق، وشريحة NFC مشفرة بحاشية السدو.",
-        frontImg: "./model-front.png",
-        backImg: "./model-back.png",
-        badge: "المصمك • الواجهة الأمامية",
-        badgeBack: "المصمك • الواجهة الخلفية",
-        filter: "contrast(1.08) brightness(0.96) sepia(0.12)", // لمسة نجدية دافئة تميز المصمك
-        qrUrl: "https://ezwa-store.com/p/almasmak"
-      },
-      {
-        tag: "خامات مبتكرة للتمارين",
-        title: "التشكيلة الرياضية (Top Giving)",
-        price: "140",
-        originalPrice: "140",
-        description: "نسيج رياضي مسامي فائق الخفة ومقاوم للتعرق، مصمم للأداء العالي والتمارين الرياضية اليومية مع مرونة تامة وثبات بالألوان بعد الغسيل المتكرر.",
-        frontImg: "./model-front.png",
-        backImg: "./model-back.png",
-        badge: "رياضي • الواجهة الأمامية",
-        badgeBack: "رياضي • الواجهة الخلفية",
-        filter: "contrast(1.15) saturate(1.2)", // لمسة رياضية مشبعة وحيوية
-        qrUrl: "https://ezwa-store.com/p/sports-top"
-      }
-    ];
+    // منتج قصر المصمك الثابت والمتوافق 100% مع صور model-front و model-back
+    const MASMAK_PRODUCT = {
+      title: "تيشيرت بوكس فيت - قصر المصمك",
+      price: "185",
+      originalPrice: "185",
+      frontImg: "./model-front.png",
+      backImg: "./model-back.png",
+      qrUrl: "https://ezwa-store.com/p/almasmak"
+    };
 
-    let currentProductIndex = 0;
     let currentLayout = 'split';
     let activeChannelKey = 'quran';
     let hlsInstance = null;
-    let timerElapsed = 0;
     let hasInteracted = false;
     let currentViewAngle = 'front';
 
@@ -543,123 +494,93 @@
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    // ==================== 1. فصل نداء المشرف لواتساب المشرف فقط ====================
+    // ==================== 1. نداء البائع بالشريط العلوي (واتساب البائع: 966510205330) ====================
+    function directCallSeller() {
+      playGreetingSequence();
+      const msg = encodeURIComponent("السلام عليكم، مطلوب حضور البائع عند الشاشة التفاعلية لخدمة عميل الآن.");
+      const waUrl = `https://api.whatsapp.com/send?phone=${SELLER_PHONE}&text=${msg}`;
+      window.open(waUrl, '_blank');
+      alert('تم إرسال إشعار فوري لواتساب البائع (+966510205330)');
+    }
+
+    // ==================== 2. نداء المشرف بالسفلي (واتساب المشرف: 966502777884) ====================
     function sendSupervisorWhatsAppAlert() {
       playGreetingSequence();
-      const currentP = PRODUCTS[currentProductIndex];
-      const msg = encodeURIComponent(`نداء عاجل لمشرف المعرض!\nيوجد عميل عند الشاشة التفاعلية يطلب المساعدة أمام معروضات: ${currentP.title}`);
+      const msg = encodeURIComponent("نداء عاجل لمشرف المعرض!\nيوجد عميل عند الشاشة التفاعلية يطلب مساعدة المشرف أمام معروضات قصر المصمك.");
       const waUrl = `https://api.whatsapp.com/send?phone=${SUPERVISOR_PHONE}&text=${msg}`;
       window.open(waUrl, '_blank');
       alert('تم إرسال إشعار فوري لمشرف المعرض (+966502777884)');
       closeAllModals();
     }
 
-    // ==================== 2. فصل حجز القطعة لواتساب البائع فقط ====================
-    function submitReservationToSeller() {
+    // ==================== 3. طلب القطعة وحجزها (واتساب المشرف: 966502777884) ====================
+    function submitReservationToSupervisor() {
       const name = document.getElementById('reserveName').value.trim();
       const phone = document.getElementById('reservePhone').value.trim();
-      const currentP = PRODUCTS[currentProductIndex];
 
       if (!name || !phone) {
-        alert("يرجى إدخال الاسم ورقم الجوال لتأكيد الحجز.");
+        alert("يرجى إدخال الاسم ورقم الجوال لتأكيد الطلب.");
         return;
       }
 
       closeAllModals();
-      speakSalesmanText(`تم يا ${name}! تم إرسال طلب حجز مقاسك للبائع مباشرة لمدة ساعتين. خذ راحتك في التجول ويسعدنا خدمتك!`);
+      speakSalesmanText(`تم يا ${name}! تم إرسال طلب حجز مقاسك لمشرف المعرض مباشرة لمدة ساعتين. خذ راحتك في التجول ويسعدنا خدمتك!`);
 
-      const text = encodeURIComponent(`طلب حجز قطعة جديد من الشاشة التفاعلية:\n• اسم العميل: ${name}\n• جوال العميل: ${phone}\n• الصنف: ${currentP.title}\n• السعر: ${currentP.price} ريال\nيرجى تجنيب المقاس فوراً.`);
-      const waUrl = `https://api.whatsapp.com/send?phone=${SELLER_PHONE}&text=${text}`;
+      const text = encodeURIComponent(`طلب حجز وتجهيز قطعة جديد:\n• اسم العميل: ${name}\n• رقم الجوال: ${phone}\n• الصنف: ${MASMAK_PRODUCT.title}\n• السعر: ${MASMAK_PRODUCT.price} ريال\nيرجى تجهيز المقاس في المعرض.`);
+      const waUrl = `https://api.whatsapp.com/send?phone=${SUPERVISOR_PHONE}&text=${text}`;
       window.open(waUrl, '_blank');
-      alert(`تم إرسال طلب الحجز بنجاح لرقم البائع (+966510205330) باسم: ${name}`);
+      alert(`تم إرسال طلب الحجز بنجاح لمشرف المعرض (+966502777884) باسم: ${name}`);
     }
 
-    // ==================== 3. التبديل المرئي الكامل للصور والمعلومات ====================
+    // ==================== 4. التبديل بين الواجهة الأمامية والخلفية ====================
     function switchProductView(angle) {
       currentViewAngle = angle;
       const img = document.getElementById('mainProductImage');
       const badge = document.getElementById('viewAngleBadge');
       const btnF = document.getElementById('btnFrontView');
       const btnB = document.getElementById('btnBackView');
-      const currentP = PRODUCTS[currentProductIndex];
-
-      img.style.filter = currentP.filter;
 
       if (angle === 'front') {
-        img.src = currentP.frontImg;
-        badge.textContent = currentP.badge;
+        img.src = MASMAK_PRODUCT.frontImg;
+        badge.textContent = "المصمك • الواجهة الأمامية";
         btnF.className = "flex-1 py-1.5 rounded-xl bg-amber-500 text-slate-950 text-xs font-black shadow-md transition flex items-center justify-center gap-1.5";
         btnB.className = "flex-1 py-1.5 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5";
       } else {
-        img.src = currentP.backImg;
-        badge.textContent = currentP.badgeBack;
+        img.src = MASMAK_PRODUCT.backImg;
+        badge.textContent = "المصمك • الواجهة الخلفية";
         btnB.className = "flex-1 py-1.5 rounded-xl bg-amber-500 text-slate-950 text-xs font-black shadow-md transition flex items-center justify-center gap-1.5";
         btnF.className = "flex-1 py-1.5 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5";
       }
     }
 
-    function updateProduct(index) {
-      const p = PRODUCTS[index];
-      document.getElementById('productTag').textContent = p.tag;
-      document.getElementById('productTitle').textContent = p.title;
-      document.getElementById('productPrice').textContent = p.price;
-      document.getElementById('productDescription').textContent = p.description;
-
-      // تحديث فوري للصورة مع تأثير انتقال واضح
-      const img = document.getElementById('mainProductImage');
-      img.classList.add('opacity-30', 'scale-95');
-      setTimeout(() => {
-        switchProductView('front');
-        img.classList.remove('opacity-30', 'scale-95');
-      }, 120);
-
-      const qrBox = document.getElementById('qrcodeBox');
-      qrBox.innerHTML = '';
-      new QRCode(qrBox, { text: p.qrUrl, width: 64, height: 64, colorDark: "#020617", colorLight: "#ffffff" });
-    }
-
-    function nextProduct() {
-      timerElapsed = 0;
-      currentProductIndex = (currentProductIndex + 1) % PRODUCTS.length;
-      updateProduct(currentProductIndex);
-    }
-
-    function prevProduct() {
-      timerElapsed = 0;
-      currentProductIndex = (currentProductIndex - 1 + PRODUCTS.length) % PRODUCTS.length;
-      updateProduct(currentProductIndex);
-    }
-
-    function startTimerLoop() {
-      updateProduct(currentProductIndex);
-      setInterval(() => {
-        timerElapsed++;
-        const percent = ((15 - timerElapsed) / 15) * 100;
-        document.getElementById('timerPath').setAttribute('stroke-dasharray', `${percent}, 100`);
-        if (timerElapsed >= 15) nextProduct();
-      }, 1000);
-    }
-
-    // ==================== 4. تحكم الرادار الكامل (تشغيل وإيقاف حقيقي) ====================
-    let isRadarActive = true;
+    // ==================== 5. التحكم المطلق بالرادار مع الحفظ الدائم ====================
+    // قراءة الحالة السابقة من الذاكرة (الافتراضي متوقف لتجنب الترحيب المزعج)
+    let isRadarActive = localStorage.getItem('ezwa_radar_state') === 'true';
     let radarStream = null;
     let radarInterval = null;
     let lastFrame = null;
     let cooldownTimer = 0;
 
-    async function togglePresenceRadar() {
+    function renderRadarUI() {
       const dot = document.getElementById('radarStatusDot');
       const txt = document.getElementById('radarBtnText');
-      
-      isRadarActive = !isRadarActive;
-
       if (isRadarActive) {
         dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping";
         txt.textContent = "الرادار: نشط (R)";
-        await startRadarCamera();
       } else {
         dot.className = "w-2.5 h-2.5 rounded-full bg-slate-500";
         txt.textContent = "الرادار: متوقف (R)";
+      }
+    }
+
+    async function togglePresenceRadar() {
+      isRadarActive = !isRadarActive;
+      localStorage.setItem('ezwa_radar_state', isRadarActive); // حفظ الحالة دائماً حتى لو تحدثت الصفحة
+      renderRadarUI();
+
+      if (isRadarActive) {
+        await startRadarCamera();
+      } else {
         stopRadarCamera();
       }
     }
@@ -719,16 +640,12 @@
       lastFrame = null;
     }
 
-    // ==================== وظائف الصوت والمعاينة والمقاسات ====================
+    // ==================== الوظائف الصوتية والمودالز ====================
     function openZoomModal() {
       const zoomModal = document.getElementById('zoomModal');
       const zoomImg = document.getElementById('zoomedProductImage');
-      const currentP = PRODUCTS[currentProductIndex];
-      
-      zoomImg.style.filter = currentP.filter;
-      zoomImg.src = (currentViewAngle === 'front') ? currentP.frontImg : currentP.backImg;
+      zoomImg.src = (currentViewAngle === 'front') ? MASMAK_PRODUCT.frontImg : MASMAK_PRODUCT.backImg;
       switchZoomView(currentViewAngle);
-
       zoomModal.classList.remove('opacity-0', 'pointer-events-none');
     }
 
@@ -741,10 +658,7 @@
       const zoomImg = document.getElementById('zoomedProductImage');
       const btnF = document.getElementById('zoomBtnFront');
       const btnB = document.getElementById('zoomBtnBack');
-      const currentP = PRODUCTS[currentProductIndex];
-
-      zoomImg.style.filter = currentP.filter;
-      zoomImg.src = (angle === 'front') ? currentP.frontImg : currentP.backImg;
+      zoomImg.src = (angle === 'front') ? MASMAK_PRODUCT.frontImg : MASMAK_PRODUCT.backImg;
 
       if (angle === 'front') {
         btnF.className = "px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shadow-lg transition";
@@ -795,7 +709,8 @@
 
       if (!hasInteracted) {
         hasInteracted = true;
-        playGreetingSequence();
+        // لا يشغل الترحيب عند فتح الصفحة إلا إذا كان الرادار نشطاً فعلاً
+        if (isRadarActive) playGreetingSequence();
       }
     }
 
@@ -896,17 +811,16 @@
     }
 
     function applySalesmanDiscount() {
-      const p = PRODUCTS[currentProductIndex];
-      const discounted = Math.round(Number(p.originalPrice) * 0.9);
-      p.price = String(discounted);
-      document.getElementById('productPrice').textContent = p.price;
+      const discounted = Math.round(Number(MASMAK_PRODUCT.originalPrice) * 0.9);
+      MASMAK_PRODUCT.price = String(discounted);
+      document.getElementById('productPrice').textContent = MASMAK_PRODUCT.price;
       
-      const newUrl = `${p.qrUrl}?coupon=EXHIBITION10`;
+      const newUrl = `${MASMAK_PRODUCT.qrUrl}?coupon=EXHIBITION10`;
       const qrBox = document.getElementById('qrcodeBox');
       qrBox.innerHTML = '';
       new QRCode(qrBox, { text: newUrl, width: 64, height: 64, colorDark: "#020617", colorLight: "#ffffff" });
 
-      speakSalesmanText(`أبشر! بصفتي ممثل مبيعات عِـزوة، طبقت لك خصم 10% فورياً تقديراً لحضورك في المعرض. أصبح السعر ${discounted} ريال بدلاً من ${p.originalPrice}. امسح الكود واستلمها فوراً.`);
+      speakSalesmanText(`أبشر! بصفتي ممثل مبيعات عِـزوة، طبقت لك خصم 10% فورياً تقديراً لحضورك في المعرض. أصبح السعر ${discounted} ريال بدلاً من ${MASMAK_PRODUCT.originalPrice}. امسح الكود واستلمها فوراً.`);
     }
 
     function openReserveModal() {
@@ -973,18 +887,18 @@
       if (query.includes("خصم") || query.includes("رخص") || query.includes("تخفيض")) {
         applySalesmanDiscount();
         response = "ولا يهمك! بصفتي ممثل مبيعات عِـزوة، طبقت لك خصم 10% لزوار المعرض الآن. السعر والباركود تحدثا أمامك فوراً.";
-      } else if (query.includes("حجز") || query.includes("احجز")) {
+      } else if (query.includes("حجز") || query.includes("احجز") || query.includes("طلب")) {
         openReserveModal();
-        response = "أبشر بالحجز، فتحت لك نافذة إدخال بياناتك لحفظ المقاس لك لمدة ساعتين.";
+        response = "أبشر بالطلب، فتحت لك نافذة إدخال بياناتك لإرسالها لمشرف المعرض لحفظ المقاس لك.";
       } else if (query.includes("مقاس") || query.includes("حجم") || query.includes("وزن")) {
         toggleFitAdvisorModal();
         response = "فتحت لك مستشار المقاسات الدقيق؛ قوالب التيشيرتات مصممة بقصة بوكس فيت عريضة ومربعة الصدر، لذا خذ مقاسك المعتاد وسيعطيك راحة تامة.";
       } else if (query.includes("سدو") || query.includes("شريحة") || query.includes("تقنية") || query.includes("nfc")) {
         response = "شريحة السدو المدمجة في أسفل التيشيرت مشفرة وتعمل باللمس المباشر بالجوال، تثبت ملكيتك للقطعة وتمنحك نقاطاً لعضوية النخبة.";
       } else if (query.includes("مصمك") || query.includes("طويق")) {
-        response = "هذه القطعة مستوحاة من عراقة نجد؛ قصر المصمك لرمزية التأسيس وجبل طويق للشموخ، والتطريز والطباعة ثابتان بأعلى معايير الجودة.";
+        response = "هذه القطعة مستوحاة من عراقة نجد؛ قصر المصمك لرمزية التأسيس، والتطريز والطباعة ثابتان بأعلى معايير الجودة.";
       } else {
-        response = "أهلاً بك، أنا بائعك الرقمي المعتمد في عِـزوة؛ يسعدني خدمتك في اختيار القطعة المناسبة، إعطائك خصم المعرض، أو إتمام الدفع لك بـ Apple Pay فوراً.";
+        response = "أهلاً بك، أنا بائعك الرقمي المعتمد في عِـزوة؛ يسعدني خدمتك في الاستفسار عن تيشيرت المصمك، إعطائك خصم المعرض، أو إتمام الدفع لك بـ Apple Pay فوراً.";
       }
 
       speakSalesmanText(response);
@@ -1150,7 +1064,7 @@
       if (k === 'r') togglePresenceRadar();
       if (k === 'm') toggleFitAdvisorModal();
       if (k === 'v') activateSalesmanVoice();
-      if (k === 'c') triggerCallStaffModal();
+      if (k === 'c') directCallSeller();
       if (k === 'z') openZoomModal();
       
       if (e.key === 'Escape') { 
@@ -1165,10 +1079,19 @@
       if (k === 'j') changeChannel('aljazeera');
     });
 
-    startTimerLoop();
+    // تهيئة الباركود لمصمك
+    const qrBox = document.getElementById('qrcodeBox');
+    qrBox.innerHTML = '';
+    new QRCode(qrBox, { text: MASMAK_PRODUCT.qrUrl, width: 64, height: 64, colorDark: "#020617", colorLight: "#ffffff" });
+
+    // تطبيق حالة الرادار المحفوظة
+    renderRadarUI();
+    if (isRadarActive) {
+      startRadarCamera();
+    }
+
     setScreenLayout('split');
     recalcAccurateFit();
-    startRadarCamera();
   </script>
 </body>
 </html>
