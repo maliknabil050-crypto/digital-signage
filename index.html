@@ -109,7 +109,7 @@
 
     <!-- يسار الشريط: مركز الخدمات والابتكارات المتطورة ومواقيت الصلاة -->
     <div class="flex items-center gap-2.5">
-      <!-- تبويب منسدل: الخدمات الذكية والابتكارات -->
+      <!-- تبويب منسدل: الابتكارات والخدمات الذكية -->
       <div class="relative">
         <button onclick="toggleDropdown('servicesDropdown')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-200 hover:text-white transition flex items-center gap-2">
           <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i>
@@ -117,9 +117,15 @@
           <i class="fa-solid fa-chevron-down text-[9px] opacity-70"></i>
         </button>
 
-        <!-- القائمة المنسدلة للخدمات -->
+        <!-- القائمة المنسدلة للخدمات والابتكارات -->
         <div id="servicesDropdown" class="absolute top-full left-0 mt-2 w-64 glass-card rounded-2xl p-2 shadow-2xl opacity-0 pointer-events-none transition-all duration-200 z-50">
           
+          <!-- فحص وتجربة صوت الترحيب -->
+          <button onclick="playLuxuryWelcomeSound(); closeAllDropdowns();" class="w-full text-right px-3 py-2.5 rounded-xl text-xs font-bold bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition flex items-center justify-between mb-1">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-volume-high"></i> تجربة صوت الترحيب</span>
+            <kbd class="text-[9px] bg-emerald-950/80 px-1.5 py-0.5 rounded text-emerald-300 font-mono">P</kbd>
+          </button>
+
           <!-- الابتكار 1: الانعكاس الشبح للمقاس -->
           <button onclick="toggleGhostMirror(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-amber-300">
             <span class="flex items-center gap-2"><i class="fa-solid fa-person text-amber-400"></i> الانعكاس الشبح (Ghost)</span>
@@ -130,12 +136,6 @@
           <button onclick="simulateNFCTap(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-slate-200">
             <span class="flex items-center gap-2"><i class="fa-solid fa-hand-pointer text-amber-400"></i> ملامسة القطعة (NFC Tap)</span>
             <kbd class="text-[9px] text-slate-500 font-mono">T</kbd>
-          </button>
-
-          <!-- تجربة نغمة الترحيب الفورية -->
-          <button onclick="playLuxuryWelcomeSound(); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800/80 transition flex items-center justify-between text-emerald-300">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-volume-high text-emerald-400"></i> تجربة صوت الترحيب</span>
-            <span class="text-[10px] text-slate-500">فحص</span>
           </button>
 
           <div class="h-px bg-slate-800 my-1"></div>
@@ -481,7 +481,7 @@
     let currentH = 'med';
     let currentW = 'fit';
 
-    // ==================== محرك الصوت المزدوج الذكي ====================
+    // ==================== محرك الصوت الفندقي الذكي ====================
     let audioCtx = null;
     function unlockAudioContext() {
       if (!audioCtx) {
@@ -492,14 +492,13 @@
       }
     }
 
-    // توليد نغمة ترحيبية فندقية إلكترونية فاخرة (Chime)
     function playLuxuryWelcomeSound() {
       try {
         unlockAudioContext();
         if (!audioCtx) return;
 
         const now = audioCtx.currentTime;
-        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 (نغمات هادئة راقية)
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // نغمات نقية (C5, E5, G5, C6)
         
         notes.forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
@@ -509,7 +508,7 @@
           osc.frequency.setValueAtTime(freq, now + (idx * 0.12));
           
           gain.gain.setValueAtTime(0.001, now + (idx * 0.12));
-          gain.gain.exponentialRampToValueAtTime(0.2, now + (idx * 0.12) + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.25, now + (idx * 0.12) + 0.05);
           gain.gain.exponentialRampToValueAtTime(0.0001, now + (idx * 0.12) + 1.2);
           
           osc.connect(gain);
@@ -520,7 +519,6 @@
         });
       } catch (e) {}
 
-      // محاولة النطق الصوتي العربي بالتوازي
       speakWelcome("أهلاً بك في عِـزوة");
     }
 
@@ -531,7 +529,6 @@
           const ut = new SpeechSynthesisUtterance(text);
           ut.lang = 'ar-SA';
           ut.rate = 0.9;
-          ut.pitch = 1.0;
           window.speechSynthesis.speak(ut);
         }
       } catch (e) {}
@@ -541,7 +538,9 @@
       const el = document.getElementById(id);
       const isVisible = !el.classList.contains('opacity-0');
       closeAllDropdowns();
-      if (!isVisible) el.classList.remove('opacity-0', 'pointer-events-none');
+      if (!isVisible) {
+        el.classList.remove('opacity-0', 'pointer-events-none');
+      }
     }
 
     function closeAllDropdowns() {
@@ -675,7 +674,7 @@
       }, 1000);
     }
 
-    // ==================== دوال الابتكارات الجديدة ====================
+    // ==================== دوال الابتكارات ====================
 
     function toggleGhostMirror() {
       closeAllModals();
@@ -868,6 +867,7 @@
       if (k === '3') setScreenLayout('tv');
       if (k === 'l') setScreenLayout('lounge');
       
+      if (k === 'p') playLuxuryWelcomeSound();
       if (k === 'g') toggleGhostMirror();
       if (k === 't') simulateNFCTap();
       if (k === 'v') triggerVIPModal();
