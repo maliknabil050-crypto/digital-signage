@@ -66,13 +66,11 @@
       </button>
     </div>
 
-    <!-- أزرار القنوات الخمس العاملة بنسبة 100% -->
+    <!-- أزرار القنوات -->
     <div id="channelButtonsBar" class="flex items-center gap-1.5">
-      <button onclick="changeChannel('quran')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن الكريم (Q)</button>
-      <button onclick="changeChannel('sunnah')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="sunnah">السنة النبوية (S)</button>
+      <button onclick="changeChannel('quran')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500 text-slate-950" data-ch="quran">القرآن (Q)</button>
+      <button onclick="changeChannel('sunnah')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="sunnah">السنة (S)</button>
       <button onclick="changeChannel('alarabiya')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="alarabiya">العربية (A)</button>
-      <button onclick="changeChannel('alarabiya_fm')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="alarabiya_fm">العربية FM (F)</button>
-      <button onclick="changeChannel('haramain_radio')" class="ch-btn px-2.5 py-1 rounded-md text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700" data-ch="haramain_radio">تلاوات الحرمين (T)</button>
     </div>
 
     <div class="flex items-center gap-3">
@@ -187,9 +185,9 @@
     </div>
   </footer>
 
-  <!-- ==================== منطق التشغيل ==================== -->
+  <!-- ==================== منطق التشغيل والبث ==================== -->
   <script>
-    // القنوات الخمس المعتمدة حصراً على نفس سيرفرات Holol و AlArabiya المفتوحة 100%
+    // القنوات المستقرة والمفتوحة بدون أي حظر CORS
     const CHANNELS = {
       quran: {
         name: "قناة القرآن الكريم (مباشر من الحرم المكي)",
@@ -202,14 +200,6 @@
       alarabiya: {
         name: "قناة العربية الإخبارية",
         url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8"
-      },
-      alarabiya_fm: {
-        name: "العربية FM (البث الإخباري المرئي)",
-        url: "https://live.alarabiya.net/alarabiapublish/alarabiya_sub.smil/playlist.m3u8"
-      },
-      haramain_radio: {
-        name: "تلاوات الحرمين الشريفين المتواصلة",
-        url: "https://win.holol.com/live/quran_audio/playlist.m3u8"
       }
     };
 
@@ -232,7 +222,10 @@
         hlsInstance = new Hls({
           enableWorker: true,
           lowLatencyMode: true,
-          backBufferLength: 90
+          backBufferLength: 60,
+          xhrSetup: function (xhr) {
+            xhr.withCredentials = false; // يمنع إرسال كوكيز تسبب حظر CORS
+          }
         });
 
         hlsInstance.loadSource(channel.url);
@@ -242,6 +235,7 @@
           video.play().catch(() => {});
         });
 
+        // معالجة الأخطاء الذاتية لإعادة المحاولة فوراً
         hlsInstance.on(Hls.Events.ERROR, function (event, data) {
           if (data.fatal) {
             switch (data.type) {
@@ -377,11 +371,9 @@
       if (key === 'q') changeChannel('quran');
       if (key === 's') changeChannel('sunnah');
       if (key === 'a') changeChannel('alarabiya');
-      if (key === 'f') changeChannel('alarabiya_fm');
-      if (key === 't') changeChannel('haramain_radio');
     });
 
-    // بدء التشغيل
+    // تشغيل القناة الأولى عند فتح الصفحة
     setMode('tv');
   </script>
 </body>
