@@ -167,30 +167,45 @@
       <div class="my-auto py-1">
         <div class="grid grid-cols-12 gap-5 items-stretch">
           
-          <!-- صورة المنتج التفاعلية -->
+          <!-- صورة المنتج التفاعلية (الأمام والخلف معاً لإلغاء الفراغ وإبراز الطبعة الذهبية) -->
           <div class="col-span-6 flex flex-col items-center">
-            <div class="w-full h-[360px] lg:h-[400px] rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-center p-2 relative overflow-hidden shadow-2xl group">
-              <img id="mainProductImage" src="./model-front.png" alt="تيشيرت قصر المصمك" class="w-full h-full object-contain rounded-xl fade-transition cursor-zoom-in" onclick="openZoomModal()">
+            <div class="w-full h-[400px] lg:h-[430px] rounded-2xl bg-slate-900/90 border border-slate-800 grid grid-cols-2 p-1.5 gap-1.5 relative overflow-hidden shadow-2xl group">
               
-              <!-- عدسة التكبير -->
-              <button onclick="openZoomModal()" title="تكبير ومعاينة أدق التفاصيل" class="absolute top-3 left-3 w-8 h-8 rounded-xl bg-black/70 hover:bg-amber-500 text-white hover:text-slate-950 backdrop-blur-md border border-white/10 hover:border-amber-400 flex items-center justify-center transition shadow-lg">
+              <!-- الواجهة الأمامية -->
+              <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center border border-slate-800/80 cursor-zoom-in group/front" onclick="openZoomModal('front')">
+                <img id="mainFrontImage" src="./model-front.png" alt="الواجهة الأمامية - قصر المصمك" class="w-full h-full object-cover rounded-xl fade-transition group-hover/front:scale-105 transition-transform duration-300">
+                <span class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-lg bg-black/85 backdrop-blur-md text-[9px] font-bold text-amber-300 border border-amber-500/30 shadow">
+                  الواجهة الأمامية
+                </span>
+              </div>
+
+              <!-- الواجهة الخلفية (الطبعة الذهبية) -->
+              <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center border border-slate-800/80 cursor-zoom-in group/back" onclick="openZoomModal('back')">
+                <img id="mainBackImage" src="./model-back.png" alt="الواجهة الخلفية - قصر المصمك" class="w-full h-full object-cover rounded-xl fade-transition group-hover/back:scale-105 transition-transform duration-300">
+                <span class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-lg bg-black/85 backdrop-blur-md text-[9px] font-bold text-amber-300 border border-amber-500/30 shadow">
+                  الظهر • الطبعة الذهبية
+                </span>
+              </div>
+
+              <!-- عدسة التكبير المشتركة -->
+              <button onclick="openZoomModal('front')" title="تكبير ومعاينة أدق التفاصيل" class="absolute top-3 left-3 w-8 h-8 rounded-xl bg-black/80 hover:bg-amber-500 text-white hover:text-slate-950 backdrop-blur-md border border-white/10 hover:border-amber-400 flex items-center justify-center transition shadow-lg z-10">
                 <i class="fa-solid fa-magnifying-glass-plus text-xs"></i>
               </button>
 
-              <span id="viewAngleBadge" class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-black/80 backdrop-blur-md text-[10px] font-bold text-amber-300 border border-amber-500/30 shadow-md">
-                المصمك • الواجهة الأمامية
+              <span class="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-black/85 backdrop-blur-md text-[10px] font-black text-amber-400 border border-amber-500/30 shadow-md z-10">
+                معاينة مزدوجة متزامنة
               </span>
             </div>
 
-            <!-- أزرار تبديل الواجهة -->
-            <div class="flex gap-2 mt-2.5 w-full justify-center">
-              <button onclick="switchProductView('front')" id="btnFrontView" class="flex-1 py-1.5 rounded-xl bg-amber-500 text-slate-950 text-xs font-black shadow-md transition flex items-center justify-center gap-1.5">
-                <i class="fa-solid fa-shirt text-[11px]"></i>
-                <span>الأمام</span>
-              </button>
-              <button onclick="switchProductView('back')" id="btnBackView" class="flex-1 py-1.5 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5">
-                <i class="fa-solid fa-rotate text-[11px]"></i>
-                <span>الخلف</span>
+            <!-- شريط التوجيه التفاعلي أسفل الصورتين -->
+            <div class="flex items-center justify-between w-full mt-2 px-1 text-[10px] text-slate-400">
+              <span class="flex items-center gap-1 font-bold text-amber-400/90">
+                <i class="fa-solid fa-hand-pointer text-[9px]"></i>
+                انقر على أي صورة للتكبير فائق الدقة
+              </span>
+              <button onclick="openZoomModal('back')" class="text-slate-300 hover:text-amber-400 font-bold transition flex items-center gap-1">
+                <span>معاينة تفاصيل رسمة الظهر</span>
+                <i class="fa-solid fa-arrow-left text-[8px]"></i>
               </button>
             </div>
           </div>
@@ -1224,27 +1239,6 @@
       closeAllModals();
     }
 
-    function switchProductView(angle) {
-      stopAudioChain();
-      currentViewAngle = angle;
-      const img = document.getElementById('mainProductImage');
-      const badge = document.getElementById('viewAngleBadge');
-      const btnF = document.getElementById('btnFrontView');
-      const btnB = document.getElementById('btnBackView');
-
-      if (angle === 'front') {
-        img.src = MASMAK_PRODUCT.frontImg;
-        badge.textContent = "المصمك • الواجهة الأمامية";
-        btnF.className = "flex-1 py-1.5 rounded-xl bg-amber-500 text-slate-950 text-xs font-black shadow-md transition flex items-center justify-center gap-1.5";
-        btnB.className = "flex-1 py-1.5 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5";
-      } else {
-        img.src = MASMAK_PRODUCT.backImg;
-        badge.textContent = "المصمك • الواجهة الخلفية";
-        btnB.className = "flex-1 py-1.5 rounded-xl bg-amber-500 text-slate-950 text-xs font-black shadow-md transition flex items-center justify-center gap-1.5";
-        btnF.className = "flex-1 py-1.5 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5";
-      }
-    }
-
     // ==================== الرادار المستقل ====================
     let isRadarActive = localStorage.getItem('ezwa_radar_state') === 'true';
     let radarStream = null;
@@ -1341,8 +1335,11 @@
       lastFrame = null;
     }
 
-    function openZoomModal() {
+    function openZoomModal(targetView) {
       stopAudioChain();
+      if (targetView) {
+        currentViewAngle = targetView;
+      }
       const zoomModal = document.getElementById('zoomModal');
       const zoomImg = document.getElementById('zoomedProductImage');
       zoomImg.src = (currentViewAngle === 'front') ? MASMAK_PRODUCT.frontImg : MASMAK_PRODUCT.backImg;
@@ -1369,7 +1366,6 @@
         btnB.className = "px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shadow-lg transition";
         btnF.className = "px-4 py-2 rounded-xl bg-slate-900 text-slate-300 hover:text-white border border-slate-800 font-bold text-xs transition";
       }
-      switchProductView(angle);
     }
 
     function playLuxuryChime() {
