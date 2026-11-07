@@ -199,7 +199,10 @@
           <div class="col-span-6 flex flex-col justify-between py-1">
             <div>
               <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md border border-amber-500/20">الإصدار الأكثر طلباً</span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs font-black text-amber-400 bg-amber-500/15 px-2.5 py-0.5 rounded-md border border-amber-500/30">اكتشف الرياض</span>
+                  <span class="text-[10px] font-bold text-slate-300 bg-slate-900 px-2 py-0.5 rounded-md border border-slate-800">الإصدار الأول</span>
+                </div>
                 <!-- زر قصة المصمك الصوتية الفورية -->
                 <button onclick="playMasmakStoryAudio()" id="btnStoryAudio" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 text-[10px] font-bold flex items-center gap-1.5 transition border border-amber-500/30 shadow">
                   <i class="fa-solid fa-volume-high text-[10px]"></i>
@@ -207,7 +210,7 @@
                 </button>
               </div>
 
-              <h2 class="text-2xl font-black text-white mt-2 leading-tight">تيشيرت بوكس فيت - قصر المصمك</h2>
+              <h2 class="text-2xl font-black text-white mt-2 leading-tight">قصر المصمك</h2>
               
               <div class="flex items-baseline gap-2 mt-2">
                 <span id="productPrice" class="text-3xl font-black text-amber-400">199</span>
@@ -216,7 +219,7 @@
               </div>
 
               <p class="text-slate-300 text-[11px] mt-2.5 leading-relaxed bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80">
-                مستوحى من قصر المصمك الشاهد على ملحمة توحيد المملكة؛ قماش قطني معالج عالي الكثافة (300 GSM)، طبعة خلفية غير قابلة للتشقق، وشريحة NFC مشفرة بحاشية السدو.
+                مستوحى من قصر المصمك الشاهد على ملحمة توحيد المملكة؛ قماش قطن 100% قصة بوكس فيت وطبعة خلفية ذهبية وبطاقة NFC مشفرة بحاشية السدو العريقة الدالة إلى تاريخ عريق.
               </p>
 
               <!-- منسق مظهر نجد التفاعلي -->
@@ -395,12 +398,12 @@
           <div id="question2Container" class="hidden space-y-2.5">
             <h4 class="text-xs font-bold text-slate-200">٢. كيف ترى دمج رقاقة الـ NFC بحاشية السدو النجدية؟</h4>
             <div class="space-y-2">
-              <button onclick="recordQuizAnswer(2, false, this)" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs hover:border-slate-700 text-right transition flex items-center justify-between">
-                <span>حركة ديكورية تقنية عابرة</span>
+              <button onclick="recordQuizAnswer(2, false, this)" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs hover:border-amber-400 text-right transition flex items-center justify-between">
+                <span class="font-bold text-white">انتقال حقيقي بالهوية التراثية إلى المستقبل الرقمي</span>
                 <i class="fa-regular fa-circle text-slate-600 text-[11px]"></i>
               </button>
-              <button onclick="recordQuizAnswer(2, true, this)" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs hover:border-amber-400 text-right transition flex items-center justify-between">
-                <span class="font-bold text-white">انتقال حقيقي بالهوية التراثية إلى المستقبل الرقمي</span>
+              <button onclick="recordQuizAnswer(2, false, this)" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs hover:border-slate-700 text-right transition flex items-center justify-between">
+                <span>حركة ديكورية تقنية عابرة</span>
                 <i class="fa-regular fa-circle text-slate-600 text-[11px]"></i>
               </button>
             </div>
@@ -775,7 +778,7 @@
     };
 
     const MASMAK_PRODUCT = {
-      title: "تيشيرت بوكس فيت - قصر المصمك",
+      title: "قصر المصمك - الإصدار الأول",
       price: "199",
       originalPrice: "199",
       frontImg: "./model-front.png",
