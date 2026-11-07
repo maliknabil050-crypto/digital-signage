@@ -33,10 +33,10 @@
 
     @keyframes pulse-gold {
       0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
-      50% { box-shadow: 0 0 0 12px rgba(245, 158, 11, 0); }
+      50% { box-shadow: 0 0 0 14px rgba(245, 158, 11, 0); }
     }
     .btn-attention {
-      animation: pulse-gold 2s infinite;
+      animation: pulse-gold 1.8s infinite;
     }
   </style>
 </head>
@@ -109,12 +109,6 @@
       <button onclick="openFitAdvisorModal()" id="btnFitNav" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex items-center gap-1.5 shadow">
         <i class="fa-solid fa-ruler-combined text-[11px]"></i>
         <span>المقاس الهندسي (M)</span>
-      </button>
-
-      <!-- التحدث مع البائع الرقمي -->
-      <button onclick="activateSalesmanVoice()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-amber-500 text-slate-950 hover:bg-amber-400 transition flex items-center gap-1.5 shadow">
-        <i class="fa-solid fa-headset text-xs"></i>
-        <span>تحدث (V)</span>
       </button>
 
       <!-- نداء المشرف للطوارئ -->
@@ -625,36 +619,6 @@
       </div>
     </div>
 
-    <!-- نافذة الحوار الصوتي مع البائع الرقمي -->
-    <div id="voiceSalesmanModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card rounded-3xl p-8 max-w-lg w-full border-2 border-amber-500/40 text-center relative shadow-2xl">
-        <button onclick="closeAllModals()" class="absolute top-5 left-5 text-slate-400 hover:text-white text-base">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <div class="w-20 h-20 rounded-full bg-amber-500/10 border-2 border-amber-500/50 flex items-center justify-center mx-auto mb-4 relative">
-          <i class="fa-solid fa-headset text-3xl text-amber-400"></i>
-          <span id="salesmanVoicePing" class="hidden absolute inset-0 rounded-full border-2 border-amber-400 animate-ping"></span>
-        </div>
-        <span class="text-[11px] font-bold text-amber-400 uppercase tracking-widest">Autonomous Arabic Sales Rep</span>
-        <h2 class="text-2xl font-black text-white mt-1">البائع الرقمي • عِـزوة</h2>
-        <p class="text-slate-300 text-xs mt-2">
-          تحدث معي مباشرة باللغة العربية؛ اسألني عن القطع، الخصومات، التنسيق، أو اطلب حجز مقاسك فوراً:
-        </p>
-        <div id="salesmanLiveTranscript" class="my-4 p-3 rounded-2xl bg-slate-900 border border-slate-800 text-xs text-amber-300 font-mono min-h-[48px] flex items-center justify-center">
-          "جاري الاستماع لصوتك الآن..."
-        </div>
-        <div class="flex items-center justify-center gap-3 mt-4">
-          <button onclick="startSalesmanHearing()" class="px-6 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition flex items-center gap-2 shadow-lg">
-            <i class="fa-solid fa-microphone"></i>
-            <span>تحدث الآن</span>
-          </button>
-          <button onclick="closeAllModals()" class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 text-xs hover:text-white transition">
-            إغلاق (Esc)
-          </button>
-        </div>
-      </div>
-    </div>
-
     <!-- شاشة مواقيت الصلاة -->
     <div id="prayerOverlay" class="absolute inset-0 bg-slate-950/95 z-50 backdrop-blur-md flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none">
       <div class="text-center p-8 glass-card rounded-3xl border border-amber-500/30 max-w-sm mx-4 shadow-2xl relative">
@@ -679,7 +643,7 @@
       </div>
       <div class="text-right">
         <h4 class="text-xs font-bold text-white">انقر هنا لتفعيل صوت ونغمة البائع</h4>
-        <span class="text-[10px] text-amber-300">لتفعيل محرك النغمات الفاخرة والصوت العربي</span>
+        <span class="text-[10px] text-amber-300">لتفعيل محرك النغمات الفاخرة والمقاطع الصوتية</span>
       </div>
     </div>
 
@@ -724,60 +688,107 @@
     let selectedW = 'w95';
     let selectedStyle = 'regular';
 
-    const welcomeAudio = new Audio('./welcome.mp3');
+    // تهيئة المقاطع الصوتية الحقيقية الأربعة
+    const audioWelcome = new Audio('./welcome.mp3');
+    const audioPitch1  = new Audio('./pitch1.mp3');
+    const audioPitch2  = new Audio('./pitch2.mp3');
+    const audioPitch3  = new Audio('./pitch3.mp3');
     const storyAudioFile = new Audio('./story.mp3.mp3');
-    let audioCtx = null;
 
-    let salesPitchTimer1 = null;
-    let salesPitchTimer2 = null;
-    let salesPitchTimer3 = null;
+    let audioCtx = null;
+    let isAudioChainRunning = false;
 
     function unlockAudioContext() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    // ==================== تسلسل الإقناع والبيع الاستباقي التلقائي ====================
+    // ==================== محرك السلسلة الصوتية الحقيقية بالتتابع ====================
     function playGreetingSequence() {
+      unlockAudioContext();
+      if (isAudioChainRunning) return;
+      isAudioChainRunning = true;
+
       playLuxuryChime();
-      
-      // المرحلة 1: الترحيب الفوري
+
+      // 1. تشغيل الترحيب
       setTimeout(() => {
-        welcomeAudio.currentTime = 0;
-        welcomeAudio.volume = 1.0;
-        welcomeAudio.play().catch(() => {
-          speakSalesmanText("حيّاك الله في عِـزوة! نورت جناحنا يا هلا فيك.");
+        audioWelcome.currentTime = 0;
+        audioWelcome.volume = 1.0;
+
+        audioWelcome.play().then(() => {
+          audioWelcome.onended = () => {
+            setTimeout(() => {
+              playAudioPitch1();
+            }, 1200);
+          };
+        }).catch(err => {
+          console.warn("تعذر تشغيل الترحيب، انتقال للمقطع الأول:", err);
+          playAudioPitch1();
         });
       }, 700);
+    }
 
-      // المرحلة 2: شرح القيمة وتميز القطعة بعد 6 ثوانٍ
-      clearTimeout(salesPitchTimer1);
-      salesPitchTimer1 = setTimeout(() => {
-        speakSalesmanText("القطعة اللي قدامك هي إصدار قصر المصمك المحدود؛ قماش قطني معالج وسميك بوزن ثلاثمية جرام، وقصة بوكس فيت راقية، مع شريحة سدو مشفرة توثق تيشيرتك بلمسة جوال.");
-      }, 6500);
+    // 2. تشغيل هيبة القطعة وقصر المصمك
+    function playAudioPitch1() {
+      audioPitch1.currentTime = 0;
+      audioPitch1.volume = 1.0;
 
-      // المرحلة 3: كسر حاجز المقاس بعد 17 ثانية وجذب الانتباه للزر
-      clearTimeout(salesPitchTimer2);
-      salesPitchTimer2 = setTimeout(() => {
-        speakSalesmanText("إذا محتار بالمقاس، اضغط على زر المقاس الهندسي أمامك، وعطني طولك ووزنك وأنا بعطيك المقاس الدقيق بالسنتمتر.");
-        highlightButton('btnFitNav');
-        highlightButton('btnFitBottom');
-      }, 17500);
+      audioPitch1.play().then(() => {
+        audioPitch1.onended = () => {
+          setTimeout(() => {
+            playAudioPitch2();
+          }, 1800);
+        };
+      }).catch(err => {
+        console.warn("تعذر تشغيل pitch1:", err);
+        playAudioPitch2();
+      });
+    }
 
-      // المرحلة 4: عرض فزعة عِـزوة والحسم بعد 28 ثانية
-      clearTimeout(salesPitchTimer3);
-      salesPitchTimer3 = setTimeout(() => {
-        speakSalesmanText("وقبل تقرر، لا تفوت فزعة عِـزوة! المس بوابات المصمك الأربع في الشاشة واكسب خصمك أو هديتك الحين.");
-        highlightButton('btnFazaaNav');
-        highlightButton('btnFazaaBottom');
-      }, 28500);
+    // 3. تشغيل كسر حاجز المقاس مع وميض الزر
+    function playAudioPitch2() {
+      highlightButton('btnFitNav');
+      highlightButton('btnFitBottom');
+
+      audioPitch2.currentTime = 0;
+      audioPitch2.volume = 1.0;
+
+      audioPitch2.play().then(() => {
+        audioPitch2.onended = () => {
+          setTimeout(() => {
+            playAudioPitch3();
+          }, 1800);
+        };
+      }).catch(err => {
+        console.warn("تعذر تشغيل pitch2:", err);
+        playAudioPitch3();
+      });
+    }
+
+    // 4. تشغيل فزعة عِـزوة وبوابات المصمك مع وميض الزر
+    function playAudioPitch3() {
+      highlightButton('btnFazaaNav');
+      highlightButton('btnFazaaBottom');
+
+      audioPitch3.currentTime = 0;
+      audioPitch3.volume = 1.0;
+
+      audioPitch3.play().then(() => {
+        audioPitch3.onended = () => {
+          isAudioChainRunning = false;
+        };
+      }).catch(err => {
+        console.warn("تعذر تشغيل pitch3:", err);
+        isAudioChainRunning = false;
+      });
     }
 
     function highlightButton(btnId) {
       const btn = document.getElementById(btnId);
       if (btn) {
         btn.classList.add('btn-attention');
-        setTimeout(() => btn.classList.remove('btn-attention'), 5000);
+        setTimeout(() => btn.classList.remove('btn-attention'), 6000);
       }
     }
 
@@ -796,14 +807,7 @@
           setTimeout(() => { btnLabel.textContent = "قصة التصميم (30 ثانية)"; }, 30000);
         }
       }).catch(err => {
-        console.warn("المحرك الاحتياطي للصوت:", err);
-        if ('speechSynthesis' in window) {
-          window.speechSynthesis.cancel();
-          const ut = new SpeechSynthesisUtterance("هُنَا ابْتَدَأَتِ الحِكَايَة، مِنْ قَصْرِ المَصْمَك.. شَاهِدِ المَلْحَمَةِ وَفَجْرِ التَّأْسِيس. فِي عِـزْوَة، لَمْ نَصْنَعْ مُجَرَّدَ تِيشِيرْت، بَلْ نَقَلْنَا شُمُوخَ التَّارِيخِ إِلَى تَفَاصِيلِ يَوْمِك؛ قَصَّةُ بُوكْس فِيتْ مُتَّزِنَة، قُطْنٌ مُعَالَج، وَشَرِيحَةُ سَدْوٍ ذَكِيَّةٍ تَرْبِطُ عَرَاقَةَ المَاضِي بِتِقْنِيَّةِ المُسْتَقْبَل. المَجْدُ يُحْكَى.. وَمَعَ عِـزْوَة يُعَاش.");
-          ut.lang = 'ar-SA';
-          ut.rate = 0.92;
-          window.speechSynthesis.speak(ut);
-        }
+        console.warn("تعذر تشغيل قصة المصمك:", err);
       });
     }
 
@@ -840,9 +844,6 @@
         document.getElementById('appliedFazaaBadge').classList.remove('hidden');
         document.getElementById('rajhiFooterPrice').textContent = "179 ريال";
         initRajhiQR();
-        speakSalesmanText("حيّ عينك.. وجتك فزعة عِـزوة! خصمنا لك 20 ريال وأصبح السعر 179 ريال فوراً.");
-      } else {
-        speakSalesmanText(`حيّ عينك.. وجتك فزعة عِـزوة! مبروك ${prizeTitle}.`);
       }
 
       setTimeout(() => {
@@ -926,8 +927,6 @@
       }
 
       closeAllModals();
-      speakSalesmanText(`تم يا ${name}! تم إرسال أمر تجهيز مقاسك لمشرف المعرض مباشرة.`);
-
       const text = encodeURIComponent(`طلب حجز وتجهيز قطعة جديد:\n• اسم العميل: ${name}\n• رقم الجوال: ${phone}\n• الصنف: ${MASMAK_PRODUCT.title}\n• السعر: ${MASMAK_PRODUCT.price} ريال\nيرجى تجهيز الصندوق في المعرض.`);
       window.open(`https://api.whatsapp.com/send?phone=${SUPERVISOR_PHONE}&text=${text}`, '_blank');
     }
@@ -1017,7 +1016,7 @@
 
             if (diff > 1200) {
               playGreetingSequence();
-              cooldownTimer = 60;
+              cooldownTimer = 70; // فترة راحة 70 ثانية لمنع التكرار المزعج
             }
           }
           lastFrame = frame;
@@ -1101,31 +1100,6 @@
       }
     }
 
-    let availableVoices = [];
-    function loadVoices() {
-      if ('speechSynthesis' in window) availableVoices = window.speechSynthesis.getVoices();
-    }
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.onvoiceschanged = loadVoices;
-      loadVoices();
-    }
-
-    function speakSalesmanText(text) {
-      unlockAudioContext();
-      if (!('speechSynthesis' in window)) return;
-
-      window.speechSynthesis.cancel();
-      const ut = new SpeechSynthesisUtterance(text);
-      ut.lang = 'ar-SA';
-      ut.rate = 0.95;
-      ut.pitch = 1.0;
-
-      const arVoice = availableVoices.find(v => v.lang.includes('ar') || v.lang.includes('SA') || v.lang.includes('XA'));
-      if (arVoice) ut.voice = arVoice;
-
-      window.speechSynthesis.speak(ut);
-    }
-
     function openFitAdvisorModal() {
       closeAllModals();
       document.getElementById('fitModal').classList.remove('opacity-0', 'pointer-events-none');
@@ -1201,71 +1175,6 @@
       document.getElementById('fitCutTitle').textContent = title;
       document.getElementById('dimensionBadge').textContent = dim;
       document.getElementById('modalFitNote').textContent = note;
-    }
-
-    function activateSalesmanVoice() {
-      closeAllModals();
-      document.getElementById('voiceSalesmanModal').classList.remove('opacity-0', 'pointer-events-none');
-      playGreetingSequence();
-      setTimeout(() => {
-        startSalesmanHearing();
-      }, 2500);
-    }
-
-    let salesmanSpeechRec = null;
-    function startSalesmanHearing() {
-      const transcriptBox = document.getElementById('salesmanLiveTranscript');
-      const ping = document.getElementById('salesmanVoicePing');
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-      if (!SpeechRecognition) {
-        transcriptBox.textContent = "المتصفح لا يدعم التعرف الصوتي المباشر، جرب عبر متصفح Chrome.";
-        return;
-      }
-
-      salesmanSpeechRec = new SpeechRecognition();
-      salesmanSpeechRec.lang = 'ar-SA';
-      salesmanSpeechRec.interimResults = false;
-
-      salesmanSpeechRec.onstart = () => {
-        ping.classList.remove('hidden');
-        transcriptBox.textContent = "البائع يستمع إليك الآن... تفضل بسؤالك";
-      };
-
-      salesmanSpeechRec.onresult = (event) => {
-        const query = event.results[0][0].transcript;
-        transcriptBox.textContent = `أنت: "${query}"`;
-        ping.classList.add('hidden');
-        handleSalesmanResponse(query);
-      };
-
-      salesmanSpeechRec.onerror = () => {
-        ping.classList.add('hidden');
-        transcriptBox.textContent = "لم أسمعك بوضوح، اضغط على 'تحدث الآن' مجدداً.";
-      };
-
-      salesmanSpeechRec.start();
-    }
-
-    function handleSalesmanResponse(query) {
-      let response = "";
-
-      if (query.includes("فزعة") || query.includes("هدية") || query.includes("بوابة")) {
-        openFazaaModal();
-        response = "أبشر بالفزعة! فتحت لك بوابات المصمك الأربع، اختر بوابتك وفالك طيب.";
-      } else if (query.includes("حجز") || query.includes("احجز") || query.includes("طلب")) {
-        openReserveModal();
-        response = "أبشر بالطلب، فتحت لك نافذة إدخال بياناتك لإرسالها لمشرف المعرض لحفظ مقاسك لك.";
-      } else if (query.includes("مقاس") || query.includes("حجم") || query.includes("وزن")) {
-        toggleFitAdvisorModal();
-        response = "فتحت لك مستشار المقاسات الدقيق؛ قوالب التيشيرتات مصممة بقصة بوكس فيت عريضة ومربعة الصدر، لذا خذ مقاسك المعتاد وسيعطيك راحة تامة.";
-      } else if (query.includes("سدو") || query.includes("شريحة") || query.includes("تقنية") || query.includes("nfc")) {
-        response = "شريحة السدو المدمجة في أسفل التيشيرت مشفرة وتعمل باللمس المباشر بالجوال، تثبت ملكيتك للقطعة وتمنحك نقاطاً لعضوية أركان عِـزوة.";
-      } else {
-        response = "أهلاً بك، أنا بائعك الرقمي المعتمد في عِـزوة؛ يسعدني خدمتك في الاستفسار عن تيشيرت المصمك أو السداد الفوري عبر حساب الراجحي.";
-      }
-
-      speakSalesmanText(response);
     }
 
     function toggleDropdown(id) {
@@ -1397,7 +1306,7 @@
     }
 
     function closeAllModals() {
-      ['reserveModal', 'voiceSalesmanModal', 'callStaffModal', 'rajhiModal', 'fitModal', 'zoomModal', 'fazaaModal', 'nfcVerifyModal'].forEach(id => {
+      ['reserveModal', 'callStaffModal', 'rajhiModal', 'fitModal', 'zoomModal', 'fazaaModal', 'nfcVerifyModal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
@@ -1427,7 +1336,6 @@
       
       if (k === 'r') togglePresenceRadar();
       if (k === 'm') toggleFitAdvisorModal();
-      if (k === 'v') activateSalesmanVoice();
       if (k === 'c') triggerCallSupervisorModal();
       if (k === 'z') openZoomModal();
       
@@ -1443,6 +1351,7 @@
       if (k === 'j') changeChannel('aljazeera');
     });
 
+    // تهيئة الباركود والتشغيل
     initRajhiQR();
     renderRadarUI();
     if (isRadarActive) {
