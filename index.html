@@ -272,7 +272,7 @@
               <span class="font-bold text-[10px]">مستشار المقاس</span>
             </button>
 
-            <!-- ربط حجز القطعة مباشرة ببروتوكول التحقق والاستحقاق الذكي -->
+            <!-- ربط حجز القطعة ببروتوكول التحقق والاستحقاق الذكي -->
             <button onclick="openQualificationGate()" class="p-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/30 border border-amber-500/50 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex flex-col items-center justify-center text-center shadow">
               <i class="fa-solid fa-shield-halved text-sm mb-1 text-amber-400"></i>
               <span class="font-bold text-[10px]">طلب الاقتناء (حجب)</span>
@@ -325,7 +325,7 @@
         </div>
 
         <div class="w-full h-[460px] rounded-2xl overflow-hidden bg-black border border-slate-800 relative flex items-center justify-center shadow-inner">
-          <video id="nfcPromoVideo" class="w-full h-full object-cover" playsinline loop preload="metadata">
+          <video id="nfcPromoVideo" class="w-full h-full object-cover" playsinline loop muted autoplay preload="auto" style="transform: translateZ(0); will-change: transform;">
             <source src="./promo-nfc.mp4" type="video/mp4">
             متصفحك لا يدعم تشغيل الفيديو.
           </video>
@@ -395,12 +395,12 @@
           <div id="question2Container" class="hidden space-y-2.5">
             <h4 class="text-xs font-bold text-slate-200">٢. كيف ترى دمج رقاقة الـ NFC بحاشية السدو النجدية؟</h4>
             <div class="space-y-2">
-              <button onclick="recordQuizAnswer(2, false, this)" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs hover:border-amber-400 text-right transition flex items-center justify-between">
-                <span class="font-bold text-white">انتقال حقيقي بالهوية التراثية إلى المستقبل الرقمي</span>
-                <i class="fa-regular fa-circle text-slate-600 text-[11px]"></i>
-              </button>
               <button onclick="recordQuizAnswer(2, false, this)" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs hover:border-slate-700 text-right transition flex items-center justify-between">
                 <span>حركة ديكورية تقنية عابرة</span>
+                <i class="fa-regular fa-circle text-slate-600 text-[11px]"></i>
+              </button>
+              <button onclick="recordQuizAnswer(2, true, this)" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs hover:border-amber-400 text-right transition flex items-center justify-between">
+                <span class="font-bold text-white">انتقال حقيقي بالهوية التراثية إلى المستقبل الرقمي</span>
                 <i class="fa-regular fa-circle text-slate-600 text-[11px]"></i>
               </button>
             </div>
@@ -997,6 +997,13 @@
       stopAudioChain();
       closeAllModals();
       
+      // إيقاف بث التلفزيون المباشر في الخلفية لتفريغ معالج الرسوميات (GPU) ومنع التقطيع
+      const hlsV = document.getElementById('hlsVideo');
+      if (hlsV && !hlsV.paused) {
+        hlsV.pause();
+        hlsV.setAttribute('data-was-playing', 'true');
+      }
+
       const modal = document.getElementById('promoVideoModal');
       const video = document.getElementById('nfcPromoVideo');
       
@@ -1016,6 +1023,13 @@
         video.currentTime = 0;
       }
       if (modal) modal.classList.add('opacity-0', 'pointer-events-none');
+
+      // استئناف بث القناة المباشرة بعد إغلاق نافذة الفيديو
+      const hlsV = document.getElementById('hlsVideo');
+      if (hlsV && hlsV.getAttribute('data-was-playing') === 'true' && currentLayout !== 'catalog') {
+        hlsV.play().catch(() => {});
+        hlsV.removeAttribute('data-was-playing');
+      }
     }
 
     // ==================== نظام حجب البيع واختبار الاستحقاق ====================
