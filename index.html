@@ -709,18 +709,39 @@
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    // إيقاف السلسلة الصوتية فوراً إذا لمس العميل أي زر أو تفاعل مع الشاشة
+    // ==================== دالة الإسكات الشامل والفوري ====================
     function stopAudioChain() {
       if (activeChainTimeout) {
         clearTimeout(activeChainTimeout);
         activeChainTimeout = null;
       }
-      [audioWelcome, audioPitch1, audioPitch2, audioPitch3].forEach(a => {
-        a.pause();
-        a.currentTime = 0;
+
+      [audioWelcome, audioPitch1, audioPitch2, audioPitch3, storyAudioFile].forEach(audio => {
+        try {
+          audio.pause();
+          audio.currentTime = 0;
+        } catch (e) {}
       });
+
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+
+      // إزالة وميض لفت الانتباه من الأزرار فوراً
+      document.querySelectorAll('.btn-attention').forEach(btn => btn.classList.remove('btn-attention'));
+
       isAudioChainRunning = false;
     }
+
+    // مراقب اللمس الشامل: عند لمس أي زر أو خيار أو تبويب يصمت الصوت فوراً
+    document.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('#firstInteractionNotice')) return; // عدم الإسكات عند النقر على لافتة البداية
+      
+      const isInteractive = e.target.closest('button, input, select, [onclick], .cursor-pointer, .fit-btn, .masmak-door, header');
+      if (isInteractive) {
+        stopAudioChain();
+      }
+    }, true);
 
     // ==================== محرك السلسلة الصوتية المتتابعة ====================
     function playGreetingSequence() {
@@ -848,6 +869,7 @@
 
     let hasSelectedGate = false;
     function openMasmakGate(gateNum, prizeTitle, type) {
+      stopAudioChain();
       if (hasSelectedGate) return;
       hasSelectedGate = true;
 
@@ -908,6 +930,7 @@
     }
 
     function copyIbanToClipboard() {
+      stopAudioChain();
       navigator.clipboard.writeText(RAJHI_ACCOUNT.iban).then(() => {
         const btn = document.getElementById('btnCopyIban');
         btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i><span class="text-emerald-400">تم النسخ!</span>';
@@ -918,6 +941,7 @@
     }
 
     function sendReceiptToSeller() {
+      stopAudioChain();
       const msg = encodeURIComponent(`السلام عليكم، تم التحويل لحساب الراجحي بقيمة ${MASMAK_PRODUCT.price} ريال لتيشيرت قصر المصمك.\nمرفق إشعار التحويل لتأكيد الاستلام والتجهيز.`);
       window.open(`https://api.whatsapp.com/send?phone=${SUPERVISOR_PHONE}&text=${msg}`, '_blank');
       closeAllModals();
@@ -931,6 +955,7 @@
     }
 
     function confirmSupervisorWhatsApp() {
+      stopAudioChain();
       const msg = encodeURIComponent("نداء عاجل لمشرف المعرض!\nيوجد عميل عند الشاشة التفاعلية يطلب مساعدة المشرف أمام معروضات قصر المصمك.");
       window.open(`https://api.whatsapp.com/send?phone=${SUPERVISOR_PHONE}&text=${msg}`, '_blank');
       closeAllModals();
@@ -943,6 +968,7 @@
     }
 
     function submitReservationToSupervisor() {
+      stopAudioChain();
       const name = document.getElementById('reserveName').value.trim();
       const phone = document.getElementById('reservePhone').value.trim();
 
@@ -998,6 +1024,7 @@
     }
 
     async function togglePresenceRadar() {
+      stopAudioChain();
       isRadarActive = !isRadarActive;
       localStorage.setItem('ezwa_radar_state', isRadarActive);
       renderRadarUI();
@@ -1042,7 +1069,7 @@
 
             if (diff > 1200) {
               playGreetingSequence();
-              cooldownTimer = 75; // فترة هدوء كافية لانتهاء التسلسل كاملاً
+              cooldownTimer = 75;
             }
           }
           lastFrame = frame;
@@ -1079,6 +1106,7 @@
     }
 
     function switchZoomView(angle) {
+      stopAudioChain();
       currentViewAngle = angle;
       const zoomImg = document.getElementById('zoomedProductImage');
       const btnF = document.getElementById('zoomBtnFront');
@@ -1146,6 +1174,7 @@
     }
 
     function selectFitParam(type, val, btn) {
+      stopAudioChain();
       if (type === 'height') {
         selectedH = val;
         document.querySelectorAll('#heightGroup .fit-btn').forEach(b => {
@@ -1293,6 +1322,7 @@
     }
 
     function changeChannel(key) {
+      stopAudioChain();
       if (!CHANNELS[key]) return;
       activeChannelKey = key;
       document.getElementById('activeChannelLabel').textContent = `البث: ${CHANNELS[key].short} (3)`;
@@ -1337,6 +1367,7 @@
     }
 
     function closeAllModals() {
+      stopAudioChain();
       ['reserveModal', 'callStaffModal', 'rajhiModal', 'fitModal', 'zoomModal', 'fazaaModal', 'nfcVerifyModal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
@@ -1359,6 +1390,7 @@
     updateClock();
 
     window.addEventListener('keydown', (e) => {
+      stopAudioChain();
       unlockAudioContext();
       const k = e.key.toLowerCase();
       if (k === '1') setScreenLayout('catalog');
