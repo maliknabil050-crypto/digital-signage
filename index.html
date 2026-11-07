@@ -17,7 +17,6 @@
     .fade-transition { transition: all 0.25s ease-out; }
     .glass-card { background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); }
     
-    /* تأثير البوابات النجدية ثلاثية الأبعاد */
     .gate-perspective { perspective: 1000px; }
     .masmak-door {
       transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
@@ -30,6 +29,14 @@
     .wood-texture {
       background: linear-gradient(135deg, #2b1810 0%, #170d08 100%);
       box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+    }
+
+    @keyframes pulse-gold {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+      50% { box-shadow: 0 0 0 12px rgba(245, 158, 11, 0); }
+    }
+    .btn-attention {
+      animation: pulse-gold 2s infinite;
     }
   </style>
 </head>
@@ -84,22 +91,22 @@
       </div>
     </div>
 
-    <!-- يسار الشريط: أدوات تجربة عِـزوة الراقية -->
+    <!-- يسار الشريط: أدوات تجربة عِـزوة -->
     <div class="flex items-center gap-2">
-      <!-- زر فزعة عِـزوة الفخم -->
-      <button onclick="openFazaaModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1.5 shadow-lg border border-amber-300">
+      <!-- زر فزعة عِـزوة -->
+      <button onclick="openFazaaModal()" id="btnFazaaNav" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1.5 shadow-lg border border-amber-300">
         <i class="fa-solid fa-shield-halved text-[11px]"></i>
         <span>فزعة عِـزوة</span>
       </button>
 
-      <!-- الرادار الذكي -->
+      <!-- الرادار المستقل -->
       <button onclick="togglePresenceRadar()" id="btnRadarToggle" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 transition flex items-center gap-2 shadow">
         <span id="radarStatusDot" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
         <span id="radarBtnText">الرادار: متوقف (R)</span>
       </button>
 
       <!-- مستشار المقاس المعماري -->
-      <button onclick="toggleFitAdvisorModal()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex items-center gap-1.5 shadow">
+      <button onclick="openFitAdvisorModal()" id="btnFitNav" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex items-center gap-1.5 shadow">
         <i class="fa-solid fa-ruler-combined text-[11px]"></i>
         <span>المقاس الهندسي (M)</span>
       </button>
@@ -171,7 +178,7 @@
             <div class="w-full h-[360px] lg:h-[400px] rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-center p-2 relative overflow-hidden shadow-2xl group">
               <img id="mainProductImage" src="./model-front.png" alt="تيشيرت قصر المصمك" class="w-full h-full object-contain rounded-xl fade-transition cursor-zoom-in" onclick="openZoomModal()">
               
-              <!-- عدسة التكبير الفاحصة -->
+              <!-- عدسة التكبير -->
               <button onclick="openZoomModal()" title="تكبير ومعاينة أدق التفاصيل" class="absolute top-3 left-3 w-8 h-8 rounded-xl bg-black/70 hover:bg-amber-500 text-white hover:text-slate-950 backdrop-blur-md border border-white/10 hover:border-amber-400 flex items-center justify-center transition shadow-lg">
                 <i class="fa-solid fa-magnifying-glass-plus text-xs"></i>
               </button>
@@ -199,7 +206,7 @@
             <div>
               <div class="flex items-center justify-between">
                 <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md border border-amber-500/20">الإصدار الأكثر طلباً</span>
-                <!-- زر قصة المصمك الصوتية الفورية (مرتبط بـ story.mp3.mp3) -->
+                <!-- زر قصة المصمك الصوتية الفورية -->
                 <button onclick="playMasmakStoryAudio()" id="btnStoryAudio" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 text-[10px] font-bold flex items-center gap-1.5 transition border border-amber-500/30 shadow">
                   <i class="fa-solid fa-volume-high text-[10px]"></i>
                   <span id="storyBtnLabel">قصة التصميم (30 ثانية)</span>
@@ -251,7 +258,7 @@
           </div>
         </div>
 
-        <!-- أزرار الخدمات السفلية المحسنة -->
+        <!-- أزرار الخدمات السفلية -->
         <div class="mt-3 pt-2.5 border-t border-slate-900">
           <span class="text-[10px] text-slate-400 font-bold block mb-1.5">خدمات وصلاحيات المعرض الفورية:</span>
           <div class="grid grid-cols-4 gap-2">
@@ -260,7 +267,7 @@
               <span class="font-bold text-[10px]">نداء المشرف</span>
             </button>
 
-            <button onclick="openFitAdvisorModal()" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 transition flex flex-col items-center justify-center text-center shadow">
+            <button onclick="openFitAdvisorModal()" id="btnFitBottom" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 transition flex flex-col items-center justify-center text-center shadow">
               <i class="fa-solid fa-ruler-combined text-sm mb-1 text-emerald-400"></i>
               <span class="font-bold text-[10px]">مستشار المقاس</span>
             </button>
@@ -270,7 +277,7 @@
               <span class="font-bold text-[10px]">حجز واستلام</span>
             </button>
 
-            <button onclick="openFazaaModal()" class="p-2 rounded-xl bg-slate-900 border border-amber-500/40 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex flex-col items-center justify-center text-center shadow">
+            <button onclick="openFazaaModal()" id="btnFazaaBottom" class="p-2 rounded-xl bg-slate-900 border border-amber-500/40 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex flex-col items-center justify-center text-center shadow">
               <i class="fa-solid fa-shield-halved text-sm mb-1 text-amber-400"></i>
               <span class="font-bold text-[10px]">فزعة عِـزوة</span>
             </button>
@@ -278,7 +285,7 @@
         </div>
       </div>
 
-      <!-- محطة السداد الذاتي والتحويل لحساب الراجحي (بسعر 199 ريال) -->
+      <!-- محطة السداد الذاتي والتحويل لحساب الراجحي -->
       <div class="border-t border-slate-900 pt-2">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
@@ -303,7 +310,7 @@
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
 
-    <!-- ==================== نافذة «فزعة عِـزوة» - بوابات المصمك الأربع الراقية ==================== -->
+    <!-- ==================== نافذة «فزعة عِـزوة» - بوابات المصمك الأربع ==================== -->
     <div id="fazaaModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 lg:p-8 max-w-2xl w-full border-2 border-amber-500/40 text-center relative shadow-2xl">
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
@@ -316,19 +323,17 @@
         <h3 class="text-xl font-black text-white">اختر بوابتك.. وجتك فزعة عِـزوة!</h3>
         <p class="text-xs text-slate-300 mt-1">المس إحدى بوابات قصر المصمك التاريخية لتكشف عن فزعتك التقديرية في المعرض اليوم:</p>
         
-        <!-- صف البوابات الأربع بتصميم خشبي ومسامير نحاسية -->
+        <!-- صف البوابات الأربع -->
         <div class="grid grid-cols-4 gap-3 my-6 gate-perspective">
           
           <!-- البوابة 1: فزعة السعر -->
           <div class="relative h-48 rounded-2xl overflow-hidden border border-amber-500/30 cursor-pointer shadow-xl group" onclick="openMasmakGate(1, 'خصم 10% فوري على القطعة', 'price')">
-            <!-- داخل البوابة (المكافأة) -->
             <div class="absolute inset-0 bg-gradient-to-b from-amber-500/20 to-slate-900 p-2 flex flex-col items-center justify-center text-center">
               <i class="fa-solid fa-tag text-2xl text-amber-400 mb-1"></i>
               <span class="text-xs font-black text-white">فزعة السعر</span>
               <span class="text-[10px] text-amber-300 font-bold mt-1">خصم 10% فوري</span>
               <span class="text-[9px] text-slate-400 mt-0.5">(179 ريال)</span>
             </div>
-            <!-- الباب الخشبي الخارجي القابل للفتح -->
             <div id="door1" class="masmak-door absolute inset-0 wood-texture border-2 border-amber-700/60 p-2 flex flex-col items-center justify-between">
               <div class="flex justify-between w-full opacity-60">
                 <span class="w-2 h-2 rounded-full bg-amber-600/80"></span>
@@ -381,7 +386,7 @@
             </div>
           </div>
 
-          <!-- البوابة 4: فزعة النخبة (أركان عِـزوة) -->
+          <!-- البوابة 4: فزعة النخبة -->
           <div class="relative h-48 rounded-2xl overflow-hidden border border-amber-500/30 cursor-pointer shadow-xl group" onclick="openMasmakGate(4, 'تسجيل فوري في عضوية أركان عِـزوة (VIP) الحصرية', 'vip')">
             <div class="absolute inset-0 bg-gradient-to-b from-amber-500/20 to-slate-900 p-2 flex flex-col items-center justify-center text-center">
               <i class="fa-solid fa-crown text-2xl text-amber-400 mb-1"></i>
@@ -438,7 +443,7 @@
       </div>
     </div>
 
-    <!-- نافذة تفاصيل التحويل البنكي لحساب الراجحي (بسعر 199 أو 179 ريال) -->
+    <!-- نافذة تفاصيل التحويل البنكي لحساب الراجحي -->
     <div id="rajhiModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/40 text-right shadow-2xl relative">
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
@@ -510,7 +515,7 @@
       </div>
     </div>
 
-    <!-- نافذة حجز واستلام القطعة ذاتياً -->
+    <!-- نافذة حجز واستلام القطعة -->
     <div id="reserveModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/40 text-right shadow-2xl relative">
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
@@ -683,15 +688,15 @@
   <video id="radarCamera" class="hidden" autoplay playsinline muted></video>
   <canvas id="radarCanvas" class="hidden" width="16" height="12"></canvas>
 
-  <!-- ==================== المحرك البرمجي لنظام عِـزوة المستقل ==================== -->
+  <!-- ==================== المحرك البرمجي للبائع الذكي المستقل ==================== -->
   <script>
-    const SUPERVISOR_PHONE = "966502777884"; // جوال المشرف
+    const SUPERVISOR_PHONE = "966502777884";
 
     const RAJHI_ACCOUNT = {
       bank: "مصرف الراجحي",
       beneficiary: "مؤسسة عِـزوة للتجارة",
       iban: "SA0380000000000000000000",
-      amount: "199" // السعر الأساسي المعتمد
+      amount: "199"
     };
 
     const CHANNELS = {
@@ -720,12 +725,60 @@
     let selectedStyle = 'regular';
 
     const welcomeAudio = new Audio('./welcome.mp3');
-    const storyAudioFile = new Audio('./story.mp3.mp3'); // الملف الصوتي الفخم
+    const storyAudioFile = new Audio('./story.mp3.mp3');
     let audioCtx = null;
+
+    let salesPitchTimer1 = null;
+    let salesPitchTimer2 = null;
+    let salesPitchTimer3 = null;
 
     function unlockAudioContext() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    // ==================== تسلسل الإقناع والبيع الاستباقي التلقائي ====================
+    function playGreetingSequence() {
+      playLuxuryChime();
+      
+      // المرحلة 1: الترحيب الفوري
+      setTimeout(() => {
+        welcomeAudio.currentTime = 0;
+        welcomeAudio.volume = 1.0;
+        welcomeAudio.play().catch(() => {
+          speakSalesmanText("حيّاك الله في عِـزوة! نورت جناحنا يا هلا فيك.");
+        });
+      }, 700);
+
+      // المرحلة 2: شرح القيمة وتميز القطعة بعد 6 ثوانٍ
+      clearTimeout(salesPitchTimer1);
+      salesPitchTimer1 = setTimeout(() => {
+        speakSalesmanText("القطعة اللي قدامك هي إصدار قصر المصمك المحدود؛ قماش قطني معالج وسميك بوزن ثلاثمية جرام، وقصة بوكس فيت راقية، مع شريحة سدو مشفرة توثق تيشيرتك بلمسة جوال.");
+      }, 6500);
+
+      // المرحلة 3: كسر حاجز المقاس بعد 17 ثانية وجذب الانتباه للزر
+      clearTimeout(salesPitchTimer2);
+      salesPitchTimer2 = setTimeout(() => {
+        speakSalesmanText("إذا محتار بالمقاس، اضغط على زر المقاس الهندسي أمامك، وعطني طولك ووزنك وأنا بعطيك المقاس الدقيق بالسنتمتر.");
+        highlightButton('btnFitNav');
+        highlightButton('btnFitBottom');
+      }, 17500);
+
+      // المرحلة 4: عرض فزعة عِـزوة والحسم بعد 28 ثانية
+      clearTimeout(salesPitchTimer3);
+      salesPitchTimer3 = setTimeout(() => {
+        speakSalesmanText("وقبل تقرر، لا تفوت فزعة عِـزوة! المس بوابات المصمك الأربع في الشاشة واكسب خصمك أو هديتك الحين.");
+        highlightButton('btnFazaaNav');
+        highlightButton('btnFazaaBottom');
+      }, 28500);
+    }
+
+    function highlightButton(btnId) {
+      const btn = document.getElementById(btnId);
+      if (btn) {
+        btn.classList.add('btn-attention');
+        setTimeout(() => btn.classList.remove('btn-attention'), 5000);
+      }
     }
 
     // ==================== تشغيل ملف قصة المصمك ====================
@@ -774,7 +827,6 @@
       if (hasSelectedGate) return;
       hasSelectedGate = true;
 
-      // فتح البوابة الملموسة بحركة ثلاثية الأبعاد
       const door = document.getElementById(`door${gateNum}`);
       if (door) door.classList.add('open');
 
@@ -782,7 +834,6 @@
       const res = document.getElementById('fazaaResultBanner');
       res.textContent = `مبروك! جتك فزعة عِـزوة: ${prizeTitle}`;
 
-      // إذا كانت فزعة السعر (خصم 10%)
       if (type === 'price') {
         MASMAK_PRODUCT.price = "179";
         document.getElementById('productPrice').textContent = "179";
@@ -902,7 +953,7 @@
       }
     }
 
-    // ==================== التحكم بالرادار وحفظ حالته ====================
+    // ==================== التحكم بالرادار ====================
     let isRadarActive = localStorage.getItem('ezwa_radar_state') === 'true';
     let radarStream = null;
     let radarInterval = null;
@@ -1037,17 +1088,6 @@
           });
         }
       } catch (e) {}
-    }
-
-    function playGreetingSequence() {
-      playLuxuryChime();
-      setTimeout(() => {
-        welcomeAudio.currentTime = 0;
-        welcomeAudio.volume = 1.0;
-        welcomeAudio.play().catch(() => {
-          speakSalesmanText("حيّاك الله في عِـزوة! أنا بائعك الرقمي المعتمد، تفضل باختيار مقاسك أو تجربة فزعة عِـزوة وأنا معك لأي استفسار.");
-        });
-      }, 750);
     }
 
     function handleFirstUserInteraction() {
@@ -1403,7 +1443,6 @@
       if (k === 'j') changeChannel('aljazeera');
     });
 
-    // الإعداد والتشغيل التلقائي
     initRajhiQR();
     renderRadarUI();
     if (isRadarActive) {
