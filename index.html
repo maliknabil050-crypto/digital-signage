@@ -619,7 +619,7 @@
       </div>
     </div>
 
-    <!-- شاشة مواقيت الصلاة -->
+    <!-- شاشة مواقيت الصلاة والأذان الموحدة -->
     <div id="prayerOverlay" class="absolute inset-0 bg-slate-950/95 z-50 backdrop-blur-md flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none">
       <div class="text-center p-8 glass-card rounded-3xl border border-amber-500/30 max-w-sm mx-4 shadow-2xl relative">
         <button onclick="dismissPrayerOverlay()" title="إغلاق فوري (Esc)" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center transition">
@@ -650,7 +650,7 @@
   </main>
 
   <video id="radarCamera" class="hidden" autoplay playsinline muted></video>
-  <canvas id="radarCanvas" class="hidden" width="16" height="12"></canvas>
+  <canvas id="radarCanvas" class="hidden"></canvas>
 
   <!-- ==================== المحرك البرمجي للبائع الذكي المستقل ==================== -->
   <script>
@@ -664,7 +664,7 @@
     };
 
     const CHANNELS = {
-      quran: { name: "القرآن الكريم", short: "القرآن", type: "hls", url: "https://win.holol.com/live/quran/playlist.m3u8" },
+      quran: { name: "القرآن الكريم (الحرم المكي)", short: "القرآن", type: "hls", url: "https://win.holol.com/live/quran/playlist.m3u8" },
       sunnah: { name: "السنة النبوية", short: "السنة", type: "hls", url: "https://win.holol.com/live/sunnah/playlist.m3u8" },
       alarabiya: { name: "العربية", short: "العربية", type: "hls", url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8" },
       aljazeera: { name: "الجزيرة", short: "الجزيرة", type: "iframe", url: "https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&mute=1&playsinline=1" }
@@ -688,7 +688,7 @@
     let selectedW = 'w95';
     let selectedStyle = 'regular';
 
-    // تهيئة المقاطع الصوتية
+    // تهيئة المقاطع الصوتية الحقيقية الأربعة
     const audioWelcome = new Audio('./welcome.mp3');
     const audioPitch1  = new Audio('./pitch1.mp3');
     const audioPitch2  = new Audio('./pitch2.mp3');
@@ -700,9 +700,9 @@
     let activeChainTimeout = null;
 
     // ==================== إعدادات فترات الانتظار بالمللي ثانية ====================
-    const PAUSE_AFTER_WELCOME = 2500;
-    const PAUSE_AFTER_PITCH1  = 3500;
-    const PAUSE_AFTER_PITCH2  = 4000;
+    const PAUSE_AFTER_WELCOME = 2500; // 2.5 ثانية بعد الترحيب
+    const PAUSE_AFTER_PITCH1  = 3500; // 3.5 ثوانٍ بعد شرح القطعة
+    const PAUSE_AFTER_PITCH2  = 4000; // 4.0 ثوانٍ بعد مستشار المقاس
 
     function unlockAudioContext() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -741,16 +741,51 @@
       }
     }, true);
 
-    // ==================== محرك السلسلة الصوتية المتتابعة مع إعادة وضع العرض ====================
+    // ==================== تحويل وضع الشاشة الآمن (بدون استدعاء دالة الإسكات) ====================
+    function switchLayoutSafely(mode) {
+      currentLayout = mode;
+      closeAllModals();
+      closeAllDropdowns();
+      
+      const prodSec = document.getElementById('productSection');
+      const tvSec = document.getElementById('tvSection');
+      const btnCatalog = document.getElementById('btnCatalog');
+      const btnSplit = document.getElementById('btnSplit');
+
+      [btnCatalog, btnSplit].forEach(b => {
+        b.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-1.5 border border-slate-800";
+      });
+
+      if (mode === 'split') {
+        btnSplit.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
+        prodSec.className = "w-1/2 h-full p-4 lg:p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100 overflow-y-auto";
+        tvSec.className = "w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition opacity-100";
+        playStream(CHANNELS[activeChannelKey]);
+      } else if (mode === 'catalog') {
+        btnCatalog.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
+        prodSec.className = "w-full h-full p-4 lg:p-6 flex flex-col justify-between absolute inset-0 fade-transition z-20 bg-slate-950 overflow-y-auto opacity-100";
+        tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
+      } else if (mode === 'tv') {
+        tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-100 z-20 bg-black flex items-center justify-center";
+        prodSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
+        playStream(CHANNELS[activeChannelKey]);
+      }
+    }
+
+    // استجابة الرادار لدخول العميل
+    function triggerCustomerArrival() {
+      // إذا كانت الشاشة بوضع البث الكامل (tv)، يتم التحول فوراً للوضع المزدوج
+      if (currentLayout === 'tv') {
+        switchLayoutSafely('split');
+      }
+      playGreetingSequence();
+    }
+
+    // ==================== محرك السلسلة الصوتية بالتتابع ====================
     function playGreetingSequence() {
       unlockAudioContext();
       if (isAudioChainRunning) return;
       isAudioChainRunning = true;
-
-      // إصلاح: إذا كانت الشاشة في وضع البث الكامل (tv)، يتم تحويلها تلقائياً للوضع المزدوج لإظهار التيشيرت للعميل
-      if (currentLayout === 'tv') {
-        setScreenLayout('split');
-      }
 
       playLuxuryChime();
 
@@ -1007,7 +1042,7 @@
       }
     }
 
-    // ==================== التحكم بالرادار ====================
+    // ==================== التحكم بالرادار فائق الحساسية ====================
     let isRadarActive = localStorage.getItem('ezwa_radar_state') === 'true';
     let radarStream = null;
     let radarInterval = null;
@@ -1042,7 +1077,9 @@
     async function startRadarCamera() {
       try {
         if (!radarStream) {
-          radarStream = await navigator.mediaDevices.getUserMedia({ video: { width: 16, height: 12 } });
+          radarStream = await navigator.mediaDevices.getUserMedia({ 
+            video: { width: 32, height: 24 } 
+          });
           document.getElementById('radarCamera').srcObject = radarStream;
         }
         
@@ -1050,35 +1087,44 @@
         
         const v = document.getElementById('radarCamera');
         const c = document.getElementById('radarCanvas');
+        c.width = 32;
+        c.height = 24;
         const ctx = c.getContext('2d', { willReadFrequently: true });
 
         radarInterval = setInterval(() => {
           if (!isRadarActive) return;
 
           if (cooldownTimer > 0) {
-            cooldownTimer -= 2;
+            cooldownTimer -= 1;
             return;
           }
 
           if (v.readyState !== 4) return;
-          ctx.drawImage(v, 0, 0, 16, 12);
-          const frame = ctx.getImageData(0, 0, 16, 12);
+          ctx.drawImage(v, 0, 0, 32, 24);
+          const frame = ctx.getImageData(0, 0, 32, 24);
 
           if (lastFrame) {
             let diff = 0;
-            for (let i = 0; i < frame.data.length; i += 16) {
+            // فحص دقيق وشامل للبكسلات
+            for (let i = 0; i < frame.data.length; i += 4) {
               diff += Math.abs(frame.data[i] - lastFrame.data[i]);
+              diff += Math.abs(frame.data[i+1] - lastFrame.data[i+1]);
+              diff += Math.abs(frame.data[i+2] - lastFrame.data[i+2]);
             }
 
-            if (diff > 1200) {
-              playGreetingSequence();
-              cooldownTimer = 75;
+            // حساسية التقاط الحركة (حركة اقتراب الزائر)
+            if (diff > 4500) {
+              const dot = document.getElementById('radarStatusDot');
+              if (dot) dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping";
+
+              triggerCustomerArrival();
+              cooldownTimer = 40; // فترة راحة 40 ثانية قبل الاستقبال التالي
             }
           }
           lastFrame = frame;
-        }, 2000);
+        }, 1000);
       } catch (e) {
-        console.warn("إذن الكاميرا غير مفعل");
+        console.warn("إذن الكاميرا غير مفعل:", e);
       }
     }
 
@@ -1154,7 +1200,7 @@
 
       if (!hasInteracted) {
         hasInteracted = true;
-        if (isRadarActive) playGreetingSequence();
+        if (isRadarActive) triggerCustomerArrival();
       }
     }
 
@@ -1288,42 +1334,12 @@
     }
 
     function setScreenLayout(mode) {
-      currentLayout = mode;
-      closeAllModals();
-      closeAllDropdowns();
-      const prodSec = document.getElementById('productSection');
-      const tvSec = document.getElementById('tvSection');
-      const video = document.getElementById('hlsVideo');
-      const iframe = document.getElementById('iframeVideo');
-      
-      const btnCatalog = document.getElementById('btnCatalog');
-      const btnSplit = document.getElementById('btnSplit');
-
-      [btnCatalog, btnSplit].forEach(b => {
-        b.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-1.5 border border-slate-800";
-      });
-
-      if (mode === 'catalog') {
-        btnCatalog.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
-        prodSec.className = "w-full h-full p-4 lg:p-6 flex flex-col justify-between absolute inset-0 fade-transition z-20 bg-slate-950 overflow-y-auto opacity-100";
-        tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
-        
-        if (hlsInstance) hlsInstance.stopLoad();
-        video.pause();
-        iframe.src = "about:blank";
-      } else if (mode === 'split') {
-        btnSplit.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
-        prodSec.className = "w-1/2 h-full p-4 lg:p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100 overflow-y-auto";
-        tvSec.className = "w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition opacity-100";
-        playStream(CHANNELS[activeChannelKey]);
-      } else if (mode === 'tv') {
-        tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-100 z-20 bg-black flex items-center justify-center";
-        prodSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
-        playStream(CHANNELS[activeChannelKey]);
-      }
+      stopAudioChain();
+      switchLayoutSafely(mode);
     }
 
     function changeChannel(key) {
+      stopAudioChain();
       if (!CHANNELS[key]) return;
       activeChannelKey = key;
       document.getElementById('activeChannelLabel').textContent = `البث: ${CHANNELS[key].short} (3)`;
@@ -1362,7 +1378,6 @@
       const currentMinutes = String(now.getMinutes()).padStart(2, '0');
       const currentTimeStr = `${currentHours}:${currentMinutes}`;
 
-      // عرض الصلاة القادمة في الشريط العلوي
       let next = prayerTimesRiyadh.find(p => p.time > currentTimeStr) || prayerTimesRiyadh[0];
       const nextNameEl = document.getElementById('nextPrayerName');
       const nextTimeEl = document.getElementById('nextPrayerTime');
@@ -1371,7 +1386,7 @@
         nextTimeEl.textContent = next.time;
       }
 
-      // فحص دخول وقت الصلاة الحالي
+      // مطابقة وقت الأذان الحالي
       const matchingPrayer = prayerTimesRiyadh.find(p => p.time === currentTimeStr);
       if (matchingPrayer && lastTriggeredPrayer !== matchingPrayer.name) {
         lastTriggeredPrayer = matchingPrayer.name;
@@ -1383,9 +1398,9 @@
         changeChannel('quran');
 
         // 3. فتح الشاشة كاملة للبث المباشر
-        setScreenLayout('tv');
+        switchLayoutSafely('tv');
 
-        // 4. إظهار شاشة الأذان المباركة
+        // 4. إظهار شاشة الأذان
         const overlay = document.getElementById('prayerOverlay');
         const title = document.getElementById('prayerOverlayTitle');
         if (overlay && title) {
@@ -1393,7 +1408,7 @@
           overlay.classList.remove('opacity-0', 'pointer-events-none');
         }
       } else if (!matchingPrayer) {
-        lastTriggeredPrayer = null; // إعادة ضبط عند انتهاء دقيقة الأذان
+        lastTriggeredPrayer = null;
       }
     }
 
@@ -1445,7 +1460,7 @@
       if (k === 'j') changeChannel('aljazeera');
     });
 
-    // تهيئة الباركود والتشغيل
+    // تهيئة الباركود والتشغيل الأولي
     initRajhiQR();
     renderRadarUI();
     if (isRadarActive) {
