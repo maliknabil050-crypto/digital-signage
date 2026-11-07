@@ -72,7 +72,7 @@
           
           <div class="text-[10px] text-slate-500 px-2.5 py-1 font-bold">اختيار القناة:</div>
           <button onclick="changeChannel('quran'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition flex items-center justify-between text-slate-200" id="ch_quran">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-kaaba text-amber-400 text-xs"></i> القرآن الكريم</span>
+            <span class="flex items-center gap-2"><i class="fa-solid fa-kaaba text-amber-400 text-xs"></i> القرآن الكريم (الحرم المكي)</span>
             <kbd class="text-[9px] text-slate-500 font-mono">Q</kbd>
           </button>
           <button onclick="changeChannel('sunnah'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition flex items-center justify-between text-slate-200" id="ch_sunnah">
@@ -700,9 +700,9 @@
     let activeChainTimeout = null;
 
     // ==================== إعدادات فترات الانتظار بالمللي ثانية ====================
-    const PAUSE_AFTER_WELCOME = 2500; // 2.5 ثانية بعد الترحيب
-    const PAUSE_AFTER_PITCH1  = 3500; // 3.5 ثوانٍ بعد شرح القطعة
-    const PAUSE_AFTER_PITCH2  = 4000; // 4.0 ثوانٍ بعد مستشار المقاس
+    const PAUSE_AFTER_WELCOME = 2500;
+    const PAUSE_AFTER_PITCH1  = 3500;
+    const PAUSE_AFTER_PITCH2  = 4000;
 
     function unlockAudioContext() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -727,15 +727,13 @@
         window.speechSynthesis.cancel();
       }
 
-      // إزالة وميض لفت الانتباه من الأزرار فوراً
       document.querySelectorAll('.btn-attention').forEach(btn => btn.classList.remove('btn-attention'));
-
       isAudioChainRunning = false;
     }
 
-    // مراقب اللمس الشامل: عند لمس أي زر أو خيار أو تبويب يصمت الصوت فوراً
+    // مراقب اللمس الشامل
     document.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('#firstInteractionNotice')) return; // عدم الإسكات عند النقر على لافتة البداية
+      if (e.target.closest('#firstInteractionNotice')) return;
       
       const isInteractive = e.target.closest('button, input, select, [onclick], .cursor-pointer, .fit-btn, .masmak-door, header');
       if (isInteractive) {
@@ -743,11 +741,16 @@
       }
     }, true);
 
-    // ==================== محرك السلسلة الصوتية المتتابعة ====================
+    // ==================== محرك السلسلة الصوتية المتتابعة مع إعادة وضع العرض ====================
     function playGreetingSequence() {
       unlockAudioContext();
       if (isAudioChainRunning) return;
       isAudioChainRunning = true;
+
+      // إصلاح: إذا كانت الشاشة في وضع البث الكامل (tv)، يتم تحويلها تلقائياً للوضع المزدوج لإظهار التيشيرت للعميل
+      if (currentLayout === 'tv') {
+        setScreenLayout('split');
+      }
 
       playLuxuryChime();
 
@@ -1285,7 +1288,6 @@
     }
 
     function setScreenLayout(mode) {
-      stopAudioChain();
       currentLayout = mode;
       closeAllModals();
       closeAllDropdowns();
@@ -1322,7 +1324,6 @@
     }
 
     function changeChannel(key) {
-      stopAudioChain();
       if (!CHANNELS[key]) return;
       activeChannelKey = key;
       document.getElementById('activeChannelLabel').textContent = `البث: ${CHANNELS[key].short} (3)`;
@@ -1338,6 +1339,7 @@
       if (currentLayout !== 'catalog') playStream(CHANNELS[key]);
     }
 
+    // مواقيت الصلاة لمدينة الرياض
     const prayerTimesRiyadh = [
       { name: "الفجر", time: "04:55" },
       { name: "الظهر", time: "11:42" },
@@ -1346,23 +1348,52 @@
       { name: "العشاء", time: "18:45" }
     ];
 
+    let lastTriggeredPrayer = null;
+
     function dismissPrayerOverlay() {
       const overlay = document.getElementById('prayerOverlay');
       if (overlay) overlay.classList.add('opacity-0', 'pointer-events-none');
     }
 
+    // ==================== فحص مواقيت الصلاة والتحويل التلقائي للحرم ====================
     function checkPrayer() {
       const now = new Date();
       const currentHours = String(now.getHours()).padStart(2, '0');
       const currentMinutes = String(now.getMinutes()).padStart(2, '0');
       const currentTimeStr = `${currentHours}:${currentMinutes}`;
 
+      // عرض الصلاة القادمة في الشريط العلوي
       let next = prayerTimesRiyadh.find(p => p.time > currentTimeStr) || prayerTimesRiyadh[0];
       const nextNameEl = document.getElementById('nextPrayerName');
       const nextTimeEl = document.getElementById('nextPrayerTime');
       if (nextNameEl && nextTimeEl) {
         nextNameEl.textContent = `صلاة ${next.name}:`;
         nextTimeEl.textContent = next.time;
+      }
+
+      // فحص دخول وقت الصلاة الحالي
+      const matchingPrayer = prayerTimesRiyadh.find(p => p.time === currentTimeStr);
+      if (matchingPrayer && lastTriggeredPrayer !== matchingPrayer.name) {
+        lastTriggeredPrayer = matchingPrayer.name;
+
+        // 1. إيقاف أي أصوات تسويقية فوراً
+        stopAudioChain();
+
+        // 2. التحويل التلقائي لقناة الحرم المكي (القرآن الكريم)
+        changeChannel('quran');
+
+        // 3. فتح الشاشة كاملة للبث المباشر
+        setScreenLayout('tv');
+
+        // 4. إظهار شاشة الأذان المباركة
+        const overlay = document.getElementById('prayerOverlay');
+        const title = document.getElementById('prayerOverlayTitle');
+        if (overlay && title) {
+          title.textContent = `حان الآن موعد أذان ${matchingPrayer.name}`;
+          overlay.classList.remove('opacity-0', 'pointer-events-none');
+        }
+      } else if (!matchingPrayer) {
+        lastTriggeredPrayer = null; // إعادة ضبط عند انتهاء دقيقة الأذان
       }
     }
 
