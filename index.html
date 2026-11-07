@@ -266,13 +266,14 @@
               <span class="font-bold text-[10px]">مستشار المقاس</span>
             </button>
 
-            <button onclick="openReserveModal()" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 transition flex flex-col items-center justify-center text-center shadow">
-              <i class="fa-solid fa-box-open text-sm mb-1 text-purple-400"></i>
-              <span class="font-bold text-[10px]">حجز واستلام</span>
+            <!-- ربط حجز القطعة مباشرة ببروتوكول التحقق والاستحقاق الذكي -->
+            <button onclick="openQualificationGate()" class="p-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/30 border border-amber-500/50 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex flex-col items-center justify-center text-center shadow">
+              <i class="fa-solid fa-shield-halved text-sm mb-1 text-amber-400"></i>
+              <span class="font-bold text-[10px]">طلب الاقتناء (حجب)</span>
             </button>
 
             <button onclick="openFazaaModal()" id="btnFazaaBottom" class="p-2 rounded-xl bg-slate-900 border border-amber-500/40 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex flex-col items-center justify-center text-center shadow">
-              <i class="fa-solid fa-shield-halved text-sm mb-1 text-amber-400"></i>
+              <i class="fa-solid fa-award text-sm mb-1 text-amber-400"></i>
               <span class="font-bold text-[10px]">فزعة عِـزوة</span>
             </button>
           </div>
@@ -283,7 +284,7 @@
       <div class="border-t border-slate-900 pt-2">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <div class="relative p-1 bg-white rounded-xl shadow-md shrink-0 cursor-pointer hover:ring-2 hover:ring-amber-400 transition" onclick="openRajhiPaymentModal()" title="انقر لعرض تفاصيل الحساب">
+            <div class="relative p-1 bg-white rounded-xl shadow-md shrink-0 cursor-pointer hover:ring-2 hover:ring-amber-400 transition" onclick="openQualificationGate()" title="انقر لطلب أهليّة الشراء والسداد">
               <img id="qrPaymentImg" src="" alt="باركود الراجحي" class="w-12 h-12 object-contain">
             </div>
             <div class="text-right">
@@ -291,8 +292,8 @@
               <span class="text-[10px] text-slate-400 block mt-0.5">امسح بالكاميرا لنسخ الآيبان والتحويل • <span id="rajhiFooterPrice" class="text-amber-400 font-bold">199 ريال</span></span>
             </div>
           </div>
-          <button onclick="openRajhiPaymentModal()" class="px-3.5 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500 hover:text-slate-950 text-[10px] font-bold transition">
-            تفاصيل الحساب
+          <button onclick="openQualificationGate()" class="px-3.5 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500 hover:text-slate-950 text-[10px] font-bold transition">
+            تفاصيل الاستحقاق والسداد
           </button>
         </div>
       </div>
@@ -303,6 +304,111 @@
       <video id="hlsVideo" class="w-full h-full max-h-full max-w-full object-contain" autoplay playsinline muted controls></video>
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
+
+    <!-- ==================== نافذة حجب البيع الذكي واختبار الاستحقاق ==================== -->
+    <div id="qualificationModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4 lg:p-6">
+      <div class="glass-card rounded-3xl p-6 lg:p-8 max-w-lg w-full border-2 border-amber-500/40 text-center relative shadow-2xl overflow-hidden">
+        
+        <!-- زر الإغلاق -->
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <!-- المرحلة 1: صدمة الحجب وإثارة رغبة العميل -->
+        <div id="qualStepNotice" class="space-y-4">
+          <div class="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto text-amber-400 text-2xl shadow-inner animate-pulse">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          <div>
+            <span class="text-[10px] text-amber-400 font-bold uppercase tracking-widest block">EZWA Collector Allocation</span>
+            <h3 class="text-xl font-black text-white mt-1">تنبيه حماية الإصدار المرقم</h3>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed bg-slate-900/80 p-3.5 rounded-2xl border border-slate-800 text-right">
+            نعتذر منك.. نظراً لمحدودية دفعة المصمك وحمايةً للقطعة من إعادة التداول التجاري العشوائي، تلزمنا سياسة «عِـزوة» بالتحقق من مواءمة المقتني لهوية وقيمة الإصدار قبل فك صلاحية الحجز والسداد.
+          </p>
+          <button onclick="startQualificationQuiz()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 font-black text-xs hover:brightness-110 transition shadow-lg flex items-center justify-center gap-2">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>بدء معايرة الاستحقاق السريع (10 ثوانٍ)</span>
+          </button>
+        </div>
+
+        <!-- المرحلة 2: معايرة التوافق الفكري والوطني -->
+        <div id="qualStepQuiz" class="hidden text-right space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <span class="text-xs font-black text-white flex items-center gap-1.5">
+              <i class="fa-solid fa-feather text-amber-400"></i>
+              معايرة الانتماء والتقدير المعماري
+            </span>
+            <span id="quizStepIndicator" class="text-[10px] font-mono text-amber-400 font-bold">1 من 2</span>
+          </div>
+
+          <!-- السؤال الأول -->
+          <div id="question1Container" class="space-y-2.5">
+            <h4 class="text-xs font-bold text-slate-200">١. ماذا يمثل لك قصر المصمك في هندسة هذا الإصدار؟</h4>
+            <div class="space-y-2">
+              <button onclick="recordQuizAnswer(1, false, this)" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs hover:border-slate-700 text-right transition flex items-center justify-between">
+                <span>مجرد معلم سياحي وتراثي بالرياض</span>
+                <i class="fa-regular fa-circle text-slate-600 text-[11px]"></i>
+              </button>
+              <button onclick="recordQuizAnswer(1, true, this)" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs hover:border-amber-400 text-right transition flex items-center justify-between">
+                <span class="font-bold text-white">هيبة ملحمة توحيد وطن وبداية مجد راسخ</span>
+                <i class="fa-regular fa-circle text-slate-600 text-[11px]"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- السؤال الثاني -->
+          <div id="question2Container" class="hidden space-y-2.5">
+            <h4 class="text-xs font-bold text-slate-200">٢. كيف ترى دمج رقاقة الـ NFC بحاشية السدو النجدية؟</h4>
+            <div class="space-y-2">
+              <button onclick="recordQuizAnswer(2, false, this)" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs hover:border-slate-700 text-right transition flex items-center justify-between">
+                <span>حركة ديكورية تقنية عابرة</span>
+                <i class="fa-regular fa-circle text-slate-600 text-[11px]"></i>
+              </button>
+              <button onclick="recordQuizAnswer(2, true, this)" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs hover:border-amber-400 text-right transition flex items-center justify-between">
+                <span class="font-bold text-white">انتقال حقيقي بالهوية التراثية إلى المستقبل الرقمي</span>
+                <i class="fa-regular fa-circle text-slate-600 text-[11px]"></i>
+              </button>
+            </div>
+          </div>
+
+          <div id="quizErrorMsg" class="hidden text-[10px] text-rose-400 font-bold text-center">
+            الإجابة لا تعكس فلسفة «عِـزوة».. أعد الاختيار بتأنٍ واعتزاز.
+          </div>
+        </div>
+
+        <!-- المرحلة 3: التتويج وفك الحظر مع العداد التنازلي -->
+        <div id="qualStepUnlocked" class="hidden space-y-4">
+          <div class="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mx-auto text-emerald-400 text-2xl animate-bounce">
+            <i class="fa-solid fa-crown"></i>
+          </div>
+          <div>
+            <span class="text-[10px] text-emerald-400 font-bold uppercase tracking-widest block">Collector Authorized</span>
+            <h3 class="text-xl font-black text-white mt-1">كفو! أهلاً بك في نخبة مقتني عِـزوة</h3>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed bg-slate-900/90 p-3.5 rounded-2xl border border-emerald-500/30 text-right">
+            تم توثيق هويتك كمقتنٍ رسمي مستحق. تم تحرير حجز القطعة المرقمة <span class="text-amber-400 font-mono font-bold">[EZWA-041]</span> لك مباشرة بسعر النخبة التقديري.
+          </p>
+
+          <!-- العداد التنازلي الحاسم لمنع التردد -->
+          <div class="p-3 bg-amber-500/10 rounded-2xl border border-amber-500/30 flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-300">مهلة الحجز قبل سحب الصلاحية:</span>
+            <div class="font-mono text-base font-black text-amber-400 tracking-wider" id="lockCountdown">03:00</div>
+          </div>
+
+          <div class="space-y-2">
+            <button onclick="proceedToImmediatePurchase()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 font-black text-xs hover:brightness-110 transition shadow-lg flex items-center justify-center gap-2">
+              <i class="fa-solid fa-credit-card"></i>
+              <span>تأكيد التحويل والاستلام الفوري (179 ريال)</span>
+            </button>
+            <button onclick="closeAllModals()" class="w-full py-2 rounded-xl bg-slate-900 text-slate-400 text-xs hover:text-white transition">
+              إلغاء والتنازل عن أولوية الاقتناء
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
 
     <!-- ==================== نافذة «فزعة عِـزوة» - بوابات المصمك الأربع ==================== -->
     <div id="fazaaModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
@@ -383,7 +489,7 @@
           <!-- البوابة 4: فزعة النخبة -->
           <div class="relative h-48 rounded-2xl overflow-hidden border border-amber-500/30 cursor-pointer shadow-xl group" onclick="openMasmakGate(4, 'تسجيل فوري في عضوية أركان عِـزوة (VIP) الحصرية', 'vip')">
             <div class="absolute inset-0 bg-gradient-to-b from-amber-500/20 to-slate-900 p-2 flex flex-col items-center justify-center text-center">
-              <i class="fa-solid fa-crown text-2xl text-amber-400 mb-1"></i>
+              <i class="fa-solid fa-award text-2xl text-amber-400 mb-1"></i>
               <span class="text-xs font-black text-white">فزعة النخبة</span>
               <span class="text-[10px] text-amber-300 font-bold mt-1">أركان عِـزوة VIP</span>
               <span class="text-[9px] text-slate-400 mt-0.5">أولوية حجز دروب طويق</span>
@@ -459,7 +565,7 @@
           </div>
           <div class="flex justify-between items-center pb-2 border-b border-slate-800">
             <span class="text-slate-400">المبلغ المطلوب للسداد:</span>
-            <span class="text-amber-400 font-bold font-mono text-sm" id="bankAmount">199 ريال</span>
+            <span class="text-amber-400 font-bold font-mono text-sm" id="bankAmount">179 ريال</span>
           </div>
           <div>
             <div class="flex justify-between items-center mb-1">
@@ -506,34 +612,6 @@
             إلغاء (Esc)
           </button>
         </div>
-      </div>
-    </div>
-
-    <!-- نافذة حجز واستلام القطعة -->
-    <div id="reserveModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/40 text-right shadow-2xl relative">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <span class="text-amber-400 text-[10px] font-bold uppercase tracking-widest block">EZWA Order Dispatch</span>
-        <h3 class="text-lg font-black text-white mt-1">حجز وتجهيز القطعة الفوري</h3>
-        <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-          أدخل اسمك ورقم جوالك ليتم إرسال أمر التجهيز مباشرة لمشرف المعرض لحفظ مقاسك:
-        </p>
-        <div class="space-y-3 my-4 text-xs">
-          <div>
-            <label class="text-slate-400 block mb-1">الاسم الكريم:</label>
-            <input type="text" id="reserveName" placeholder="أدخل اسمك" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white focus:border-amber-400 outline-none" />
-          </div>
-          <div>
-            <label class="text-slate-400 block mb-1">رقم الجوال:</label>
-            <input type="tel" id="reservePhone" placeholder="05XXXXXXXX" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white focus:border-amber-400 outline-none font-mono text-left" dir="ltr" />
-          </div>
-        </div>
-        <button onclick="submitReservationToSupervisor()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition shadow-lg flex items-center justify-center gap-2">
-          <i class="fa-brands fa-whatsapp text-sm"></i>
-          <span>تأكيد الحجز وتجهيز الصندوق</span>
-        </button>
       </div>
     </div>
 
@@ -688,7 +766,7 @@
     let selectedW = 'w95';
     let selectedStyle = 'regular';
 
-    // تهيئة المقاطع الصوتية الحقيقية الأربعة
+    // تهيئة المقاطع الصوتية
     const audioWelcome = new Audio('./welcome.mp3');
     const audioPitch1  = new Audio('./pitch1.mp3');
     const audioPitch2  = new Audio('./pitch2.mp3');
@@ -699,10 +777,14 @@
     let isAudioChainRunning = false;
     let activeChainTimeout = null;
 
-    // ==================== إعدادات فترات الانتظار بالمللي ثانية ====================
-    const PAUSE_AFTER_WELCOME = 2500; // 2.5 ثانية بعد الترحيب
-    const PAUSE_AFTER_PITCH1  = 3500; // 3.5 ثوانٍ بعد شرح القطعة
-    const PAUSE_AFTER_PITCH2  = 4000; // 4.0 ثوانٍ بعد مستشار المقاس
+    // إعدادات فترات الانتظار بالمللي ثانية
+    const PAUSE_AFTER_WELCOME = 2500;
+    const PAUSE_AFTER_PITCH1  = 3500;
+    const PAUSE_AFTER_PITCH2  = 4000;
+
+    // مؤقتات حجب البيع
+    let qualificationTimer = null;
+    let remainingLockSeconds = 180;
 
     function unlockAudioContext() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -741,7 +823,7 @@
       }
     }, true);
 
-    // ==================== تحويل وضع الشاشة الآمن (بدون استدعاء دالة الإسكات) ====================
+    // ==================== تحويل وضع الشاشة الآمن ====================
     function switchLayoutSafely(mode) {
       currentLayout = mode;
       closeAllModals();
@@ -774,14 +856,13 @@
 
     // استجابة الرادار لدخول العميل
     function triggerCustomerArrival() {
-      // إذا كانت الشاشة بوضع البث الكامل (tv)، يتم التحول فوراً للوضع المزدوج
       if (currentLayout === 'tv') {
         switchLayoutSafely('split');
       }
       playGreetingSequence();
     }
 
-    // ==================== محرك السلسلة الصوتية بالتتابع ====================
+    // ==================== محرك السلسلة الصوتية المتتابعة ====================
     function playGreetingSequence() {
       unlockAudioContext();
       if (isAudioChainRunning) return;
@@ -869,7 +950,7 @@
       }
     }
 
-    // ==================== تشغيل ملف قصة المصمك ====================
+    // ==================== تشغيل قصة المصمك ====================
     function playMasmakStoryAudio() {
       stopAudioChain();
       unlockAudioContext();
@@ -887,6 +968,91 @@
       }).catch(err => {
         console.warn("تعذر تشغيل قصة المصمك:", err);
       });
+    }
+
+    // ==================== نظام حجب البيع الذكي واختبار الاستحقاق ====================
+    function openQualificationGate() {
+      stopAudioChain();
+      closeAllModals();
+      
+      document.getElementById('qualStepNotice').classList.remove('hidden');
+      document.getElementById('qualStepQuiz').classList.add('hidden');
+      document.getElementById('qualStepUnlocked').classList.add('hidden');
+      document.getElementById('question1Container').classList.remove('hidden');
+      document.getElementById('question2Container').classList.add('hidden');
+      document.getElementById('quizErrorMsg').classList.add('hidden');
+      document.getElementById('quizStepIndicator').textContent = '1 من 2';
+      
+      document.getElementById('qualificationModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function startQualificationQuiz() {
+      document.getElementById('qualStepNotice').classList.add('hidden');
+      document.getElementById('qualStepQuiz').classList.remove('hidden');
+    }
+
+    function recordQuizAnswer(step, isCorrect, btnElement) {
+      const errorMsg = document.getElementById('quizErrorMsg');
+      
+      if (!isCorrect) {
+        errorMsg.classList.remove('hidden');
+        btnElement.classList.add('border-rose-500', 'bg-rose-500/10');
+        setTimeout(() => {
+          btnElement.classList.remove('border-rose-500', 'bg-rose-500/10');
+        }, 1500);
+        return;
+      }
+
+      errorMsg.classList.add('hidden');
+      btnElement.classList.add('border-emerald-500', 'bg-emerald-500/15');
+      playLuxuryChime();
+
+      setTimeout(() => {
+        if (step === 1) {
+          document.getElementById('question1Container').classList.add('hidden');
+          document.getElementById('question2Container').classList.remove('hidden');
+          document.getElementById('quizStepIndicator').textContent = '2 من 2';
+        } else if (step === 2) {
+          grantCollectorAuthorization();
+        }
+      }, 500);
+    }
+
+    function grantCollectorAuthorization() {
+      document.getElementById('qualStepQuiz').classList.add('hidden');
+      document.getElementById('qualStepUnlocked').classList.remove('hidden');
+      
+      playLuxuryChime();
+
+      // تفعيل خصم النخبة فورا (179 ريال)
+      MASMAK_PRODUCT.price = "179";
+      document.getElementById('productPrice').textContent = "179";
+      document.getElementById('appliedFazaaBadge').classList.remove('hidden');
+      document.getElementById('rajhiFooterPrice').textContent = "179 ريال";
+      initRajhiQR();
+
+      // تشغيل العداد التنازلي الحاسم لـ 3 دقائق
+      remainingLockSeconds = 180;
+      if (qualificationTimer) clearInterval(qualificationTimer);
+      
+      qualificationTimer = setInterval(() => {
+        remainingLockSeconds--;
+        const mins = String(Math.floor(remainingLockSeconds / 60)).padStart(2, '0');
+        const secs = String(remainingLockSeconds % 60).padStart(2, '0');
+        const timerEl = document.getElementById('lockCountdown');
+        if (timerEl) timerEl.textContent = `${mins}:${secs}`;
+
+        if (remainingLockSeconds <= 0) {
+          clearInterval(qualificationTimer);
+          closeAllModals();
+          alert("انتهت مهلة الحجز المخصصة لك، تم إعادة حجب القطعة لحين تقدم مقتنٍ آخر.");
+        }
+      }, 1000);
+    }
+
+    function proceedToImmediatePurchase() {
+      closeAllModals();
+      openRajhiPaymentModal();
     }
 
     // ==================== تفاعل بوابات المصمك (فزعة عِـزوة) ====================
@@ -985,7 +1151,7 @@
       closeAllModals();
     }
 
-    // ==================== نداء المشرف والحجز ====================
+    // ==================== نداء المشرف ====================
     function triggerCallSupervisorModal() {
       stopAudioChain();
       closeAllModals();
@@ -997,27 +1163,6 @@
       const msg = encodeURIComponent("نداء عاجل لمشرف المعرض!\nيوجد عميل عند الشاشة التفاعلية يطلب مساعدة المشرف أمام معروضات قصر المصمك.");
       window.open(`https://api.whatsapp.com/send?phone=${SUPERVISOR_PHONE}&text=${msg}`, '_blank');
       closeAllModals();
-    }
-
-    function openReserveModal() {
-      stopAudioChain();
-      closeAllModals();
-      document.getElementById('reserveModal').classList.remove('opacity-0', 'pointer-events-none');
-    }
-
-    function submitReservationToSupervisor() {
-      stopAudioChain();
-      const name = document.getElementById('reserveName').value.trim();
-      const phone = document.getElementById('reservePhone').value.trim();
-
-      if (!name || !phone) {
-        alert("يرجى إدخال الاسم ورقم الجوال لتأكيد الطلب.");
-        return;
-      }
-
-      closeAllModals();
-      const text = encodeURIComponent(`طلب حجز وتجهيز قطعة جديد:\n• اسم العميل: ${name}\n• رقم الجوال: ${phone}\n• الصنف: ${MASMAK_PRODUCT.title}\n• السعر: ${MASMAK_PRODUCT.price} ريال\nيرجى تجهيز الصندوق في المعرض.`);
-      window.open(`https://api.whatsapp.com/send?phone=${SUPERVISOR_PHONE}&text=${text}`, '_blank');
     }
 
     // ==================== تبديل صور الواجهة ====================
@@ -1105,20 +1250,18 @@
 
           if (lastFrame) {
             let diff = 0;
-            // فحص دقيق وشامل للبكسلات
             for (let i = 0; i < frame.data.length; i += 4) {
               diff += Math.abs(frame.data[i] - lastFrame.data[i]);
               diff += Math.abs(frame.data[i+1] - lastFrame.data[i+1]);
               diff += Math.abs(frame.data[i+2] - lastFrame.data[i+2]);
             }
 
-            // حساسية التقاط الحركة (حركة اقتراب الزائر)
             if (diff > 4500) {
               const dot = document.getElementById('radarStatusDot');
               if (dot) dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping";
 
               triggerCustomerArrival();
-              cooldownTimer = 40; // فترة راحة 40 ثانية قبل الاستقبال التالي
+              cooldownTimer = 40;
             }
           }
           lastFrame = frame;
@@ -1140,7 +1283,7 @@
       lastFrame = null;
     }
 
-    // ==================== الوظائف الصوتية والمودالز ====================
+    // ==================== المعاينة المكبرة ====================
     function openZoomModal() {
       stopAudioChain();
       const zoomModal = document.getElementById('zoomModal');
@@ -1371,7 +1514,7 @@
       if (overlay) overlay.classList.add('opacity-0', 'pointer-events-none');
     }
 
-    // ==================== فحص مواقيت الصلاة والتحويل التلقائي للحرم ====================
+    // ==================== فحص مواقيت الصلاة والتحويل للحرم المكي ====================
     function checkPrayer() {
       const now = new Date();
       const currentHours = String(now.getHours()).padStart(2, '0');
@@ -1386,21 +1529,14 @@
         nextTimeEl.textContent = next.time;
       }
 
-      // مطابقة وقت الأذان الحالي
       const matchingPrayer = prayerTimesRiyadh.find(p => p.time === currentTimeStr);
       if (matchingPrayer && lastTriggeredPrayer !== matchingPrayer.name) {
         lastTriggeredPrayer = matchingPrayer.name;
 
-        // 1. إيقاف أي أصوات تسويقية فوراً
         stopAudioChain();
-
-        // 2. التحويل التلقائي لقناة الحرم المكي (القرآن الكريم)
         changeChannel('quran');
-
-        // 3. فتح الشاشة كاملة للبث المباشر
         switchLayoutSafely('tv');
 
-        // 4. إظهار شاشة الأذان
         const overlay = document.getElementById('prayerOverlay');
         const title = document.getElementById('prayerOverlayTitle');
         if (overlay && title) {
@@ -1414,7 +1550,7 @@
 
     function closeAllModals() {
       stopAudioChain();
-      ['reserveModal', 'callStaffModal', 'rajhiModal', 'fitModal', 'zoomModal', 'fazaaModal', 'nfcVerifyModal'].forEach(id => {
+      ['callStaffModal', 'rajhiModal', 'fitModal', 'zoomModal', 'fazaaModal', 'nfcVerifyModal', 'qualificationModal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
@@ -1460,7 +1596,7 @@
       if (k === 'j') changeChannel('aljazeera');
     });
 
-    // تهيئة الباركود والتشغيل الأولي
+    // التهيئة والتشغيل المبدئي
     initRajhiQR();
     renderRadarUI();
     if (isRadarActive) {
