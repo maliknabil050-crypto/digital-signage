@@ -688,7 +688,7 @@
     let selectedW = 'w95';
     let selectedStyle = 'regular';
 
-    // تهيئة المقاطع الصوتية الحقيقية الأربعة
+    // تهيئة المقاطع الصوتية
     const audioWelcome = new Audio('./welcome.mp3');
     const audioPitch1  = new Audio('./pitch1.mp3');
     const audioPitch2  = new Audio('./pitch2.mp3');
@@ -697,13 +697,32 @@
 
     let audioCtx = null;
     let isAudioChainRunning = false;
+    let activeChainTimeout = null;
+
+    // ==================== إعدادات فترات الانتظار بالمللي ثانية ====================
+    const PAUSE_AFTER_WELCOME = 2500; // 2.5 ثانية بعد الترحيب
+    const PAUSE_AFTER_PITCH1  = 3500; // 3.5 ثوانٍ بعد شرح القطعة
+    const PAUSE_AFTER_PITCH2  = 4000; // 4.0 ثوانٍ بعد مستشار المقاس
 
     function unlockAudioContext() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    // ==================== محرك السلسلة الصوتية الحقيقية بالتتابع ====================
+    // إيقاف السلسلة الصوتية فوراً إذا لمس العميل أي زر أو تفاعل مع الشاشة
+    function stopAudioChain() {
+      if (activeChainTimeout) {
+        clearTimeout(activeChainTimeout);
+        activeChainTimeout = null;
+      }
+      [audioWelcome, audioPitch1, audioPitch2, audioPitch3].forEach(a => {
+        a.pause();
+        a.currentTime = 0;
+      });
+      isAudioChainRunning = false;
+    }
+
+    // ==================== محرك السلسلة الصوتية المتتابعة ====================
     function playGreetingSequence() {
       unlockAudioContext();
       if (isAudioChainRunning) return;
@@ -711,16 +730,15 @@
 
       playLuxuryChime();
 
-      // 1. تشغيل الترحيب
-      setTimeout(() => {
+      activeChainTimeout = setTimeout(() => {
         audioWelcome.currentTime = 0;
         audioWelcome.volume = 1.0;
 
         audioWelcome.play().then(() => {
           audioWelcome.onended = () => {
-            setTimeout(() => {
+            activeChainTimeout = setTimeout(() => {
               playAudioPitch1();
-            }, 1200);
+            }, PAUSE_AFTER_WELCOME);
           };
         }).catch(err => {
           console.warn("تعذر تشغيل الترحيب، انتقال للمقطع الأول:", err);
@@ -729,16 +747,16 @@
       }, 700);
     }
 
-    // 2. تشغيل هيبة القطعة وقصر المصمك
     function playAudioPitch1() {
+      if (!isAudioChainRunning) return;
       audioPitch1.currentTime = 0;
       audioPitch1.volume = 1.0;
 
       audioPitch1.play().then(() => {
         audioPitch1.onended = () => {
-          setTimeout(() => {
+          activeChainTimeout = setTimeout(() => {
             playAudioPitch2();
-          }, 1800);
+          }, PAUSE_AFTER_PITCH1);
         };
       }).catch(err => {
         console.warn("تعذر تشغيل pitch1:", err);
@@ -746,8 +764,8 @@
       });
     }
 
-    // 3. تشغيل كسر حاجز المقاس مع وميض الزر
     function playAudioPitch2() {
+      if (!isAudioChainRunning) return;
       highlightButton('btnFitNav');
       highlightButton('btnFitBottom');
 
@@ -756,9 +774,9 @@
 
       audioPitch2.play().then(() => {
         audioPitch2.onended = () => {
-          setTimeout(() => {
+          activeChainTimeout = setTimeout(() => {
             playAudioPitch3();
-          }, 1800);
+          }, PAUSE_AFTER_PITCH2);
         };
       }).catch(err => {
         console.warn("تعذر تشغيل pitch2:", err);
@@ -766,8 +784,8 @@
       });
     }
 
-    // 4. تشغيل فزعة عِـزوة وبوابات المصمك مع وميض الزر
     function playAudioPitch3() {
+      if (!isAudioChainRunning) return;
       highlightButton('btnFazaaNav');
       highlightButton('btnFazaaBottom');
 
@@ -794,6 +812,7 @@
 
     // ==================== تشغيل ملف قصة المصمك ====================
     function playMasmakStoryAudio() {
+      stopAudioChain();
       unlockAudioContext();
       playLuxuryChime();
       
@@ -813,6 +832,7 @@
 
     // ==================== تفاعل بوابات المصمك (فزعة عِـزوة) ====================
     function openFazaaModal() {
+      stopAudioChain();
       closeAllModals();
       resetMasmakDoors();
       document.getElementById('fazaaModal').classList.remove('opacity-0', 'pointer-events-none');
@@ -853,6 +873,7 @@
 
     // ==================== منسق مظهر نجد ====================
     function setStyleTip(type) {
+      stopAudioChain();
       const el = document.getElementById('styleTipText');
       if (type === 'daily') {
         el.textContent = "• التنسيق المقترح: بنطال كارجو بيج رملي أو فحمي مع سنيكرز أبيض كلاسيكي.";
@@ -865,6 +886,7 @@
 
     // ==================== توثيق الـ NFC السحابي ====================
     function simulateNfcVerification() {
+      stopAudioChain();
       closeAllModals();
       playLuxuryChime();
       document.getElementById('nfcVerifyModal').classList.remove('opacity-0', 'pointer-events-none');
@@ -880,6 +902,7 @@
     }
 
     function openRajhiPaymentModal() {
+      stopAudioChain();
       closeAllModals();
       document.getElementById('rajhiModal').classList.remove('opacity-0', 'pointer-events-none');
     }
@@ -902,6 +925,7 @@
 
     // ==================== نداء المشرف والحجز ====================
     function triggerCallSupervisorModal() {
+      stopAudioChain();
       closeAllModals();
       document.getElementById('callStaffModal').classList.remove('opacity-0', 'pointer-events-none');
     }
@@ -913,6 +937,7 @@
     }
 
     function openReserveModal() {
+      stopAudioChain();
       closeAllModals();
       document.getElementById('reserveModal').classList.remove('opacity-0', 'pointer-events-none');
     }
@@ -933,6 +958,7 @@
 
     // ==================== تبديل صور الواجهة ====================
     function switchProductView(angle) {
+      stopAudioChain();
       currentViewAngle = angle;
       const img = document.getElementById('mainProductImage');
       const badge = document.getElementById('viewAngleBadge');
@@ -1016,7 +1042,7 @@
 
             if (diff > 1200) {
               playGreetingSequence();
-              cooldownTimer = 70; // فترة راحة 70 ثانية لمنع التكرار المزعج
+              cooldownTimer = 75; // فترة هدوء كافية لانتهاء التسلسل كاملاً
             }
           }
           lastFrame = frame;
@@ -1040,6 +1066,7 @@
 
     // ==================== الوظائف الصوتية والمودالز ====================
     function openZoomModal() {
+      stopAudioChain();
       const zoomModal = document.getElementById('zoomModal');
       const zoomImg = document.getElementById('zoomedProductImage');
       zoomImg.src = (currentViewAngle === 'front') ? MASMAK_PRODUCT.frontImg : MASMAK_PRODUCT.backImg;
@@ -1101,12 +1128,14 @@
     }
 
     function openFitAdvisorModal() {
+      stopAudioChain();
       closeAllModals();
       document.getElementById('fitModal').classList.remove('opacity-0', 'pointer-events-none');
       recalcAccurateFit();
     }
 
     function toggleFitAdvisorModal() {
+      stopAudioChain();
       const modal = document.getElementById('fitModal');
       const isVisible = !modal.classList.contains('opacity-0');
       closeAllModals();
@@ -1178,6 +1207,7 @@
     }
 
     function toggleDropdown(id) {
+      stopAudioChain();
       const el = document.getElementById(id);
       const isVisible = !el.classList.contains('opacity-0');
       closeAllDropdowns();
@@ -1226,6 +1256,7 @@
     }
 
     function setScreenLayout(mode) {
+      stopAudioChain();
       currentLayout = mode;
       closeAllModals();
       closeAllDropdowns();
