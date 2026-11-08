@@ -15,7 +15,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Cairo', sans-serif; background-color: #030712; color: #f3f4f6; overflow: hidden; user-select: none; width: 100vw; height: 100vh; }
     .fade-transition { transition: all 0.25s ease-out; }
-    .glass-card { background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .glass-card { background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
     
     .gate-perspective { perspective: 1000px; }
     .masmak-door {
@@ -46,484 +46,447 @@
 </head>
 <body id="screenBody" class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden" onclick="handleFirstUserInteraction()">
 
-  <!-- الشريط العلوي الفاخر الأصلي بكامل أزراره -->
-  <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-md px-6 py-2.5 flex items-center justify-between border-b border-slate-900 shadow-xl">
+  <!-- الشريط العلوي المنظم والمنسق -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-md px-4 py-2 flex items-center justify-between border-b border-slate-900 shadow-xl">
+    
+    <!-- يمين الشريط: أنماط العرض والقنوات -->
     <div class="flex items-center gap-2">
-      <button onclick="setScreenLayout('catalog')" id="btnCatalog" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-1.5 border border-slate-800">
-        <i class="fa-solid fa-shirt text-[11px]"></i>
-        <span>المعروضات (1)</span>
-      </button>
+      <div class="flex items-center gap-1.5 ml-2">
+        <img src="./logo.jpeg" alt="EZWA" class="w-8 h-8 rounded-lg border border-amber-500/30 bg-slate-900 object-contain shadow">
+        <span class="font-black text-sm text-white">عِـزوة</span>
+      </div>
 
-      <button onclick="setScreenLayout('split')" id="btnSplit" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5">
-        <i class="fa-solid fa-table-columns text-[11px]"></i>
-        <span>المزدوج (2)</span>
-      </button>
+      <div class="flex items-center gap-1 bg-slate-900/90 p-0.5 rounded-xl border border-slate-800">
+        <button onclick="setScreenLayout('catalog')" id="btnCatalog" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition">
+          المعروض (1)
+        </button>
+        <button onclick="setScreenLayout('split')" id="btnSplit" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-500 text-slate-950 transition shadow">
+          المزدوج (2)
+        </button>
+      </div>
 
       <!-- تبويب قنوات البث -->
       <div class="relative">
-        <button onclick="toggleDropdown('tvDropdown')" id="btnTVTab" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-2 border border-slate-800">
-          <i class="fa-solid fa-tv text-[11px] text-amber-400"></i>
-          <span id="activeChannelLabel">البث: القرآن (3)</span>
-          <i class="fa-solid fa-chevron-down text-[9px] opacity-70"></i>
+        <button onclick="toggleDropdown('tvDropdown')" id="btnTVTab" class="px-3 py-1 rounded-xl text-[11px] font-bold bg-slate-900 text-slate-200 hover:text-white border border-slate-800 flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-tv text-amber-400 text-xs"></i>
+          <span id="activeChannelLabel">البث (3)</span>
+          <i class="fa-solid fa-chevron-down text-[8px] opacity-70"></i>
         </button>
 
-        <div id="tvDropdown" class="absolute top-full right-0 mt-2 w-56 glass-card rounded-2xl p-2 shadow-2xl opacity-0 pointer-events-none transition-all duration-150 z-50">
-          <button onclick="setScreenLayout('tv'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 mb-1 flex items-center justify-between">
-            <span>تفعيل البث بشاشة كاملة</span>
-            <kbd class="text-[9px] bg-slate-800 px-1.5 py-0.5 rounded text-slate-300 font-mono">3</kbd>
+        <div id="tvDropdown" class="absolute top-full right-0 mt-2 w-52 glass-card rounded-2xl p-2 shadow-2xl opacity-0 pointer-events-none transition-all duration-150 z-50">
+          <button onclick="changeChannel('quran'); closeAllDropdowns();" class="w-full text-right px-2.5 py-1.5 rounded-xl text-xs font-bold hover:bg-slate-800 text-amber-300 flex items-center justify-between">
+            <span>القرآن الكريم</span><kbd class="text-[9px] bg-slate-800 px-1 rounded text-slate-400 font-mono">Q</kbd>
           </button>
-          
-          <div class="text-[10px] text-slate-500 px-2.5 py-1 font-bold">اختيار القناة:</div>
-          <button onclick="changeChannel('quran'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition flex items-center justify-between text-slate-200" id="ch_quran">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-kaaba text-amber-400 text-xs"></i> القرآن الكريم</span>
-            <kbd class="text-[9px] text-slate-500 font-mono">Q</kbd>
+          <button onclick="changeChannel('sunnah'); closeAllDropdowns();" class="w-full text-right px-2.5 py-1.5 rounded-xl text-xs font-bold hover:bg-slate-800 text-slate-200 flex items-center justify-between">
+            <span>السنة النبوية</span><kbd class="text-[9px] bg-slate-800 px-1 rounded text-slate-400 font-mono">S</kbd>
           </button>
-          <button onclick="changeChannel('sunnah'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition flex items-center justify-between text-slate-200" id="ch_sunnah">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-mosque text-emerald-400 text-xs"></i> السنة النبوية</span>
-            <kbd class="text-[9px] text-slate-500 font-mono">S</kbd>
+          <button onclick="changeChannel('alarabiya'); closeAllDropdowns();" class="w-full text-right px-2.5 py-1.5 rounded-xl text-xs font-bold hover:bg-slate-800 text-slate-200 flex items-center justify-between">
+            <span>العربية</span><kbd class="text-[9px] bg-slate-800 px-1 rounded text-slate-400 font-mono">A</kbd>
           </button>
-          <button onclick="changeChannel('alarabiya'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition flex items-center justify-between text-slate-200" id="ch_alarabiya">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-newspaper text-purple-400 text-xs"></i> العربية</span>
-            <kbd class="text-[9px] text-slate-500 font-mono">A</kbd>
-          </button>
-          <button onclick="changeChannel('aljazeera'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition flex items-center justify-between text-slate-200" id="ch_aljazeera">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-globe text-orange-400 text-xs"></i> الجزيرة</span>
-            <kbd class="text-[9px] text-slate-500 font-mono">J</kbd>
+          <button onclick="changeChannel('aljazeera'); closeAllDropdowns();" class="w-full text-right px-2.5 py-1.5 rounded-xl text-xs font-bold hover:bg-slate-800 text-slate-200 flex items-center justify-between">
+            <span>الجزيرة</span><kbd class="text-[9px] bg-slate-800 px-1 rounded text-slate-400 font-mono">J</kbd>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- أزرار الخدمات الأصلية -->
-    <div class="flex items-center gap-2">
-      <button onclick="openArenaModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1.5 shadow-lg border border-amber-300">
-        <i class="fa-solid fa-trophy text-[11px]"></i>
+    <!-- يسار الشريط: أزرار الخدمات مرتبة بدقة عالية -->
+    <div class="flex items-center gap-1.5">
+      <button onclick="openArenaModal()" class="px-3 py-1 rounded-xl text-[11px] font-black bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1 shadow">
+        <i class="fa-solid fa-trophy text-[10px]"></i>
         <span>مسابقات الجناح</span>
       </button>
 
-      <button onclick="openAdminPinModal()" title="إشراف الجناح • كسر التعادل" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-amber-500/30 text-amber-400 hover:bg-slate-800 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-lock text-[11px]"></i>
+      <button onclick="openAdminPinModal()" title="إشراف الـ 90+" class="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-900 border border-amber-500/40 text-amber-400 hover:bg-slate-800 transition flex items-center gap-1">
+        <i class="fa-solid fa-lock text-[10px]"></i>
         <span>الـ 90+</span>
       </button>
 
-      <button onclick="openFazaaModal()" id="btnFazaaNav" class="px-3 py-1.5 rounded-xl text-xs font-black bg-slate-900 text-slate-200 hover:text-white transition flex items-center gap-1.5 border border-slate-800">
-        <i class="fa-solid fa-shield-halved text-[11px] text-amber-400"></i>
+      <button onclick="openFazaaModal()" class="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-900 border border-slate-800 text-slate-200 hover:text-white transition flex items-center gap-1">
+        <i class="fa-solid fa-shield-halved text-[10px] text-amber-400"></i>
         <span>فزعة عِـزوة</span>
       </button>
 
-      <button onclick="togglePresenceRadar()" id="btnRadarToggle" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 transition flex items-center gap-2 shadow">
-        <span id="radarStatusDot" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
+      <button onclick="togglePresenceRadar()" class="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 transition flex items-center gap-1.5">
+        <span id="radarStatusDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
         <span id="radarBtnText">الرادار: متوقف (R)</span>
       </button>
 
-      <button onclick="openFitAdvisorModal()" id="btnFitNav" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex items-center gap-1.5 shadow">
-        <i class="fa-solid fa-ruler-combined text-[11px]"></i>
-        <span>المقاس الهندسي (M)</span>
+      <button onclick="openFitAdvisorModal()" class="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-900 border border-slate-800 text-amber-300 hover:border-amber-400 transition flex items-center gap-1">
+        <i class="fa-solid fa-ruler-combined text-[10px]"></i>
+        <span>المقاس (M)</span>
       </button>
 
-      <button onclick="triggerCallSupervisorModal()" title="نداء مشرف المعرض" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
-        <i class="fa-solid fa-bell text-[11px] text-amber-400"></i>
+      <button onclick="triggerCallSupervisorModal()" class="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1">
+        <i class="fa-solid fa-bell text-[10px] text-amber-400"></i>
         <span>المشرف (C)</span>
       </button>
 
-      <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs">
-        <div class="flex items-center gap-1.5 text-slate-300">
-          <i class="fa-solid fa-mosque text-amber-400 text-[11px]"></i>
+      <!-- مواقيت الصلاة والوقت المباشر -->
+      <div class="flex items-center gap-2 px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-800 text-[11px]">
+        <div class="flex items-center gap-1 text-slate-300">
+          <i class="fa-solid fa-mosque text-amber-400 text-[10px]"></i>
           <span id="nextPrayerName">الصلاة:</span>
-          <span id="nextPrayerTime" class="text-amber-400 font-bold font-mono">--:--</span>
+          <span id="nextPrayerTime" class="text-amber-400 font-mono font-bold">--:--</span>
         </div>
         <span class="text-slate-700">|</span>
-        <div id="liveClock" class="font-mono text-xs font-bold text-slate-300">--:--</div>
+        <div id="liveClock" class="font-mono font-bold text-slate-300">--:--</div>
       </div>
 
-      <button onclick="toggleFullScreen()" title="ملء الشاشة (F)" class="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-amber-400 text-xs transition">
+      <button onclick="toggleFullScreen()" title="ملء الشاشة (F)" class="p-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-amber-400 text-xs transition">
         <i class="fa-solid fa-expand"></i>
       </button>
     </div>
   </header>
 
-  <!-- مساحة العرض الرئيسية الأصلية -->
-  <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-14 fade-transition">
-    <!-- 1. قسم الكتالوج والمنتج المعروض -->
-    <section id="productSection" class="w-1/2 h-full p-4 lg:p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition overflow-y-auto">
-      <div class="flex items-center justify-between border-b border-slate-900 pb-2.5">
-        <div class="flex items-center gap-3">
-          <img src="./logo.jpeg" alt="EZWA Logo" class="w-10 h-10 object-contain rounded-xl border border-amber-500/30 bg-slate-900 p-0.5 shadow-md">
-          <div>
-            <h1 class="text-lg font-black text-white leading-tight">عِـزوة • EZWA</h1>
-            <span class="text-amber-400 text-[10px] font-bold tracking-widest uppercase">أزياء الشارع الراقية المبتكرة</span>
-          </div>
+  <!-- مساحة العرض الرئيسية: توسيع صور المودل مع الحفاظ على التناسق -->
+  <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-12 fade-transition">
+    
+    <!-- 1. قسم الكتالوج والمنتج المعروض (الصور موسعة والوصف متكامل) -->
+    <section id="productSection" class="w-1/2 h-full p-4 lg:p-5 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition overflow-y-auto">
+      
+      <!-- شريط الإصدار المحدود -->
+      <div class="flex items-center justify-between border-b border-slate-900 pb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md border border-amber-500/20">اكتشف الرياض • الإصدار الأول</span>
+          <span class="text-[11px] text-slate-400">إصدار مرقم محدود: متبقي 9 قطع</span>
         </div>
-        <div class="bg-slate-900/90 border border-amber-500/30 px-3.5 py-1.5 rounded-xl text-right">
-          <div class="flex items-center gap-2">
-            <span class="text-[10px] text-slate-400">إصدار مرقم محدود:</span>
-            <span class="text-xs font-mono font-black text-amber-400">متبقي 9 قطع فقط</span>
-          </div>
-          <div class="w-full bg-slate-800 h-1 rounded-full mt-1.5 overflow-hidden">
-            <div class="bg-amber-400 h-full rounded-full" style="width: 82%;"></div>
-          </div>
+        <div class="w-24 bg-slate-800 h-1 rounded-full overflow-hidden">
+          <div class="bg-amber-400 h-full rounded-full" style="width: 82%;"></div>
         </div>
       </div>
 
+      <!-- صور المودل الموسعة والواضحة -->
       <div class="my-auto py-1">
-        <div class="grid grid-cols-12 gap-5 items-stretch">
-          <div class="col-span-6 flex flex-col items-center">
-            <div class="w-full h-[400px] lg:h-[430px] rounded-2xl bg-slate-900/90 border border-slate-800 grid grid-cols-2 p-1.5 gap-1.5 relative overflow-hidden shadow-2xl group">
-              <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center border border-slate-800/80 cursor-zoom-in" onclick="openZoomModal('front')">
-                <img id="mainFrontImage" src="./model-front.png" alt="الواجهة الأمامية" class="w-full h-full object-cover rounded-xl fade-transition">
-                <span class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-lg bg-black/85 backdrop-blur-md text-[9px] font-bold text-amber-300 border border-amber-500/30 shadow">الواجهة الأمامية</span>
-              </div>
-              <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center border border-slate-800/80 cursor-zoom-in" onclick="openZoomModal('back')">
-                <img id="mainBackImage" src="./model-back.png" alt="الواجهة الخلفية" class="w-full h-full object-cover rounded-xl fade-transition">
-                <span class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-lg bg-black/85 backdrop-blur-md text-[9px] font-bold text-amber-300 border border-amber-500/30 shadow">الظهر • الطبعة الذهبية</span>
-              </div>
-            </div>
+        <div class="w-full h-[380px] lg:h-[420px] rounded-2xl bg-slate-900/90 border border-slate-800 grid grid-cols-2 p-1.5 gap-2 relative overflow-hidden shadow-2xl">
+          <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center cursor-zoom-in group/front" onclick="openZoomModal('front')">
+            <img id="mainFrontImage" src="./model-front.png" alt="الواجهة الأمامية" class="w-full h-full object-cover rounded-xl fade-transition group-hover/front:scale-105 transition-transform duration-300">
+            <span class="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-black/85 backdrop-blur-md text-[10px] font-bold text-amber-300 border border-amber-500/30 shadow">الواجهة الأمامية</span>
           </div>
-
-          <div class="col-span-6 flex flex-col justify-between py-1">
-            <div>
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-1.5">
-                  <span class="text-xs font-black text-amber-400 bg-amber-500/15 px-2.5 py-0.5 rounded-md border border-amber-500/30">اكتشف الرياض</span>
-                  <span class="text-[10px] font-bold text-slate-300 bg-slate-900 px-2 py-0.5 rounded-md border border-slate-800">الإصدار الأول</span>
-                </div>
-                <button onclick="playMasmakStoryAudio()" id="btnStoryAudio" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 text-[10px] font-bold flex items-center gap-1.5 transition border border-amber-500/30 shadow">
-                  <i class="fa-solid fa-volume-high text-[10px]"></i>
-                  <span id="storyBtnLabel">قصة التصميم (30 ثانية)</span>
-                </button>
-              </div>
-
-              <h2 class="text-2xl font-black text-white mt-2 leading-tight">قصر المصمك</h2>
-              <div class="flex items-baseline gap-2 mt-2">
-                <span id="productPrice" class="text-3xl font-black text-amber-400">199</span>
-                <span class="text-xs text-slate-400 font-bold">ريال سعودي</span>
-                <span id="appliedFazaaBadge" class="hidden text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-md font-bold">تم تطبيق فزعة عِـزوة (-20 ريال)</span>
-              </div>
-
-              <p class="text-slate-300 text-[11px] mt-2.5 leading-relaxed bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80">
-                مستوحى من قصر المصمك الشاهد على ملحمة توحيد المملكة؛ قماش قطن 100% قصة بوكس فيت وطبعة خلفية ذهبية وبطاقة NFC مشفرة بحاشية السدو العريقة.
-              </p>
-            </div>
-
-            <div class="mt-2.5 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-wifi rotate-90 text-amber-400 text-sm"></i>
-                <div class="text-[10px] text-slate-300 leading-tight">
-                  <strong class="text-amber-300 block">شريحة السدو الذكية (NFC)</strong>
-                  المس حاشية التيشيرت لتفعيل التجربة
-                </div>
-              </div>
-              <button onclick="simulateNfcVerification()" class="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-black text-[10px] hover:bg-amber-400 transition shadow">التحقق</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-3 pt-2.5 border-t border-slate-900">
-          <div class="grid grid-cols-4 gap-2">
-            <button onclick="triggerCallSupervisorModal()" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 transition flex flex-col items-center justify-center text-center shadow">
-              <i class="fa-solid fa-headset text-sm mb-1 text-amber-400"></i>
-              <span class="font-bold text-[10px]">نداء المشرف</span>
-            </button>
-            <button onclick="openFitAdvisorModal()" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 transition flex flex-col items-center justify-center text-center shadow">
-              <i class="fa-solid fa-ruler-combined text-sm mb-1 text-emerald-400"></i>
-              <span class="font-bold text-[10px]">مستشار المقاس</span>
-            </button>
-            <button onclick="openQualificationGate()" class="p-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/30 border border-amber-500/50 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex flex-col items-center justify-center text-center shadow">
-              <i class="fa-solid fa-shield-halved text-sm mb-1 text-amber-400"></i>
-              <span class="font-bold text-[10px]">طلب الاقتناء</span>
-            </button>
-            <button onclick="openFazaaModal()" class="p-2 rounded-xl bg-slate-900 border border-amber-500/40 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex flex-col items-center justify-center text-center shadow">
-              <i class="fa-solid fa-award text-sm mb-1 text-amber-400"></i>
-              <span class="font-bold text-[10px]">فزعة عِـزوة</span>
-            </button>
+          <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center cursor-zoom-in group/back" onclick="openZoomModal('back')">
+            <img id="mainBackImage" src="./model-back.png" alt="الواجهة الخلفية" class="w-full h-full object-cover rounded-xl fade-transition group-hover/back:scale-105 transition-transform duration-300">
+            <span class="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-black/85 backdrop-blur-md text-[10px] font-bold text-amber-300 border border-amber-500/30 shadow">الظهر • الطبعة الذهبية</span>
           </div>
         </div>
       </div>
 
-      <div class="border-t border-slate-900 pt-2">
+      <!-- التفاصيل والوصف ومحطة السداد -->
+      <div class="space-y-2 border-t border-slate-900 pt-2">
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="p-1 bg-white rounded-xl shadow-md cursor-pointer" onclick="openQualificationGate()">
-              <img id="qrPaymentImg" src="" alt="باركود الراجحي" class="w-12 h-12 object-contain">
-            </div>
-            <div class="text-right">
-              <span class="text-xs font-black text-white block">مصرف الراجحي - عِـزوة</span>
-              <span class="text-[10px] text-slate-400 block mt-0.5">امسح للسداد • <span id="rajhiFooterPrice" class="text-amber-400 font-bold">199 ريال</span></span>
+          <div>
+            <h2 class="text-xl lg:text-2xl font-black text-white leading-tight">قصر المصمك</h2>
+            <div class="flex items-baseline gap-2 mt-0.5">
+              <span id="productPrice" class="text-2xl font-black text-amber-400">199</span>
+              <span class="text-xs text-slate-400 font-bold">ريال سعودي</span>
+              <span id="appliedFazaaBadge" class="hidden text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded font-bold">تم تطبيق فزعة (-20 ريال)</span>
             </div>
           </div>
-          <button onclick="openQualificationGate()" class="px-3.5 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500 hover:text-slate-950 text-[10px] font-bold transition">تفاصيل السداد</button>
+          <button onclick="playMasmakStoryAudio()" id="btnStoryAudio" class="px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[10px] font-bold flex items-center gap-1.5 hover:bg-amber-500 hover:text-slate-950 transition">
+            <i class="fa-solid fa-volume-high text-[10px]"></i>
+            <span id="storyBtnLabel">قصة التصميم (30 ثانية)</span>
+          </button>
+        </div>
+
+        <p class="text-slate-300 text-xs leading-relaxed bg-slate-900/70 p-2.5 rounded-xl border border-slate-800/80">
+          مستوحى من ملحمة قصر المصمك الشاهد على توحيد المملكة؛ قماش قطن 100% فاخر قصة بوكس فيت معاصرة وطبعة خلفية ذهبية وبطاقة NFC مشفرة بحاشية السدو العريقة.
+        </p>
+
+        <!-- شريحة السدو وسداد الراجحي في سطر متناسق -->
+        <div class="grid grid-cols-12 gap-2 items-center">
+          <div class="col-span-6 p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-wifi rotate-90 text-amber-400 text-xs"></i>
+              <span class="text-[10px] text-slate-300 font-bold">شريحة السدو (NFC)</span>
+            </div>
+            <button onclick="simulateNfcVerification()" class="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-black text-[10px] hover:bg-amber-400 transition">تحقق</button>
+          </div>
+
+          <div class="col-span-6 p-2 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="p-0.5 bg-white rounded cursor-pointer" onclick="openQualificationGate()">
+                <img id="qrPaymentImg" src="" alt="الراجحي" class="w-6 h-6 object-contain">
+              </div>
+              <span class="text-[11px] text-white font-bold">الراجحي: <span id="rajhiFooterPrice" class="text-amber-400">199 ريال</span></span>
+            </div>
+            <button onclick="openQualificationGate()" class="px-3 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-[10px] shadow">اقتناء</button>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- 2. قسم البث التلفزيوني -->
+    <!-- 2. قسم البث التلفزيوني المباشر (النصف المقابل) -->
     <section id="tvSection" class="w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition">
       <video id="hlsVideo" class="w-full h-full max-h-full max-w-full object-contain" autoplay playsinline muted controls></video>
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
 
-    <!-- ==================== نوافذ المسابقات الأصلية ==================== -->
-    <div id="arenaModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card rounded-3xl p-6 lg:p-8 max-w-4xl w-full border border-amber-500/30 shadow-2xl relative">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base"><i class="fa-solid fa-xmark"></i></button>
+  </main>
 
-        <div class="text-center mb-6">
-          <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30">ساحة المنافسات</span>
-          <h3 class="text-2xl font-black text-white mt-2">اختر مسار التحدي</h3>
+  <!-- ==================== نوافذ المسابقات والخدمات الأصلية ==================== -->
+  
+  <!-- ساحة المسابقات -->
+  <div id="arenaModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+    <div class="glass-card rounded-3xl p-6 lg:p-8 max-w-4xl w-full border border-amber-500/30 shadow-2xl relative">
+      <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base"><i class="fa-solid fa-xmark"></i></button>
+
+      <div class="text-center mb-6">
+        <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30">ساحة المنافسات</span>
+        <h3 class="text-2xl font-black text-white mt-2">اختر مسار التحدي</h3>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- 1. الخزنة الزجاجية -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-amber-500/60 transition">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl text-amber-400 mb-3">🔐</div>
+            <span class="text-[10px] font-black text-amber-400 block mb-1">تحدي فردي</span>
+            <h4 class="text-lg font-black text-white mb-2">الخزنة الزجاجية</h4>
+            <p class="text-xs text-slate-400 leading-relaxed">تخمين الرمز السري الثلاثي (909 أو 041) للفوز بتولة مسك عِـزوة الملكي فوراً.</p>
+          </div>
+          <button onclick="openSingleVaultModal()" class="mt-4 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition">دخول التحدي ⚡</button>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- 1. الخزنة الزجاجية -->
-          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-amber-500/60 transition">
-            <div>
-              <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl text-amber-400 mb-3">🔐</div>
-              <span class="text-[10px] font-black text-amber-400 block mb-1">تحدي فردي</span>
-              <h4 class="text-lg font-black text-white mb-2">الخزنة الزجاجية</h4>
-              <p class="text-xs text-slate-400 leading-relaxed">تخمين الرمز السري الثلاثي (909 أو 041) للفوز بتولة مسك عِـزوة الملكي فوراً.</p>
-            </div>
-            <button onclick="openSingleVaultModal()" class="mt-4 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition">دخول التحدي ⚡</button>
+        <!-- 2. المساومة الخفية -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-amber-500/60 transition">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl text-amber-400 mb-3">⚖️</div>
+            <span class="text-[10px] font-black text-amber-400 block mb-1">مواجهة ثنائية</span>
+            <h4 class="text-lg font-black text-white mb-2">المساومة الخفية</h4>
+            <p class="text-xs text-slate-400 leading-relaxed">اختبار الخِـوّة أو الغدر النفسي؛ الغدر المتبادل يُسقطكما إلى شوط الـ 90+!</p>
           </div>
+          <button onclick="openBargainingGame()" class="mt-4 w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition">بدء المساومة 🤝🗡️</button>
+        </div>
 
-          <!-- 2. المساومة الخفية -->
-          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-amber-500/60 transition">
-            <div>
-              <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl text-amber-400 mb-3">⚖️</div>
-              <span class="text-[10px] font-black text-amber-400 block mb-1">مواجهة ثنائية</span>
-              <h4 class="text-lg font-black text-white mb-2">المساومة الخفية</h4>
-              <p class="text-xs text-slate-400 leading-relaxed">اختبار الخِـوّة أو الغدر النفسي؛ الغدر المتبادل يُسقطكما إلى شوط الـ 90+!</p>
-            </div>
-            <button onclick="openBargainingGame()" class="mt-4 w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition">بدء المساومة 🤝🗡️</button>
+        <!-- 3. تفكيك الشيفرة -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-emerald-500/60 transition">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xl text-emerald-400 mb-3">🧩</div>
+            <span class="text-[10px] font-black text-emerald-400 block mb-1">سباق السرعة</span>
+            <h4 class="text-lg font-black text-white mb-2">تفكيك الشيفرة</h4>
+            <p class="text-xs text-slate-400 leading-relaxed">سباق المفاتيح المتطابقة؛ أول من يُدخل النمط الكروي بالترتيب يفوز.</p>
           </div>
-
-          <!-- 3. تفكيك الشيفرة -->
-          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-emerald-500/60 transition">
-            <div>
-              <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xl text-emerald-400 mb-3">🧩</div>
-              <span class="text-[10px] font-black text-emerald-400 block mb-1">سباق السرعة</span>
-              <h4 class="text-lg font-black text-white mb-2">تفكيك الشيفرة</h4>
-              <p class="text-xs text-slate-400 leading-relaxed">سباق المفاتيح المتطابقة بين لاعبين؛ أول من يُدخل النمط الكروي بالترتيب يفوز.</p>
-            </div>
-            <button onclick="openCipherGame()" class="mt-4 w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition">بدء سباق المفاتيح ⏱️</button>
-          </div>
+          <button onclick="openCipherGame()" class="mt-4 w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition">بدء سباق المفاتيح ⏱️</button>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- نافذة الخزنة الزجاجية -->
-    <div id="singleVaultModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
-      <div class="glass-card border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full text-center relative shadow-2xl">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">✕</button>
-        <div class="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-2xl text-amber-400 mx-auto mb-3">🔐</div>
-        <h3 class="text-xl font-black text-white mb-1">الخزنة الزجاجية السرية</h3>
-        <p class="text-xs text-slate-400 mb-4">أدخل الرمز السري الثلاثي لفك القفل واقتناص الجائزة</p>
-        
-        <input type="password" id="vaultPinInput" maxlength="3" placeholder="•••" class="w-full tracking-widest text-center text-3xl font-black py-3 bg-slate-950 border border-slate-700 rounded-xl focus:border-amber-400 focus:outline-none mb-3 text-amber-300">
-        <div id="vaultStatusMessage" class="min-h-[22px] text-xs font-bold mb-3"></div>
+  <!-- الخزنة الزجاجية -->
+  <div id="singleVaultModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
+    <div class="glass-card border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full text-center relative shadow-2xl">
+      <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">✕</button>
+      <div class="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-2xl text-amber-400 mx-auto mb-3">🔐</div>
+      <h3 class="text-xl font-black text-white mb-1">الخزنة الزجاجية السرية</h3>
+      <p class="text-xs text-slate-400 mb-4">أدخل الرمز السري الثلاثي لفك القفل واقتناص الجائزة</p>
+      
+      <input type="password" id="vaultPinInput" maxlength="3" placeholder="•••" class="w-full tracking-widest text-center text-3xl font-black py-3 bg-slate-950 border border-slate-700 rounded-xl focus:border-amber-400 focus:outline-none mb-3 text-amber-300">
+      <div id="vaultStatusMessage" class="min-h-[22px] text-xs font-bold mb-3"></div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <button onclick="closeAllModals()" class="py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold">إلغاء</button>
-          <button onclick="submitVaultPin()" class="py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black">فك القفل ⚡</button>
-        </div>
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="closeAllModals()" class="py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold">إلغاء</button>
+        <button onclick="submitVaultPin()" class="py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black">فك القفل ⚡</button>
       </div>
     </div>
+  </div>
 
-    <!-- نافذة المساومة الخفية -->
-    <div id="bargainingGameModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card border border-amber-500/40 rounded-3xl p-6 max-w-3xl w-full text-center relative shadow-2xl">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">✕</button>
-        <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30">المواجهة النفسية الصامتة</span>
-        <h3 class="text-2xl font-black text-white mt-2">المساومة الخفية • اختبار الخِـوّة أو الغدر</h3>
-        <p class="text-xs text-slate-400 mt-1 mb-6">يختار كل متسابق قراره سراً؛ الغدر المتبادل ينقلكما لصافرة الـ 90+!</p>
+  <!-- المساومة الخفية -->
+  <div id="bargainingGameModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+    <div class="glass-card border border-amber-500/40 rounded-3xl p-6 max-w-3xl w-full text-center relative shadow-2xl">
+      <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">✕</button>
+      <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30">المواجهة النفسية الصامتة</span>
+      <h3 class="text-2xl font-black text-white mt-2">المساومة الخفية • اختبار الخِـوّة أو الغدر</h3>
+      <p class="text-xs text-slate-400 mt-1 mb-6">يختار كل متسابق قراره سراً؛ الغدر المتبادل ينقلكما لصافرة الـ 90+!</p>
 
-        <div class="grid grid-cols-2 gap-6 mb-6">
-          <div class="bg-slate-900/90 border border-blue-500/30 rounded-2xl p-5">
-            <span class="text-xs font-black text-blue-400 block mb-3">قرار المتحدي الأول</span>
-            <div id="p1ChoiceStatus" class="text-xs text-slate-500 mb-4 font-bold">في انتظار القرار...</div>
-            <div class="grid grid-cols-2 gap-2">
-              <button onclick="setPlayerDilemmaChoice(1, 'cooperate')" class="py-3.5 bg-slate-800 hover:bg-emerald-600/30 border border-emerald-500/40 rounded-xl text-emerald-400 font-black text-xs">خِـوّة 🤝</button>
-              <button onclick="setPlayerDilemmaChoice(1, 'betray')" class="py-3.5 bg-slate-800 hover:bg-rose-600/30 border border-rose-500/40 rounded-xl text-rose-400 font-black text-xs">غدر 🗡️</button>
-            </div>
-          </div>
-
-          <div class="bg-slate-900/90 border border-emerald-500/30 rounded-2xl p-5">
-            <span class="text-xs font-black text-emerald-400 block mb-3">قرار المتحدي الثاني</span>
-            <div id="p2ChoiceStatus" class="text-xs text-slate-500 mb-4 font-bold">في انتظار القرار...</div>
-            <div class="grid grid-cols-2 gap-2">
-              <button onclick="setPlayerDilemmaChoice(2, 'cooperate')" class="py-3.5 bg-slate-800 hover:bg-emerald-600/30 border border-emerald-500/40 rounded-xl text-emerald-400 font-black text-xs">خِـوّة 🤝</button>
-              <button onclick="setPlayerDilemmaChoice(2, 'betray')" class="py-3.5 bg-slate-800 hover:bg-rose-600/30 border border-rose-500/40 rounded-xl text-rose-400 font-black text-xs">غدر 🗡️</button>
-            </div>
+      <div class="grid grid-cols-2 gap-6 mb-6">
+        <div class="bg-slate-900/90 border border-blue-500/30 rounded-2xl p-5">
+          <span class="text-xs font-black text-blue-400 block mb-3">قرار المتحدي الأول</span>
+          <div id="p1ChoiceStatus" class="text-xs text-slate-500 mb-4 font-bold">في انتظار القرار...</div>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="setPlayerDilemmaChoice(1, 'cooperate')" class="py-3.5 bg-slate-800 hover:bg-emerald-600/30 border border-emerald-500/40 rounded-xl text-emerald-400 font-black text-xs">خِـوّة 🤝</button>
+            <button onclick="setPlayerDilemmaChoice(1, 'betray')" class="py-3.5 bg-slate-800 hover:bg-rose-600/30 border border-rose-500/40 rounded-xl text-rose-400 font-black text-xs">غدر 🗡️</button>
           </div>
         </div>
 
-        <div id="dilemmaResultBanner" class="min-h-[30px] mb-4 text-xs font-bold text-amber-400"></div>
-        <button onclick="revealDilemmaResult()" class="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-sm rounded-xl">كشف القرارات وإعلان النتيجة ⚖️</button>
-      </div>
-    </div>
-
-    <!-- نافذة تفكيك الشيفرة -->
-    <div id="cipherGameModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4 lg:p-8">
-      <div class="glass-card border border-emerald-500/40 rounded-3xl p-6 max-w-5xl w-full h-[88vh] flex flex-col justify-between relative shadow-2xl">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base z-30"><i class="fa-solid fa-xmark"></i></button>
-
-        <div class="text-center border-b border-slate-800 pb-3">
-          <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest block mb-1">تفكيك الشيفرة المشتركة</span>
-          <h3 class="text-xl font-black text-white">أول من يطابق تسلسل المفاتيح الكروية يفوز فوراً!</h3>
-          <div class="inline-flex items-center gap-3 mt-2 bg-slate-900 border border-emerald-500/40 px-6 py-1.5 rounded-2xl">
-            <span class="text-xs text-slate-400">النمط المطلوب:</span>
-            <div class="flex gap-2 text-2xl font-black text-emerald-400 font-mono">⚽ 🏆 ⚡ 🎯</div>
+        <div class="bg-slate-900/90 border border-emerald-500/30 rounded-2xl p-5">
+          <span class="text-xs font-black text-emerald-400 block mb-3">قرار المتحدي الثاني</span>
+          <div id="p2ChoiceStatus" class="text-xs text-slate-500 mb-4 font-bold">في انتظار القرار...</div>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="setPlayerDilemmaChoice(2, 'cooperate')" class="py-3.5 bg-slate-800 hover:bg-emerald-600/30 border border-emerald-500/40 rounded-xl text-emerald-400 font-black text-xs">خِـوّة 🤝</button>
+            <button onclick="setPlayerDilemmaChoice(2, 'betray')" class="py-3.5 bg-slate-800 hover:bg-rose-600/30 border border-rose-500/40 rounded-xl text-rose-400 font-black text-xs">غدر 🗡️</button>
           </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-6 my-auto">
-          <!-- المتحدي الأول -->
-          <div class="bg-slate-900/80 border border-blue-500/30 rounded-2xl p-5 text-center">
-            <span class="text-xs font-black text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/30 inline-block mb-3">المتحدي الأول (يمين)</span>
-            <div id="cipherP1Display" class="h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4">- - - -</div>
-            <div class="grid grid-cols-2 gap-2">
-              <button onclick="handleCipherInput(1, '⚽')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl">⚽</button>
-              <button onclick="handleCipherInput(1, '🏆')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl">🏆</button>
-              <button onclick="handleCipherInput(1, '⚡')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl">⚡</button>
-              <button onclick="handleCipherInput(1, '🎯')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl">🎯</button>
-            </div>
-          </div>
-
-          <!-- المتحدي الثاني -->
-          <div class="bg-slate-900/80 border border-emerald-500/30 rounded-2xl p-5 text-center">
-            <span class="text-xs font-black text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30 inline-block mb-3">المتحدي الثاني (يسار)</span>
-            <div id="cipherP2Display" class="h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4">- - - -</div>
-            <div class="grid grid-cols-2 gap-2">
-              <button onclick="handleCipherInput(2, '⚽')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl">⚽</button>
-              <button onclick="handleCipherInput(2, '🏆')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl">🏆</button>
-              <button onclick="handleCipherInput(2, '⚡')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl">⚡</button>
-              <button onclick="handleCipherInput(2, '🎯')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl">🎯</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="border-t border-slate-800 pt-3 flex items-center justify-between">
-          <span class="text-xs text-slate-400">تطابق التوقيت معاً؟</span>
-          <button onclick="openAdminPinModal()" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 rounded-xl text-xs font-black">
-            تفعيل شوط كسر التعادل (صافرة الـ 90+)
-          </button>
         </div>
       </div>
-    </div>
 
-    <!-- نافذة المشرف (PIN) -->
-    <div id="adminPinModal" class="absolute inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
-      <div class="glass-card border border-amber-500/40 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl">
-        <h3 class="text-base font-black text-amber-400 mb-1">إذن مشرف الجناح (PIN)</h3>
-        <p class="text-[11px] text-slate-400 mb-4">أدخل الرمز لفتح صافرة الـ 90+</p>
-        <input type="password" id="adminPinInput" maxlength="4" placeholder="••••" class="w-full tracking-widest text-center text-2xl font-black py-2.5 bg-slate-950 border border-slate-700 rounded-xl focus:border-amber-400 mb-3 text-amber-300">
-        <div class="grid grid-cols-2 gap-2">
-          <button onclick="closeAllModals()" class="py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">إلغاء</button>
-          <button onclick="verifyAdminPin()" class="py-2 rounded-xl bg-amber-500 text-slate-950 text-xs font-black">تفعيل</button>
+      <div id="dilemmaResultBanner" class="min-h-[30px] mb-4 text-xs font-bold text-amber-400"></div>
+      <button onclick="revealDilemmaResult()" class="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-sm rounded-xl">كشف القرارات وإعلان النتيجة ⚖️</button>
+    </div>
+  </div>
+
+  <!-- تفكيك الشيفرة -->
+  <div id="cipherGameModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4 lg:p-8">
+    <div class="glass-card border border-emerald-500/40 rounded-3xl p-6 max-w-5xl w-full h-[88vh] flex flex-col justify-between relative shadow-2xl">
+      <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base z-30"><i class="fa-solid fa-xmark"></i></button>
+
+      <div class="text-center border-b border-slate-800 pb-3">
+        <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest block mb-1">تفكيك الشيفرة المشتركة</span>
+        <h3 class="text-xl font-black text-white">أول من يطابق تسلسل المفاتيح الكروية يفوز فوراً!</h3>
+        <div class="inline-flex items-center gap-3 mt-2 bg-slate-900 border border-emerald-500/40 px-6 py-1.5 rounded-2xl">
+          <span class="text-xs text-slate-400">النمط المطلوب:</span>
+          <div class="flex gap-2 text-2xl font-black text-emerald-400 font-mono">⚽ 🏆 ⚡ 🎯</div>
         </div>
-        <p id="adminPinError" class="text-rose-400 text-[11px] mt-2 hidden font-bold">الرمز غير صحيح</p>
       </div>
-    </div>
 
-    <!-- نافذة صافرة الـ 90+ -->
-    <div id="whistleModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
-      <div class="glass-card border-2 border-amber-500/50 rounded-3xl p-6 sm:p-8 max-w-lg w-full text-center shadow-2xl relative">
-        <button onclick="closeAllModals()" class="absolute top-5 left-5 text-slate-400 hover:text-white text-lg">✕</button>
-        <h3 class="text-2xl font-black text-white mb-1">صافرة الـ 90+</h3>
-        <p class="text-xs text-slate-400 mb-2">النافذة الصارمة: [ 90:00 - 90:50 ]</p>
-        <div class="py-6 bg-slate-950 rounded-2xl border border-slate-800 my-4">
-          <div id="whistleTimerDisplay" class="text-6xl font-black font-mono tracking-wider text-slate-100 gold-glow">00:00</div>
+      <div class="grid grid-cols-2 gap-6 my-auto">
+        <div class="bg-slate-900/80 border border-blue-500/30 rounded-2xl p-5 text-center">
+          <span class="text-xs font-black text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/30 inline-block mb-3">المتحدي الأول (يمين)</span>
+          <div id="cipherP1Display" class="h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4">- - - -</div>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="handleCipherInput(1, '⚽')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl">⚽</button>
+            <button onclick="handleCipherInput(1, '🏆')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl">🏆</button>
+            <button onclick="handleCipherInput(1, '⚡')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl">⚡</button>
+            <button onclick="handleCipherInput(1, '🎯')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl">🎯</button>
+          </div>
         </div>
-        <button id="whistleBtn" onclick="handleWhistleClick()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-black text-lg">
-          إطلاق الصافرة ⏱️
+
+        <div class="bg-slate-900/80 border border-emerald-500/30 rounded-2xl p-5 text-center">
+          <span class="text-xs font-black text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30 inline-block mb-3">المتحدي الثاني (يسار)</span>
+          <div id="cipherP2Display" class="h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4">- - - -</div>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="handleCipherInput(2, '⚽')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl">⚽</button>
+            <button onclick="handleCipherInput(2, '🏆')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl">🏆</button>
+            <button onclick="handleCipherInput(2, '⚡')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl">⚡</button>
+            <button onclick="handleCipherInput(2, '🎯')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl">🎯</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 pt-3 flex items-center justify-between">
+        <span class="text-xs text-slate-400">تطابق التوقيت معاً؟</span>
+        <button onclick="openAdminPinModal()" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 rounded-xl text-xs font-black">
+          تفعيل شوط كسر التعادل (صافرة الـ 90+)
         </button>
       </div>
     </div>
+  </div>
 
-    <!-- فزعة عزوة -->
-    <div id="fazaaModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card rounded-3xl p-6 max-w-2xl w-full border-2 border-amber-500/40 text-center relative shadow-2xl">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400"><i class="fa-solid fa-xmark"></i></button>
-        <h3 class="text-xl font-black text-white">اختر بوابتك.. وجتك فزعة عِـزوة!</h3>
-        <div class="grid grid-cols-4 gap-3 my-6 gate-perspective">
-          <div class="relative h-48 rounded-2xl overflow-hidden border border-amber-500/30 cursor-pointer" onclick="openMasmakGate(1, 'خصم 10% فوري على القطعة', 'price')">
-            <div class="absolute inset-0 bg-slate-900 flex items-center justify-center"><span class="text-xs font-black text-white">فزعة السعر (179 ريال)</span></div>
-            <div id="door1" class="masmak-door absolute inset-0 wood-texture border-2 border-amber-700/60 flex items-center justify-center text-amber-400">بوابة ١</div>
-          </div>
-          <div class="relative h-48 rounded-2xl overflow-hidden border border-amber-500/30 cursor-pointer" onclick="openMasmakGate(2, 'ترقية التغليف مجاناً', 'gift')">
-            <div class="absolute inset-0 bg-slate-900 flex items-center justify-center"><span class="text-xs font-black text-white">فزعة الإهداء</span></div>
-            <div id="door2" class="masmak-door absolute inset-0 wood-texture border-2 border-amber-700/60 flex items-center justify-center text-amber-400">بوابة ٢</div>
-          </div>
-          <div class="relative h-48 rounded-2xl overflow-hidden border border-amber-500/30 cursor-pointer" onclick="openMasmakGate(3, 'تولة مسك عِـزوة مجاناً', 'musk')">
-            <div class="absolute inset-0 bg-slate-900 flex items-center justify-center"><span class="text-xs font-black text-white">فزعة العطر</span></div>
-            <div id="door3" class="masmak-door absolute inset-0 wood-texture border-2 border-amber-700/60 flex items-center justify-center text-amber-400">بوابة ٣</div>
-          </div>
-          <div class="relative h-48 rounded-2xl overflow-hidden border border-amber-500/30 cursor-pointer" onclick="openMasmakGate(4, 'عضوية أركان VIP', 'vip')">
-            <div class="absolute inset-0 bg-slate-900 flex items-center justify-center"><span class="text-xs font-black text-white">فزعة النخبة</span></div>
-            <div id="door4" class="masmak-door absolute inset-0 wood-texture border-2 border-amber-700/60 flex items-center justify-center text-amber-400">بوابة ٤</div>
-          </div>
+  <!-- نافذة المشرف لصافرة الـ 90+ -->
+  <div id="adminPinModal" class="absolute inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
+    <div class="glass-card border border-amber-500/40 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl">
+      <h3 class="text-base font-black text-amber-400 mb-1">إذن مشرف الجناح (PIN)</h3>
+      <p class="text-[11px] text-slate-400 mb-4">أدخل الرمز لفتح صافرة الـ 90+</p>
+      <input type="password" id="adminPinInput" maxlength="4" placeholder="••••" class="w-full tracking-widest text-center text-2xl font-black py-2.5 bg-slate-950 border border-slate-700 rounded-xl focus:border-amber-400 mb-3 text-amber-300">
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="closeAllModals()" class="py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">إلغاء</button>
+        <button onclick="verifyAdminPin()" class="py-2 rounded-xl bg-amber-500 text-slate-950 text-xs font-black">تفعيل</button>
+      </div>
+      <p id="adminPinError" class="text-rose-400 text-[11px] mt-2 hidden font-bold">الرمز غير صحيح</p>
+    </div>
+  </div>
+
+  <!-- صافرة الـ 90+ -->
+  <div id="whistleModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
+    <div class="glass-card border-2 border-amber-500/50 rounded-3xl p-6 sm:p-8 max-w-lg w-full text-center shadow-2xl relative">
+      <button onclick="closeAllModals()" class="absolute top-5 left-5 text-slate-400 hover:text-white text-lg">✕</button>
+      <h3 class="text-2xl font-black text-white mb-1">صافرة الـ 90+</h3>
+      <p class="text-xs text-slate-400 mb-2">النافذة الصارمة: [ 90:00 - 90:50 ]</p>
+      <div class="py-6 bg-slate-950 rounded-2xl border border-slate-800 my-4">
+        <div id="whistleTimerDisplay" class="text-6xl font-black font-mono tracking-wider text-slate-100 gold-glow">00:00</div>
+      </div>
+      <button id="whistleBtn" onclick="handleWhistleClick()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-black text-lg">
+        إطلاق الصافرة ⏱️
+      </button>
+    </div>
+  </div>
+
+  <!-- فزعة عزوة -->
+  <div id="fazaaModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+    <div class="glass-card rounded-3xl p-6 max-w-2xl w-full border-2 border-amber-500/40 text-center relative shadow-2xl">
+      <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400"><i class="fa-solid fa-xmark"></i></button>
+      <h3 class="text-xl font-black text-white">اختر بوابتك.. وجتك فزعة عِـزوة!</h3>
+      <div class="grid grid-cols-4 gap-3 my-6 gate-perspective">
+        <div class="relative h-48 rounded-2xl overflow-hidden border border-amber-500/30 cursor-pointer" onclick="openMasmakGate(1, 'خصم 10% فوري على القطعة', 'price')">
+          <div class="absolute inset-0 bg-slate-900 flex items-center justify-center"><span class="text-xs font-black text-white">فزعة السعر (179 ريال)</span></div>
+          <div id="door1" class="masmak-door absolute inset-0 wood-texture border-2 border-amber-700/60 flex items-center justify-center text-amber-400">بوابة ١</div>
         </div>
-        <div id="fazaaResultBanner" class="text-xs font-bold text-emerald-400">انقر فوق أي بوابة لاكتشاف فزعتك</div>
-      </div>
-    </div>
-
-    <!-- باقي النوافذ الأصلية -->
-    <div id="fitModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card rounded-3xl p-6 max-w-lg w-full border border-amber-500/30 text-right shadow-2xl">
-        <button onclick="closeAllModals()" class="text-slate-400 hover:text-white text-sm float-left"><i class="fa-solid fa-xmark"></i></button>
-        <h3 class="text-base font-black text-white mb-2">مستشار قصة البوكس فيت (Boxy Fit)</h3>
-        <div class="p-4 bg-amber-500/10 rounded-2xl border border-amber-500/30 text-center">
-          <span class="text-xs text-amber-400 font-bold">المقاس الهندسي الموصى به:</span>
-          <div class="text-4xl font-black text-amber-400 font-mono mt-1">XL</div>
+        <div class="relative h-48 rounded-2xl overflow-hidden border border-amber-500/30 cursor-pointer" onclick="openMasmakGate(2, 'ترقية التغليف مجاناً', 'gift')">
+          <div class="absolute inset-0 bg-slate-900 flex items-center justify-center"><span class="text-xs font-black text-white">فزعة الإهداء</span></div>
+          <div id="door2" class="masmak-door absolute inset-0 wood-texture border-2 border-amber-700/60 flex items-center justify-center text-amber-400">بوابة ٢</div>
+        </div>
+        <div class="relative h-48 rounded-2xl overflow-hidden border border-amber-500/30 cursor-pointer" onclick="openMasmakGate(3, 'تولة مسك عِـزوة مجاناً', 'musk')">
+          <div class="absolute inset-0 bg-slate-900 flex items-center justify-center"><span class="text-xs font-black text-white">فزعة العطر</span></div>
+          <div id="door3" class="masmak-door absolute inset-0 wood-texture border-2 border-amber-700/60 flex items-center justify-center text-amber-400">بوابة ٣</div>
+        </div>
+        <div class="relative h-48 rounded-2xl overflow-hidden border border-amber-500/30 cursor-pointer" onclick="openMasmakGate(4, 'عضوية أركان VIP', 'vip')">
+          <div class="absolute inset-0 bg-slate-900 flex items-center justify-center"><span class="text-xs font-black text-white">فزعة النخبة</span></div>
+          <div id="door4" class="masmak-door absolute inset-0 wood-texture border-2 border-amber-700/60 flex items-center justify-center text-amber-400">بوابة ٤</div>
         </div>
       </div>
+      <div id="fazaaResultBanner" class="text-xs font-bold text-emerald-400">انقر فوق أي بوابة لاكتشاف فزعتك</div>
     </div>
+  </div>
 
-    <div id="qualificationModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4 lg:p-6">
-      <div class="glass-card rounded-3xl p-6 lg:p-8 max-w-lg w-full border-2 border-amber-500/40 text-center relative shadow-2xl">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-        <h3 class="text-xl font-black text-white">طلب واقتناء الإصدار المرقم</h3>
-        <p class="text-xs text-slate-300 my-3">إصدار مرقم محدود [EZWA-041] بسعر <span class="text-amber-400 font-bold">179 ريال</span></p>
-        <button onclick="proceedToImmediatePurchase()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-xs">الانتقال للسداد الفوري (الراجحي)</button>
+  <!-- المقاس الهندسي -->
+  <div id="fitModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+    <div class="glass-card rounded-3xl p-6 max-w-lg w-full border border-amber-500/30 text-right shadow-2xl">
+      <button onclick="closeAllModals()" class="text-slate-400 hover:text-white text-sm float-left"><i class="fa-solid fa-xmark"></i></button>
+      <h3 class="text-base font-black text-white mb-2">مستشار قصة البوكس فيت (Boxy Fit)</h3>
+      <div class="p-4 bg-amber-500/10 rounded-2xl border border-amber-500/30 text-center">
+        <span class="text-xs text-amber-400 font-bold">المقاس الهندسي الموصى به:</span>
+        <div class="text-4xl font-black text-amber-400 font-mono mt-1">XL</div>
       </div>
     </div>
+  </div>
 
-    <div id="rajhiModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/40 text-right shadow-2xl relative">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-        <h3 class="text-base font-black text-white mb-2">مصرف الراجحي • مؤسسة عِـزوة للتجارة</h3>
-        <div class="p-3 bg-slate-900 rounded-xl text-xs space-y-2">
-          <div class="flex justify-between"><span>المبلغ:</span><span class="text-amber-400 font-bold">179 ريال</span></div>
-          <div class="p-2 bg-black rounded font-mono text-center text-amber-300 select-all">SA0380000000000000000000</div>
-        </div>
-        <button onclick="sendReceiptToSeller()" class="mt-3 w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">إرسال إشعار التحويل عبر واتساب</button>
+  <!-- حجز واقتناء القطعة -->
+  <div id="qualificationModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4 lg:p-6">
+    <div class="glass-card rounded-3xl p-6 lg:p-8 max-w-lg w-full border-2 border-amber-500/40 text-center relative shadow-2xl">
+      <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      <h3 class="text-xl font-black text-white">طلب واقتناء الإصدار المرقم</h3>
+      <p class="text-xs text-slate-300 my-3">إصدار مرقم محدود [EZWA-041] بسعر <span class="text-amber-400 font-bold">179 ريال</span></p>
+      <button onclick="proceedToImmediatePurchase()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-xs">الانتقال للسداد الفوري (الراجحي)</button>
+    </div>
+  </div>
+
+  <!-- الراجحي -->
+  <div id="rajhiModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+    <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/40 text-right shadow-2xl relative">
+      <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      <h3 class="text-base font-black text-white mb-2">مصرف الراجحي • مؤسسة عِـزوة للتجارة</h3>
+      <div class="p-3 bg-slate-900 rounded-xl text-xs space-y-2">
+        <div class="flex justify-between"><span>المبلغ:</span><span class="text-amber-400 font-bold">179 ريال</span></div>
+        <div class="p-2 bg-black rounded font-mono text-center text-amber-300 select-all">SA0380000000000000000000</div>
       </div>
+      <button onclick="sendReceiptToSeller()" class="mt-3 w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">إرسال إشعار التحويل عبر واتساب</button>
     </div>
+  </div>
 
-    <div id="callStaffModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card rounded-3xl p-6 max-w-sm w-full border border-rose-500/40 text-center relative shadow-2xl">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-        <h3 class="text-lg font-black text-white mb-2">نداء مشرف المعرض</h3>
-        <button onclick="confirmSupervisorWhatsApp()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">إشعار المشرف (+966502777884)</button>
-      </div>
+  <!-- نداء المشرف -->
+  <div id="callStaffModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+    <div class="glass-card rounded-3xl p-6 max-w-sm w-full border border-rose-500/40 text-center relative shadow-2xl">
+      <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      <h3 class="text-lg font-black text-white mb-2">نداء مشرف المعرض</h3>
+      <button onclick="confirmSupervisorWhatsApp()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">إشعار المشرف (+966502777884)</button>
     </div>
+  </div>
 
-    <div id="zoomModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
-      <button onclick="closeZoomModal()" class="absolute top-4 left-4 w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
-      <img id="zoomedProductImage" src="./model-front.png" class="max-w-full max-h-[80vh] object-contain rounded-2xl">
+  <div id="zoomModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
+    <button onclick="closeZoomModal()" class="absolute top-4 left-4 w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+    <img id="zoomedProductImage" src="./model-front.png" class="max-w-full max-h-[80vh] object-contain rounded-2xl">
+  </div>
+
+  <div id="nfcVerifyModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+    <div class="glass-card rounded-3xl p-6 max-w-md w-full border-2 border-emerald-500/40 text-center relative shadow-2xl">
+      <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      <h3 class="text-xl font-black text-white mt-2">تم توثيق وأصالة القطعة بنجاح!</h3>
+      <p class="text-xs text-slate-300 mt-2">الرقم التسلسلي: EZWA-MSMK-2026-041</p>
     </div>
+  </div>
 
-    <div id="nfcVerifyModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card rounded-3xl p-6 max-w-md w-full border-2 border-emerald-500/40 text-center relative shadow-2xl">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-        <h3 class="text-xl font-black text-white mt-2">تم توثيق وأصالة القطعة بنجاح!</h3>
-        <p class="text-xs text-slate-300 mt-2">الرقم التسلسلي: EZWA-MSMK-2026-041</p>
-      </div>
-    </div>
-  </main>
-
+  <!-- كاميرا ورادار الحضور -->
   <video id="radarCamera" class="hidden" autoplay playsinline muted></video>
   <canvas id="radarCanvas" class="hidden"></canvas>
 
-  <!-- ==================== المحرك البرمجي الأصلي المستقر ==================== -->
+  <!-- ==================== المحرك البرمجي المستقر ==================== -->
   <script>
     const SUPERVISOR_PHONE = "966502777884";
     const ADMIN_PIN = "9090";
@@ -640,16 +603,16 @@
       const btnSplit = document.getElementById('btnSplit');
 
       [btnCatalog, btnSplit].forEach(b => {
-        b.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-1.5 border border-slate-800";
+        b.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition";
       });
 
       if (mode === 'split') {
-        btnSplit.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
-        prodSec.className = "w-1/2 h-full p-4 lg:p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100 overflow-y-auto";
+        btnSplit.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-500 text-slate-950 transition shadow";
+        prodSec.className = "w-1/2 h-full p-4 lg:p-5 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100 overflow-y-auto";
         tvSec.className = "w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition opacity-100";
         playStream(CHANNELS[activeChannelKey]);
       } else if (mode === 'catalog') {
-        btnCatalog.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
+        btnCatalog.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-500 text-slate-950 transition shadow";
         prodSec.className = "w-full h-full p-4 lg:p-6 flex flex-col justify-between absolute inset-0 fade-transition z-20 bg-slate-950 overflow-y-auto opacity-100";
         tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
       } else if (mode === 'tv') {
@@ -843,10 +806,10 @@
       const dot = document.getElementById('radarStatusDot');
       const txt = document.getElementById('radarBtnText');
       if (isRadarActive) {
-        dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping";
+        dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-ping";
         txt.textContent = "الرادار: نشط (R)";
       } else {
-        dot.className = "w-2.5 h-2.5 rounded-full bg-slate-500";
+        dot.className = "w-2 h-2 rounded-full bg-slate-500";
         txt.textContent = "الرادار: متوقف (R)";
       }
     }
@@ -976,7 +939,7 @@
     function changeChannel(key) {
       if (!CHANNELS[key]) return;
       activeChannelKey = key;
-      document.getElementById('activeChannelLabel').textContent = `البث: ${CHANNELS[key].short} (3)`;
+      document.getElementById('activeChannelLabel').textContent = `البث (${CHANNELS[key].short})`;
       playStream(CHANNELS[key]);
     }
 
@@ -1022,7 +985,7 @@
     updatePrayerTime();
     setInterval(updatePrayerTime, 30000);
 
-    // التشغيل بالوضع المزدوج الأصلي
+    // البدء الفوري في الوضع المزدوج
     setScreenLayout('split');
   </script>
 </body>
