@@ -18,21 +18,25 @@
     .glass-card { background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
     .gold-glow { text-shadow: 0 0 25px rgba(245, 158, 11, 0.7); }
 
-    .eye-reticle {
-      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.5), inset 0 0 30px rgba(0, 0, 0, 0.9);
-      animation: pulse-reticle 3s infinite ease-in-out;
+    /* حلبة ميزان الصقر التفاعلية */
+    .arena-boundary {
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.9), 0 0 30px rgba(245, 158, 11, 0.2);
     }
-    @keyframes pulse-reticle {
-      0%, 100% { border-color: rgba(245, 158, 11, 0.4); box-shadow: 0 0 20px rgba(245, 158, 11, 0.2); }
-      50% { border-color: rgba(245, 158, 11, 0.9); box-shadow: 0 0 35px rgba(245, 158, 11, 0.6); }
+    .core-orb {
+      box-shadow: 0 0 25px #f59e0b, 0 0 50px #d97706;
+      transition: transform 0.05s linear;
     }
-    .glitch-flash {
-      animation: flash-anim 0.25s ease-out;
+    @keyframes shake-arena {
+      0%, 100% { transform: translate(0, 0); }
+      20% { transform: translate(-8px, 6px); }
+      40% { transform: translate(8px, -6px); }
+      60% { transform: translate(-6px, -4px); }
+      80% { transform: translate(6px, 4px); }
     }
-    @keyframes flash-anim {
-      0% { opacity: 0.1; }
-      50% { opacity: 0.9; }
-      100% { opacity: 1; }
+    .arena-failed {
+      animation: shake-arena 0.35s ease-in-out;
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 40px rgba(239, 68, 68, 0.6) !important;
     }
   </style>
 </head>
@@ -82,13 +86,13 @@
       </div>
     </div>
 
-    <!-- يسار: الأزرار المدمجة بما فيها تجربة الخزنة المعكوسة -->
+    <!-- يسار: الأزرار المدمجة بما فيها تحدي ميزان الصقر -->
     <div class="flex items-center gap-2">
       
-      <!-- زر الخزنة المعكوسة -->
-      <button onclick="openShadowVaultModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1.5 shadow-lg shadow-amber-500/20">
-        <i class="fa-solid fa-eye text-xs"></i>
-        <span>الخزنة المعكوسة</span>
+      <!-- زر التحدي: ميزان الصقر -->
+      <button onclick="openFalconBalanceModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1.5 shadow-lg shadow-amber-500/20">
+        <i class="fa-solid fa-hand text-xs"></i>
+        <span>ميزان الصقر</span>
         <span class="w-1.5 h-1.5 rounded-full bg-slate-950 animate-ping"></span>
       </button>
 
@@ -260,81 +264,75 @@
 
   </main>
 
-  <!-- ==================== نافذة التحدي: الخزنة المعكوسة (45 ثانية) ==================== -->
-  <div id="shadowVaultModal" class="fixed inset-0 z-50 bg-black/98 backdrop-blur-2xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
-    <div class="relative w-full max-w-2xl h-[85vh] rounded-3xl border border-amber-500/40 bg-slate-950/90 flex flex-col justify-between p-6 sm:p-8 shadow-2xl text-center overflow-hidden">
+  <!-- ==================== نافذة التحدي الفيزيائي: ميزان الصقر (15 ثانية) ==================== -->
+  <div id="falconBalanceModal" class="fixed inset-0 z-50 bg-black/98 backdrop-blur-2xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
+    <div class="relative w-full max-w-xl h-[86vh] rounded-3xl border border-amber-500/40 bg-slate-950/90 flex flex-col justify-between p-6 sm:p-8 shadow-2xl text-center overflow-hidden">
       
       <!-- إغلاق -->
-      <button onclick="closeShadowVaultModal()" class="absolute top-5 left-5 text-slate-500 hover:text-white transition z-20 text-lg">
+      <button onclick="closeFalconBalanceModal()" class="absolute top-5 left-5 text-slate-500 hover:text-white transition z-20 text-lg">
         <i class="fa-solid fa-xmark"></i>
       </button>
 
-      <!-- ترويسة الغموض -->
+      <!-- العنوان والتعليمات -->
       <div>
-        <span class="text-[11px] font-black tracking-widest text-amber-400/90 uppercase border border-amber-500/30 px-3 py-1 rounded-full bg-amber-500/10 inline-block mb-2">
-          التحدي الصامت • اختبار الثبات والوقار
+        <span class="text-[11px] font-black tracking-widest text-amber-400/90 uppercase border border-amber-500/30 px-3 py-1 rounded-full bg-amber-500/10 inline-block mb-1.5">
+          تحدي الأعصاب الفولاذية • 15 ثانية
         </span>
-        <h3 class="text-2xl font-black text-white tracking-wide">الخزنة المعكوسة</h3>
-        <p id="vaultInstructions" class="text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">
-          «صاحب الهيبة لا يرمش، والواثق لا يلتفت».. ثبّت نظرك مباشرة في عين العدسة دون رمش أو حراك طوال 45 ثانية لكسر عتمة الخزنة.
+        <h3 class="text-2xl font-black text-white tracking-wide">ميزان الصقر</h3>
+        <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto leading-relaxed">
+          ضع إصبعك على النواة الذهبية وظل ضاغطاً عليها.. قاوم حركتها العشوائية وابقها داخل الحلبة طوال 15 ثانية دون أن تلمس الجدار الأحمر!
         </p>
       </div>
 
-      <!-- مساحة الرصد البصري التفاعلي -->
-      <div class="relative w-64 h-64 mx-auto rounded-full eye-reticle flex items-center justify-center overflow-hidden bg-black/80 my-auto">
+      <!-- حلبة التحدي الفيزيائي الدائرية -->
+      <div id="arenaBox" class="relative w-72 h-72 mx-auto rounded-full arena-boundary border-4 border-amber-500/50 flex items-center justify-center overflow-hidden bg-slate-950 my-auto touch-none select-none">
         
-        <!-- كاميرا الرصد المباشرة للعين -->
-        <video id="shadowEyeVideo" class="absolute inset-0 w-full h-full object-cover grayscale opacity-30 filter contrast-125" autoplay playsinline muted></video>
-        
-        <!-- إطار الاستهداف الذهبي -->
-        <div class="absolute inset-2 rounded-full border border-dashed border-amber-500/40 pointer-events-none"></div>
+        <!-- الدائرة المركزية التوجيهية -->
+        <div class="absolute w-28 h-28 rounded-full border border-dashed border-amber-500/25 pointer-events-none"></div>
 
-        <!-- العداد التنازلي (45 ثانية) -->
-        <div class="relative z-10 flex flex-col items-center">
-          <div id="shadowTimerDisplay" class="text-6xl font-black font-mono tracking-widest text-amber-400 gold-glow">
-            45
-          </div>
-          <span id="stabilityStatus" class="text-[10px] font-bold text-slate-400 tracking-wider mt-1">
-            جاهز للاختبار
-          </span>
+        <!-- النواة الزئبقية الهاربة (الكرة التفاعلية) -->
+        <div id="falconOrb" class="absolute w-12 h-12 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-200 core-orb flex items-center justify-center cursor-pointer pointer-events-auto">
+          <i class="fa-solid fa-crosshairs text-slate-950 text-xs opacity-70"></i>
         </div>
 
-        <!-- مؤشر النبض اللحظي -->
-        <div id="scannerBar" class="absolute inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-0 pointer-events-none"></div>
-      </div>
-
-      <!-- التوجيهات وزر تفعيل الاختبار -->
-      <div class="space-y-3">
-        <div id="vaultLiveWarning" class="min-h-[20px] text-xs font-bold text-amber-400">
-          انقر أدناه لبدء اختبار الـ 45 ثانية.. رادار الرمش الحركي فائق الحساسية سيبدأ فوراً.
+        <!-- العداد التنازلي الشفاف بالخلفية -->
+        <div id="balanceTimerDisplay" class="absolute text-7xl font-black font-mono text-white/10 select-none pointer-events-none">
+          15
         </div>
-        
-        <button id="btnStartShadowChallenge" onclick="startShadowChallenge()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-sm hover:brightness-110 transition shadow-lg shadow-amber-500/20">
-          دخول التحدي وإغلاق الأنفاس (45ث) 👁️
-        </button>
+
+        <!-- مؤشر الضغط اللحظي -->
+        <div id="touchFeedbackRing" class="absolute w-16 h-16 rounded-full border border-amber-400 opacity-0 pointer-events-none transition-all duration-75"></div>
       </div>
 
-      <!-- شاشة الانتصار -->
-      <div id="shadowVictoryScreen" class="absolute inset-0 bg-slate-950/98 backdrop-blur-2xl flex flex-col justify-center items-center p-6 text-center space-y-4 hidden z-30">
+      <!-- حالة اللعبة والتنبيهات -->
+      <div class="space-y-2">
+        <div id="balanceStatusMsg" class="min-h-[22px] text-xs font-black text-amber-400">
+          المس النواة الذهبية واستمر بالضغط لبدء التحدي ⚡
+        </div>
+        <p class="text-[10px] text-slate-500">
+          * رفع الإصبع أو ملامسة الجدار الخارجي يُنهي التحدي فوراً.
+        </p>
+      </div>
+
+      <!-- شاشة الفوز المهيبة عند إتمام 15 ثانية -->
+      <div id="balanceVictoryScreen" class="absolute inset-0 bg-slate-950/98 backdrop-blur-2xl flex flex-col justify-center items-center p-6 text-center space-y-4 hidden z-30">
         <div class="w-20 h-20 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center text-4xl text-amber-400 animate-bounce">
-          👑
+          🦅
         </div>
-        <span class="text-xs font-bold text-amber-400 tracking-widest uppercase">كُسرت العتمة • استحقاق الهيبة</span>
-        <h4 class="text-2xl font-black text-white">أنت تمتلك وقار صقور نجد</h4>
+        <span class="text-xs font-bold text-amber-400 tracking-widest uppercase">ثبات مطلق • كسر ميزان الصقر</span>
+        <h4 class="text-2xl font-black text-white">أنت صاحب أعصاب فولاذية!</h4>
         <p class="text-xs text-slate-300 max-w-sm leading-relaxed bg-slate-900/90 p-4 rounded-2xl border border-amber-500/40">
-          صمدت أمام عين نجد لـ 45 ثانية كاملة بثبات فولاذي لا يتزعزع دون رمش!<br>
-          <strong class="text-amber-400 block mt-2 font-mono text-sm">رمز الاقتناء الحصري: [MSMK-BLACK-01]</strong>
-          استلم هديتك الملكية أو ترقية التيشيرت فوراً من مشرف المعرض.
+          صمدت أمام قوى الهروب لـ 15 ثانية كاملة بثبات فائق دون ارتعاش!<br>
+          <strong class="text-amber-400 block mt-2 font-mono text-sm">رمز الاقتناء: [FALCON-VIP-01]</strong>
+          استلم هديتك أو تولة المسك فوراً من مشرف المعرض.
         </p>
-        <button onclick="closeShadowVaultModal()" class="px-8 py-3 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:brightness-110 transition">
-          توثيق الإنجاز وإغلاق الخزنة
+        <button onclick="closeFalconBalanceModal()" class="px-8 py-3 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:brightness-110 transition">
+          إغلاق وتوثيق الجائزة
         </button>
       </div>
 
     </div>
   </div>
-
-  <canvas id="motionCanvas" class="hidden" width="64" height="64"></canvas>
 
   <!-- فزعة عزوة -->
   <div id="fazaaModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
@@ -447,13 +445,17 @@
     let audioCtx = null;
     const storyAudioFile = new Audio('./story.mp3.mp3');
 
-    // محرك الخزنة المعكوسة (45 ثانية)
-    let shadowTimer = null;
-    let shadowSeconds = 45;
-    let shadowCameraStream = null;
-    let motionInterval = null;
-    let prevFrameData = null;
-    let isChallengeRunning = false;
+    // ==================== محرك فيزياء ميزان الصقر الحقيقي ====================
+    let balanceState = "IDLE"; // IDLE, ACTIVE, WON, FAILED
+    let balanceTimer = null;
+    let balanceSeconds = 15;
+    let orbX = 0, orbY = 0;
+    let orbVelX = 0, orbVelY = 0;
+    let animationFrameId = null;
+    const ARENA_RADIUS = 144; // نصف قطر الحلبة (288 / 2)
+    const ORB_RADIUS = 24;    // نصف قطر النواة (48 / 2)
+    const MAX_ALLOWED_DISTANCE = ARENA_RADIUS - ORB_RADIUS - 6; // مسافة الاصطدام بالجدار
+    let isTouchingOrb = false;
 
     const prayerTimesRiyadh = [
       { name: "الفجر", time: "04:55" },
@@ -491,21 +493,40 @@
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    function playDeepPulse() {
+    function playTickSound(pitch = 200) {
       unlockAudioContext();
       try {
         if (audioCtx) {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(60, audioCtx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(35, audioCtx.currentTime + 0.35);
-          gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(pitch, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.08);
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
           osc.connect(gain);
           gain.connect(audioCtx.destination);
           osc.start();
-          osc.stop(audioCtx.currentTime + 0.36);
+          osc.stop(audioCtx.currentTime + 0.09);
+        }
+      } catch (e) {}
+    }
+
+    function playBreakSound() {
+      unlockAudioContext();
+      try {
+        if (audioCtx) {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(140, audioCtx.currentTime);
+          osc.frequency.linearRampToValueAtTime(30, audioCtx.currentTime + 0.3);
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.32);
         }
       } catch (e) {}
     }
@@ -531,130 +552,172 @@
       } catch (e) {}
     }
 
-    // ==================== محرك الخزنة المعكوسة الحقيقي ====================
-    async function openShadowVaultModal() {
+    // ==================== ميزان الصقر: محرك الحركة الفيزيائي واللمس ====================
+    function openFalconBalanceModal() {
       closeAllModals();
-      resetShadowChallengeState();
-      document.getElementById('shadowVaultModal').classList.remove('opacity-0', 'pointer-events-none');
-
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240, facingMode: "user" } });
-        shadowCameraStream = stream;
-        const video = document.getElementById('shadowEyeVideo');
-        video.srcObject = stream;
-      } catch (err) {
-        document.getElementById('vaultLiveWarning').innerText = "تم تفعيل وضع التحدي التفاعلي بدون كاميرا مباشرة.";
-      }
+      resetFalconGame();
+      document.getElementById('falconBalanceModal').classList.remove('opacity-0', 'pointer-events-none');
     }
 
-    function resetShadowChallengeState() {
-      if (shadowTimer) clearInterval(shadowTimer);
-      if (motionInterval) clearInterval(motionInterval);
-      isChallengeRunning = false;
-      shadowSeconds = 45;
-      prevFrameData = null;
-      document.getElementById('shadowTimerDisplay').innerText = "45";
-      document.getElementById('stabilityStatus').innerText = "جاهز للاختبار";
-      document.getElementById('stabilityStatus').className = "text-[10px] font-bold text-slate-400 tracking-wider mt-1";
-      document.getElementById('btnStartShadowChallenge').classList.remove('hidden');
-      document.getElementById('shadowVictoryScreen').classList.add('hidden');
-      document.getElementById('scannerBar').classList.add('opacity-0');
-      document.getElementById('vaultLiveWarning').innerText = "انقر أدناه لبدء اختبار الـ 45 ثانية.. رادار الرمش الحركي فائق الحساسية سيبدأ فوراً.";
-      document.getElementById('vaultLiveWarning').className = "min-h-[20px] text-xs font-bold text-amber-400";
+    function resetFalconGame() {
+      balanceState = "IDLE";
+      isTouchingOrb = false;
+      if (balanceTimer) clearInterval(balanceTimer);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+      balanceSeconds = 15;
+      orbX = 0; orbY = 0;
+      orbVelX = 0; orbVelY = 0;
+
+      const orbEl = document.getElementById('falconOrb');
+      orbEl.style.transform = `translate(0px, 0px)`;
+      document.getElementById('balanceTimerDisplay').innerText = "15";
+      document.getElementById('arenaBox').classList.remove('arena-failed');
+      document.getElementById('balanceVictoryScreen').classList.add('hidden');
+
+      const statusEl = document.getElementById('balanceStatusMsg');
+      statusEl.className = "min-h-[22px] text-xs font-black text-amber-400";
+      statusEl.innerText = "المس النواة الذهبية واستمر بالضغط لبدء التحدي ⚡";
     }
 
-    function startShadowChallenge() {
+    function startFalconGame() {
+      if (balanceState === "ACTIVE") return;
       unlockAudioContext();
-      isChallengeRunning = true;
-      document.getElementById('btnStartShadowChallenge').classList.add('hidden');
-      document.getElementById('stabilityStatus').innerText = "رادار العين نشط 🔒";
-      document.getElementById('stabilityStatus').className = "text-[10px] font-bold text-emerald-400 tracking-wider mt-1";
-      document.getElementById('vaultLiveWarning').innerText = "اثبت مكانك! لا تلتفت ولا ترمش.. أي رمشة تنهي التحدي فوراً.";
-      document.getElementById('scannerBar').classList.remove('opacity-0');
+      balanceState = "ACTIVE";
+      isTouchingOrb = true;
 
-      startMotionDetection();
+      const statusEl = document.getElementById('balanceStatusMsg');
+      statusEl.className = "min-h-[22px] text-xs font-black text-emerald-400";
+      statusEl.innerText = "التحدي مشتعل! ثبت النواة ولا تفلت إصبعك!";
 
-      shadowTimer = setInterval(() => {
-        shadowSeconds--;
-        document.getElementById('shadowTimerDisplay').innerText = String(shadowSeconds).padStart(2, '0');
-        playDeepPulse();
+      // عداد الـ 15 ثانية التنازلي
+      balanceTimer = setInterval(() => {
+        balanceSeconds--;
+        document.getElementById('balanceTimerDisplay').innerText = String(balanceSeconds);
+        playTickSound(260 + (15 - balanceSeconds) * 20);
 
-        if (shadowSeconds === 35 || shadowSeconds === 20 || shadowSeconds === 10) {
-          document.getElementById('shadowVaultModal').classList.add('glitch-flash');
-          setTimeout(() => document.getElementById('shadowVaultModal').classList.remove('glitch-flash'), 250);
-        }
-
-        if (shadowSeconds <= 0) {
-          triggerShadowVictory();
+        if (balanceSeconds <= 0) {
+          triggerFalconVictory();
         }
       }, 1000);
+
+      runFalconPhysics();
     }
 
-    // خوارزمية رصد الرمش فائقة الحساسية لمنطقة بؤبؤ العين
-    function startMotionDetection() {
-      const video = document.getElementById('shadowEyeVideo');
-      const canvas = document.getElementById('motionCanvas');
-      const ctx = canvas.getContext('2d');
+    function runFalconPhysics() {
+      if (balanceState !== "ACTIVE") return;
 
-      motionInterval = setInterval(() => {
-        if (!isChallengeRunning || !video.videoWidth) return;
-        
-        // اقتصاص منطقة العينين في المنتصف بدقة عالية
-        const cropW = video.videoWidth * 0.5;
-        const cropH = video.videoHeight * 0.35;
-        const startX = (video.videoWidth - cropW) / 2;
-        const startY = (video.videoHeight - cropH) / 2;
+      // تزداد الصعوبة وقوة الطرد كلما نقصت الثواني
+      const difficulty = 1 + (15 - balanceSeconds) * 0.35;
+      
+      // نبضات تسارع عشوائية لمحاولة الهروب
+      orbVelX += (Math.random() - 0.5) * (1.8 * difficulty);
+      orbVelY += (Math.random() - 0.5) * (1.8 * difficulty);
 
-        ctx.drawImage(video, startX, startY, cropW, cropH, 0, 0, 64, 64);
-        const frame = ctx.getImageData(0, 0, 64, 64);
+      // احتكاك لضبط الانسيابية
+      orbVelX *= 0.94;
+      orbVelY *= 0.94;
 
-        if (prevFrameData) {
-          let diff = 0;
-          for (let i = 0; i < frame.data.length; i += 4) {
-            diff += Math.abs(frame.data[i] - prevFrameData.data[i]);
-          }
-          const avgDiff = diff / (64 * 64);
+      orbX += orbVelX;
+      orbY += orbVelY;
 
-          // حساسية صارمة لرصد أي رمشة جفن أو اهتزاز
-          if (avgDiff > 11.5) {
-            triggerShadowFail("رُصدت رمشة عين أو اهتزاز في النظرة! صمدت الخزنة.");
-          }
-        }
-        prevFrameData = frame;
-      }, 100);
+      const orbEl = document.getElementById('falconOrb');
+      orbEl.style.transform = `translate(${orbX}px, ${orbY}px)`;
+
+      // حساب المسافة عن المركز (Pythagoras)
+      const currentDist = Math.sqrt(orbX * orbX + orbY * orbY);
+
+      // إذا تجاوزت النواة النطاق واصطدمت بالجدار الخارجي
+      if (currentDist >= MAX_ALLOWED_DISTANCE) {
+        triggerFalconFail("اصطدمت النواة بالجدار الخارجي! اهتز الميزان.");
+        return;
+      }
+
+      animationFrameId = requestAnimationFrame(runFalconPhysics);
     }
 
-    function triggerShadowFail(reason) {
-      clearInterval(shadowTimer);
-      clearInterval(motionInterval);
-      isChallengeRunning = false;
-      document.getElementById('stabilityStatus').innerText = "فقدان الثبات (رمشة عين) ✖";
-      document.getElementById('stabilityStatus').className = "text-[10px] font-bold text-rose-500 tracking-wider mt-1";
-      document.getElementById('vaultLiveWarning').innerText = `${reason} حظاً أوفر في المرة القادمة.`;
-      document.getElementById('vaultLiveWarning').className = "min-h-[20px] text-xs font-bold text-rose-400 shake";
+    function handleOrbPointerDown(e) {
+      e.preventDefault();
+      if (balanceState === "IDLE") {
+        startFalconGame();
+      }
+    }
+
+    function handleOrbPointerMove(e) {
+      if (balanceState !== "ACTIVE" || !isTouchingOrb) return;
+      e.preventDefault();
+
+      const arena = document.getElementById('arenaBox').getBoundingClientRect();
+      const centerX = arena.left + arena.width / 2;
+      const centerY = arena.top + arena.height / 2;
+
+      // تحديث موقع يد اللاعب ومقاومته لحركة النواة
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+      if (clientX && clientY) {
+        const fingerX = clientX - centerX;
+        const fingerY = clientY - centerY;
+
+        // قوة رد فعل إصبع اللاعب تجاه النواة
+        orbX = (orbX * 0.8) + (fingerX * 0.2);
+        orbY = (orbY * 0.8) + (fingerY * 0.2);
+      }
+    }
+
+    function handleOrbPointerUp(e) {
+      if (balanceState === "ACTIVE") {
+        e.preventDefault();
+        triggerFalconFail("أفلتت إصبعك قبل اكتمال الـ 15 ثانية!");
+      }
+    }
+
+    function triggerFalconFail(reason) {
+      balanceState = "FAILED";
+      isTouchingOrb = false;
+      if (balanceTimer) clearInterval(balanceTimer);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+      playBreakSound();
+      const arena = document.getElementById('arenaBox');
+      arena.classList.add('arena-failed');
+
+      const statusEl = document.getElementById('balanceStatusMsg');
+      statusEl.className = "min-h-[22px] text-xs font-black text-rose-400";
+      statusEl.innerText = `${reason} صمدت لـ (${15 - balanceSeconds} ثانية)`;
 
       setTimeout(() => {
-        resetShadowChallengeState();
-      }, 3000);
+        resetFalconGame();
+      }, 2600);
     }
 
-    function triggerShadowVictory() {
-      clearInterval(shadowTimer);
-      clearInterval(motionInterval);
-      isChallengeRunning = false;
+    function triggerFalconVictory() {
+      balanceState = "WON";
+      isTouchingOrb = false;
+      if (balanceTimer) clearInterval(balanceTimer);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
       playLuxuryChime();
-      document.getElementById('shadowVictoryScreen').classList.remove('hidden');
+      document.getElementById('balanceVictoryScreen').classList.remove('hidden');
     }
 
-    function closeShadowVaultModal() {
-      if (shadowTimer) clearInterval(shadowTimer);
-      if (motionInterval) clearInterval(motionInterval);
-      if (shadowCameraStream) {
-        shadowCameraStream.getTracks().forEach(track => track.stop());
-        shadowCameraStream = null;
-      }
-      document.getElementById('shadowVaultModal').classList.add('opacity-0', 'pointer-events-none');
+    function closeFalconBalanceModal() {
+      if (balanceTimer) clearInterval(balanceTimer);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      document.getElementById('falconBalanceModal').classList.add('opacity-0', 'pointer-events-none');
     }
+
+    // ربط أحداث اللمس والفأرة المباشرة على الحلبة والنواة
+    const orbElement = document.getElementById('falconOrb');
+    const arenaElement = document.getElementById('arenaBox');
+
+    orbElement.addEventListener('mousedown', handleOrbPointerDown);
+    window.addEventListener('mousemove', handleOrbPointerMove);
+    window.addEventListener('mouseup', handleOrbPointerUp);
+
+    orbElement.addEventListener('touchstart', handleOrbPointerDown, { passive: false });
+    window.addEventListener('touchmove', handleOrbPointerMove, { passive: false });
+    window.addEventListener('touchend', handleOrbPointerUp, { passive: false });
 
     // تبديل أوضاع العرض
     function switchLayoutSafely(mode) {
@@ -850,7 +913,7 @@
       if (k === 's') changeChannel('sunnah');
       if (k === 'a') changeChannel('alarabiya');
       if (k === 'j') changeChannel('aljazeera');
-      if (e.key === 'Escape') { closeAllModals(); closeShadowVaultModal(); }
+      if (e.key === 'Escape') { closeAllModals(); closeFalconBalanceModal(); }
       if (k === 'f') toggleFullScreen();
     });
 
