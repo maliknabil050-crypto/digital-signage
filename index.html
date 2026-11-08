@@ -46,7 +46,7 @@
 </head>
 <body id="screenBody" class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden" onclick="handleFirstUserInteraction()">
 
-  <!-- إشعار سينمائي علوي بديل للـ Alert -->
+  <!-- إشعار سينمائي علوي -->
   <div id="toastNotification" class="fixed top-16 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-2xl glass-card border border-amber-500/40 shadow-2xl flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300">
     <span id="toastIcon" class="text-xl">⚡</span>
     <span id="toastMessage" class="text-xs font-bold text-white leading-relaxed"></span>
@@ -271,8 +271,9 @@
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base"><i class="fa-solid fa-xmark"></i></button>
 
         <div class="text-center mb-6">
-          <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30">ساحة المنافسات الكروية</span>
-          <h3 class="text-2xl font-black text-white mt-2">اختر مسار التحدي</h3>
+          <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30">ساحة التحديات الفردية</span>
+          <h3 class="text-2xl font-black text-white mt-2">اختر مسار التحدي (لاعب 1 ضد النظام)</h3>
+          <p class="text-xs text-slate-400 mt-1">تحديات فردية مباشرة لاقتناص الجوائز الفورية من شاشة المعرض</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -282,29 +283,29 @@
               <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl text-amber-400 mb-3">🔐</div>
               <span class="text-[10px] font-black text-amber-400 block mb-1">تحدي فردي (1 لاعب)</span>
               <h4 class="text-lg font-black text-white mb-2">الخزنة الزجاجية السرية</h4>
-              <p class="text-xs text-slate-400 leading-relaxed">سباق تخمين لاكتشاف الرمز السري الثلاثي وفك القفل الرقمي فوراً.</p>
+              <p class="text-xs text-slate-400 leading-relaxed">سباق تخمين لاكتشاف الرمز السري الثلاثي وفك قفل الخزنة للفوز بتولة مسك عِـزوة الملكي فوراً.</p>
             </div>
             <button onclick="openSingleVaultModal()" class="mt-4 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition">دخول التحدي ⚡</button>
           </div>
 
-          <!-- 2. المساومة الخفية (اختبار الخِـوّة أو الغدر) -->
+          <!-- 2. المساومة الخفية (تحدي كشف النوايا الفردي) -->
           <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-amber-500/60 transition">
             <div>
               <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl text-amber-400 mb-3">⚖️</div>
-              <span class="text-[10px] font-black text-amber-400 block mb-1">مواجهة ثنائية (2 لاعبين)</span>
+              <span class="text-[10px] font-black text-amber-400 block mb-1">تحدي فردي ضد النظام</span>
               <h4 class="text-lg font-black text-white mb-2">المساومة الخفية</h4>
-              <p class="text-xs text-slate-400 leading-relaxed">اختبار الخِـوّة أو الغدر النفسي؛ أحدهما يغدر فيخطف، أو يتعاونان، والغدر المتبادل ينقلهما للـ 90+!</p>
+              <p class="text-xs text-slate-400 leading-relaxed">اختبر دهائك ضد الذكاء الاصطناعي للمعرض؛ اختر (خِـوّة أو غدر) لكشف قرار النظام والفوز بالجائزة!</p>
             </div>
             <button onclick="openBargainingGame()" class="mt-4 w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition">بدء المساومة 🤝🗡️</button>
           </div>
 
-          <!-- 3. تفكيك الشيفرة المشتركة: سباق المفاتيح المتطابقة -->
+          <!-- 3. تفكيك الشيفرة: سباق المفاتيح والسرعة -->
           <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-emerald-500/60 transition">
             <div>
               <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xl text-emerald-400 mb-3">🧩</div>
-              <span class="text-[10px] font-black text-emerald-400 block mb-1">مواجهة ثنائية (2 لاعبين)</span>
+              <span class="text-[10px] font-black text-emerald-400 block mb-1">تحدي فردي ضد الوقت</span>
               <h4 class="text-lg font-black text-white mb-2">تفكيك الشيفرة</h4>
-              <p class="text-xs text-slate-400 leading-relaxed">سباق المفاتيح المتطابقة؛ أول من يُدخل نمط المفاتيح الكروية بالترتيب يفك القفل وينتصر.</p>
+              <p class="text-xs text-slate-400 leading-relaxed">أدخل نمط المفاتيح الكروية بالترتيب الصحيح بدقة وسرعة قبل انتهاء العداد الزمني (5 ثوانٍ).</p>
             </div>
             <button onclick="openCipherGame()" class="mt-4 w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition">بدء سباق المفاتيح ⏱️</button>
           </div>
@@ -318,7 +319,7 @@
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">✕</button>
         <div class="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-2xl text-amber-400 mx-auto mb-3">🔐</div>
         <h3 class="text-xl font-black text-white mb-1">الخزنة الزجاجية السرية</h3>
-        <p class="text-xs text-slate-400 mb-4">أدخل الرمز السري الثلاثي لفك القفل الرقمي واقتناص الجائزة</p>
+        <p class="text-xs text-slate-400 mb-4">أدخل الرمز السري الثلاثي لفك القفل واقتناص الجائزة</p>
         
         <input type="password" id="vaultPinInput" maxlength="3" placeholder="•••" class="w-full tracking-widest text-center text-3xl font-black py-3 bg-slate-950 border border-slate-700 rounded-xl focus:border-amber-400 focus:outline-none mb-3 text-amber-300">
         
@@ -331,90 +332,81 @@
       </div>
     </div>
 
-    <!-- ==================== نافذة المسابقة 2: المساومة الخفية (اختبار الخِـوّة أو الغدر) ==================== -->
+    <!-- ==================== نافذة المسابقة 2: المساومة الخفية (تحدي فردي ضد نظام المعرض) ==================== -->
     <div id="bargainingGameModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
-      <div class="glass-card border border-amber-500/40 rounded-3xl p-6 max-w-3xl w-full text-center relative shadow-2xl">
+      <div class="glass-card border border-amber-500/40 rounded-3xl p-6 max-w-xl w-full text-center relative shadow-2xl">
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">✕</button>
 
-        <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30">المواجهة النفسية الصامتة</span>
-        <h3 class="text-2xl font-black text-white mt-2">المساومة الخفية • اختبار الخِـوّة أو الغدر</h3>
-        <p class="text-xs text-slate-400 mt-1 mb-6">يختار كل متسابق قراره سراً دون أن يراه الآخر؛ الغدر المتبادل يُسقطكما معاً إلى شوط الـ 90+!</p>
+        <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30">تحدي فردي • كشف نوايا النظام</span>
+        <h3 class="text-2xl font-black text-white mt-2">المساومة الخفية • الخِـوّة أو الغدر</h3>
+        <p class="text-xs text-slate-400 mt-1 mb-6">اختر موقفك الآن؛ ونظام «عِـزوة» سيكشف قراره المقابل فوراً!</p>
 
-        <div class="grid grid-cols-2 gap-6 mb-6">
-          <!-- المتحدي الأول -->
-          <div class="bg-slate-900/90 border border-blue-500/30 rounded-2xl p-5">
-            <span class="text-xs font-black text-blue-400 block mb-3">قرار المتحدي الأول</span>
-            <div id="p1ChoiceStatus" class="text-xs text-slate-500 mb-4 font-bold">في انتظار القرار...</div>
-            <div class="grid grid-cols-2 gap-2">
-              <button onclick="setPlayerDilemmaChoice(1, 'cooperate')" id="p1BtnCoop" class="py-3.5 bg-slate-800 hover:bg-emerald-600/30 border border-emerald-500/40 rounded-xl text-emerald-400 font-black text-xs active:scale-95 transition">خِـوّة 🤝</button>
-              <button onclick="setPlayerDilemmaChoice(1, 'betray')" id="p1BtnBetray" class="py-3.5 bg-slate-800 hover:bg-rose-600/30 border border-rose-500/40 rounded-xl text-rose-400 font-black text-xs active:scale-95 transition">غدر 🗡️</button>
-            </div>
-          </div>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <button onclick="playSoloDilemma('cooperate')" class="p-5 rounded-2xl bg-slate-900 border border-emerald-500/40 hover:bg-emerald-950/40 transition active:scale-95 group text-center">
+            <span class="text-3xl block mb-2 group-hover:scale-110 transition">🤝</span>
+            <span class="text-sm font-black text-emerald-400 block">اختيار الخِـوّة</span>
+            <span class="text-[10px] text-slate-400 mt-1 block">نية الشراكة والوفاء</span>
+          </button>
 
-          <!-- المتحدي الثاني -->
-          <div class="bg-slate-900/90 border border-emerald-500/30 rounded-2xl p-5">
-            <span class="text-xs font-black text-emerald-400 block mb-3">قرار المتحدي الثاني</span>
-            <div id="p2ChoiceStatus" class="text-xs text-slate-500 mb-4 font-bold">في انتظار القرار...</div>
-            <div class="grid grid-cols-2 gap-2">
-              <button onclick="setPlayerDilemmaChoice(2, 'cooperate')" id="p2BtnCoop" class="py-3.5 bg-slate-800 hover:bg-emerald-600/30 border border-emerald-500/40 rounded-xl text-emerald-400 font-black text-xs active:scale-95 transition">خِـوّة 🤝</button>
-              <button onclick="setPlayerDilemmaChoice(2, 'betray')" id="p2BtnBetray" class="py-3.5 bg-slate-800 hover:bg-rose-600/30 border border-rose-500/40 rounded-xl text-rose-400 font-black text-xs active:scale-95 transition">غدر 🗡️</button>
-            </div>
-          </div>
+          <button onclick="playSoloDilemma('betray')" class="p-5 rounded-2xl bg-slate-900 border border-rose-500/40 hover:bg-rose-950/40 transition active:scale-95 group text-center">
+            <span class="text-3xl block mb-2 group-hover:scale-110 transition">🗡️</span>
+            <span class="text-sm font-black text-rose-400 block">اختيار الغدر</span>
+            <span class="text-[10px] text-slate-400 mt-1 block">الاستحواذ الفردي الكامل</span>
+          </button>
         </div>
 
-        <div id="dilemmaResultBanner" class="min-h-[30px] mb-4 text-xs font-bold text-amber-400"></div>
+        <div id="soloDilemmaBox" class="hidden p-4 rounded-2xl bg-slate-900/90 border border-amber-500/30 text-center mb-4 transition-all">
+          <div class="flex items-center justify-around text-xs mb-2">
+            <div>قرارك: <strong id="playerSoloChoice" class="text-white font-bold">--</strong></div>
+            <div>قرار النظام: <strong id="systemSoloChoice" class="text-amber-400 font-bold">--</strong></div>
+          </div>
+          <div id="soloDilemmaOutcome" class="text-xs font-black mt-2 leading-relaxed"></div>
+        </div>
 
-        <button onclick="revealDilemmaResult()" class="w-full py-4 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 font-black text-sm rounded-xl hover:brightness-110 transition shadow-lg">
-          كشف القرارات وإعلان النتيجة ⚖️
-        </button>
+        <p class="text-[10px] text-slate-500">في حال حدوث غدر متبادل، يسقط التحدي ويتاح خيار شوط كسر التعادل (الـ 90+)</p>
       </div>
     </div>
 
-    <!-- ==================== نافذة المسابقة 3: تفكيك الشيفرة (سباق المفاتيح المتطابقة) ==================== -->
+    <!-- ==================== نافذة المسابقة 3: تفكيك الشيفرة (سباق المفاتيح الفردي ضد الوقت) ==================== -->
     <div id="cipherGameModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4 lg:p-8">
-      <div class="glass-card border border-emerald-500/40 rounded-3xl p-6 max-w-5xl w-full h-[88vh] flex flex-col justify-between relative shadow-2xl">
+      <div class="glass-card border border-emerald-500/40 rounded-3xl p-6 max-w-xl w-full flex flex-col justify-between relative shadow-2xl">
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base z-30"><i class="fa-solid fa-xmark"></i></button>
 
         <div class="text-center border-b border-slate-800 pb-3">
-          <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest block mb-1">تفكيك الشيفرة المشتركة • سباق المفاتيح المتطابقة</span>
-          <h3 class="text-xl font-black text-white">أول من يطابق تسلسل المفاتيح الكروية يفوز فوراً!</h3>
-          <div class="inline-flex items-center gap-3 mt-2 bg-slate-900 border border-emerald-500/40 px-6 py-1.5 rounded-2xl">
-            <span class="text-xs text-slate-400">النمط المطلوب:</span>
-            <div class="flex gap-2 text-2xl font-black tracking-widest text-emerald-400 font-mono">⚽ 🏆 ⚡ 🎯</div>
+          <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest block mb-1">تفكيك الشيفرة الفردي • سباق المفاتيح السريعة</span>
+          <h3 class="text-xl font-black text-white">طابق نمط المفاتيح الأربعة قبل نفاد العداد!</h3>
+          
+          <div class="flex items-center justify-center gap-4 mt-3">
+            <div class="bg-slate-900 border border-emerald-500/40 px-4 py-1.5 rounded-xl">
+              <span class="text-[10px] text-slate-400 block">النمط المطلوب:</span>
+              <div class="flex gap-2 text-xl font-black text-emerald-400 font-mono mt-0.5">⚽ 🏆 ⚡ 🎯</div>
+            </div>
+
+            <div class="bg-slate-900 border border-amber-500/40 px-4 py-1.5 rounded-xl">
+              <span class="text-[10px] text-slate-400 block">الوقت المتبقي:</span>
+              <div id="cipherTimerDisplay" class="text-xl font-mono font-black text-amber-400">05:00</div>
+            </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-6 my-auto">
-          <!-- المتحدي الأول -->
-          <div class="bg-slate-900/80 border border-blue-500/30 rounded-2xl p-5 text-center flex flex-col justify-between">
-            <span class="text-xs font-black text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/30 inline-block mb-3">المتحدي الأول (يمين)</span>
-            <div id="cipherP1Display" class="h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4 transition-all duration-200">- - - -</div>
-            <div class="grid grid-cols-2 gap-2">
-              <button onclick="handleCipherInput(1, '⚽')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl active:scale-95 transition">⚽</button>
-              <button onclick="handleCipherInput(1, '🏆')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl active:scale-95 transition">🏆</button>
-              <button onclick="handleCipherInput(1, '⚡')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl active:scale-95 transition">⚡</button>
-              <button onclick="handleCipherInput(1, '🎯')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl active:scale-95 transition">🎯</button>
-            </div>
+        <div class="my-6">
+          <div id="cipherSoloDisplay" class="h-16 bg-slate-950 rounded-2xl border-2 border-slate-800 flex items-center justify-center gap-3 text-2xl font-mono text-white mb-6 transition-all duration-200">
+            - - - -
           </div>
 
-          <!-- المتحدي الثاني -->
-          <div class="bg-slate-900/80 border border-emerald-500/30 rounded-2xl p-5 text-center flex flex-col justify-between">
-            <span class="text-xs font-black text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30 inline-block mb-3">المتحدي الثاني (يسار)</span>
-            <div id="cipherP2Display" class="h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4 transition-all duration-200">- - - -</div>
-            <div class="grid grid-cols-2 gap-2">
-              <button onclick="handleCipherInput(2, '⚽')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl active:scale-95 transition">⚽</button>
-              <button onclick="handleCipherInput(2, '🏆')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl active:scale-95 transition">🏆</button>
-              <button onclick="handleCipherInput(2, '⚡')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl active:scale-95 transition">⚡</button>
-              <button onclick="handleCipherInput(2, '🎯')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl active:scale-95 transition">🎯</button>
-            </div>
+          <div class="grid grid-cols-4 gap-3">
+            <button onclick="handleSoloCipherInput('⚽')" class="py-5 bg-slate-900 hover:bg-emerald-600/40 border border-slate-800 rounded-2xl text-3xl active:scale-95 transition shadow">⚽</button>
+            <button onclick="handleSoloCipherInput('🏆')" class="py-5 bg-slate-900 hover:bg-emerald-600/40 border border-slate-800 rounded-2xl text-3xl active:scale-95 transition shadow">🏆</button>
+            <button onclick="handleSoloCipherInput('⚡')" class="py-5 bg-slate-900 hover:bg-emerald-600/40 border border-slate-800 rounded-2xl text-3xl active:scale-95 transition shadow">⚡</button>
+            <button onclick="handleSoloCipherInput('🎯')" class="py-5 bg-slate-900 hover:bg-emerald-600/40 border border-slate-800 rounded-2xl text-3xl active:scale-95 transition shadow">🎯</button>
           </div>
         </div>
 
         <div class="border-t border-slate-800 pt-3 flex items-center justify-between">
-          <span class="text-xs text-slate-400">تطابق التوقيت معاً؟</span>
+          <span class="text-xs text-slate-400">تحتاج لفرصة حسم إضافية؟</span>
           <button onclick="openAdminPinModal()" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 rounded-xl text-xs font-black hover:brightness-110 transition flex items-center gap-1.5 shadow">
             <i class="fa-solid fa-lock text-[11px]"></i>
-            <span>تفعيل شوط كسر التعادل (صافرة الـ 90+)</span>
+            <span>تفعيل صافرة الـ 90+</span>
           </button>
         </div>
       </div>
@@ -441,7 +433,7 @@
         <button onclick="closeAllModals()" class="absolute top-5 left-5 text-slate-400 hover:text-white text-lg">✕</button>
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-black mb-4">
           <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-          <span id="whistlePlayerIndicator">شوط الحسم: محاولة المتحدي الأول ⚔️</span>
+          <span>شوط الحسم الفردي ⚔️</span>
         </div>
         <h3 class="text-2xl font-black text-white mb-1">صافرة الـ 90+</h3>
         <p class="text-xs text-slate-400 mb-2">اقتنص الصافرة بدقة لانتزاع بطاقة المدرج الذكي NFC</p>
@@ -556,7 +548,7 @@
 
     <div id="callStaffModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-sm w-full border border-rose-500/40 text-center relative shadow-2xl">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
         <h3 class="text-lg font-black text-white mb-2">نداء مشرف المعرض</h3>
         <button onclick="confirmSupervisorWhatsApp()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">إشعار المشرف (+966502777884)</button>
       </div>
@@ -635,22 +627,17 @@
     let isAudioChainRunning = false;
     let activeChainTimeout = null;
 
-    // محرك لعبة تفكيك الشيفرة
+    // محرك لعبة تفكيك الشيفرة الفردية
     const cipherTarget = ['⚽', '🏆', '⚡', '🎯'];
-    let cipherP1 = [];
-    let cipherP2 = [];
-
-    // محرك المساومة الخفية (الخِـوّة أو الغدر)
-    let p1Dilemma = null;
-    let p2Dilemma = null;
+    let cipherSoloInput = [];
+    let cipherTimer = null;
+    let cipherTimeLeft = 500; // 5 ثوانٍ بأجزاء المائة
 
     // محرك صافرة الـ 90+
-    let whistlePlayer = 1;
     let whistleState = "IDLE";
     let whistleInterval = null;
     let whistleCentiseconds = 0;
 
-    // دالة إشعار سينمائي علوي بديل للـ Alert
     let toastTimeout = null;
     function showToast(msg, icon = '⚡') {
       const toast = document.getElementById('toastNotification');
@@ -725,7 +712,7 @@
       document.getElementById('arenaModal').classList.remove('opacity-0', 'pointer-events-none');
     }
 
-    // --- 1. الخزنة الزجاجية السرية (مع توضيح مسمى الجائزة الفورية بدقة) ---
+    // --- 1. الخزنة الزجاجية السرية (فردي) ---
     function openSingleVaultModal() {
       stopAudioChain();
       closeAllModals();
@@ -758,122 +745,130 @@
       }
     }
 
-    // --- 2. المساومة الخفية (اختبار الخِـوّة أو الغدر) ---
+    // --- 2. المساومة الخفية (فردي ضد الذكاء الاصطناعي للمعرض) ---
     function openBargainingGame() {
       stopAudioChain();
       closeAllModals();
-      p1Dilemma = null;
-      p2Dilemma = null;
-      document.getElementById('p1ChoiceStatus').innerText = "في انتظار القرار...";
-      document.getElementById('p1ChoiceStatus').className = "text-xs text-slate-500 mb-4 font-bold";
-      document.getElementById('p2ChoiceStatus').innerText = "في انتظار القرار...";
-      document.getElementById('p2ChoiceStatus').className = "text-xs text-slate-500 mb-4 font-bold";
-      document.getElementById('dilemmaResultBanner').innerText = "";
+      document.getElementById('soloDilemmaBox').classList.add('hidden');
       document.getElementById('bargainingGameModal').classList.remove('opacity-0', 'pointer-events-none');
     }
 
-    function setPlayerDilemmaChoice(player, choice) {
+    function playSoloDilemma(playerChoice) {
       playLuxuryChime();
-      if (player === 1) {
-        p1Dilemma = choice;
-        document.getElementById('p1ChoiceStatus').innerText = "تم حفظ القرار سراً 🔒";
-        document.getElementById('p1ChoiceStatus').className = "text-xs text-blue-400 font-bold mb-4";
+      
+      // النظام يختار بنسبة واقعية (50% خِـوّة و 50% غدر)
+      const systemOptions = ['cooperate', 'betray'];
+      const systemChoice = systemOptions[Math.floor(Math.random() * systemOptions.length)];
+
+      const box = document.getElementById('soloDilemmaBox');
+      const pEl = document.getElementById('playerSoloChoice');
+      const sEl = document.getElementById('systemSoloChoice');
+      const outEl = document.getElementById('soloDilemmaOutcome');
+
+      pEl.innerText = playerChoice === 'cooperate' ? "خِـوّة 🤝" : "غدر 🗡️";
+      sEl.innerText = systemChoice === 'cooperate' ? "خِـوّة 🤝" : "غدر 🗡️";
+      box.classList.remove('hidden');
+
+      if (playerChoice === 'cooperate' && systemChoice === 'cooperate') {
+        outEl.className = "text-xs font-black text-emerald-400 mt-2";
+        outEl.innerHTML = "🤝 كفو! الطرفان اختارا الخِـوّة والوفاء!<br>ربحت كود خصم تقديري 10% فوري على معروضات الجناح!";
+        setTimeout(() => {
+          closeAllModals();
+          showToast("تم تطبيق خصم 10% لوفائك في المساومة!", "🤝");
+        }, 3000);
+      } else if (playerChoice === 'betray' && systemChoice === 'cooperate') {
+        outEl.className = "text-xs font-black text-amber-400 mt-2";
+        outEl.innerHTML = "🗡️ دهاء تكتيكي! غدرت بالنظام وهو حسن النية!<br>تستحق الجائزة الكبرى: ترقية البوكس والختم الشمعي وتولة مسك مجاناً!";
+        setTimeout(() => {
+          closeAllModals();
+          showToast("مبروك! فزت بالاستحواذ الكامل في المساومة", "🏆");
+        }, 3000);
+      } else if (playerChoice === 'cooperate' && systemChoice === 'betray') {
+        outEl.className = "text-xs font-black text-rose-400 mt-2";
+        outEl.innerHTML = "💔 النظام غدر بك وأنت صاحب خِـوّة!<br>خرجت هذه الجولة بدون جائزة، حظاً أوفر في التحديات القادمة!";
       } else {
-        p2Dilemma = choice;
-        document.getElementById('p2ChoiceStatus').innerText = "تم حفظ القرار سراً 🔒";
-        document.getElementById('p2ChoiceStatus').className = "text-xs text-emerald-400 font-bold mb-4";
-      }
-    }
-
-    function revealDilemmaResult() {
-      const banner = document.getElementById('dilemmaResultBanner');
-      if (!p1Dilemma || !p2Dilemma) {
-        banner.className = "min-h-[30px] mb-4 text-xs font-bold text-rose-400 shake";
-        banner.innerText = "يجب على كلا المتسابقين اختيار (خِـوّة) أو (غدر) أولاً!";
-        setTimeout(() => banner.classList.remove('shake'), 400);
-        return;
-      }
-
-      if (p1Dilemma === 'cooperate' && p2Dilemma === 'cooperate') {
-        playLuxuryChime();
-        banner.className = "min-h-[30px] mb-4 text-sm font-black text-emerald-400";
-        banner.innerText = "🤝 كفو! الاثنان اختارا الخِـوّة.. تقاسم الجائزة بالتساوي!";
-        setTimeout(() => closeAllModals(), 2500);
-      } else if (p1Dilemma === 'betray' && p2Dilemma === 'cooperate') {
-        playLuxuryChime();
-        banner.className = "min-h-[30px] mb-4 text-sm font-black text-amber-400";
-        banner.innerText = "🗡️ غدر! المتحدي الأول اختار الغدر وخطف الجائزة كاملة وحرم الثاني!";
-        setTimeout(() => closeAllModals(), 2500);
-      } else if (p1Dilemma === 'cooperate' && p2Dilemma === 'betray') {
-        playLuxuryChime();
-        banner.className = "min-h-[30px] mb-4 text-sm font-black text-amber-400";
-        banner.innerText = "🗡️ غدر! المتحدي الثاني اختار الغدر وخطف الجائزة كاملة وحرم الأول!";
-        setTimeout(() => closeAllModals(), 2500);
-      } else if (p1Dilemma === 'betray' && p2Dilemma === 'betray') {
-        // تعادل الغدر المدمر -> النقل لشوط الـ 90+
-        playLuxuryChime();
-        banner.className = "min-h-[30px] mb-4 text-xs font-black text-rose-400";
-        banner.innerHTML = "💥 غدر متبادل وخسارة مشتركة!<br><span class='text-amber-400 font-bold'>جارٍ الانتقال لشوط الحسم (صافرة الـ 90+)...</span>";
+        // غدر متبادل
+        outEl.className = "text-xs font-black text-rose-400 mt-2";
+        outEl.innerHTML = "💥 غدر متبادل بينك وبين النظام!<br><span class='text-amber-400'>سقطت الجائزة.. جارٍ إحالتك لفرصة صافرة الـ 90+ الإدارية...</span>";
         setTimeout(() => {
           closeAllModals();
           openAdminPinModal();
-        }, 2200);
+        }, 2500);
       }
     }
 
-    // --- 3. تفكيك الشيفرة المشتركة (سباق المفاتيح المتطابقة) ---
+    // --- 3. تفكيك الشيفرة (فردي ضد الوقت) ---
     function openCipherGame() {
       stopAudioChain();
       closeAllModals();
-      cipherP1 = [];
-      cipherP2 = [];
-      const d1 = document.getElementById('cipherP1Display');
-      const d2 = document.getElementById('cipherP2Display');
-      d1.className = "h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4 transition-all duration-200";
-      d2.className = "h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4 transition-all duration-200";
-      d1.innerText = "- - - -";
-      d2.innerText = "- - - -";
+      cipherSoloInput = [];
+      const disp = document.getElementById('cipherSoloDisplay');
+      disp.className = "h-16 bg-slate-950 rounded-2xl border-2 border-slate-800 flex items-center justify-center gap-3 text-2xl font-mono text-white mb-6 transition-all duration-200";
+      disp.innerText = "- - - -";
+      
       document.getElementById('cipherGameModal').classList.remove('opacity-0', 'pointer-events-none');
+      startCipherCountdown();
     }
 
-    function handleCipherInput(playerNum, symbol) {
+    function startCipherCountdown() {
+      if (cipherTimer) clearInterval(cipherTimer);
+      cipherTimeLeft = 500; // 5 ثوانٍ
+      
+      cipherTimer = setInterval(() => {
+        cipherTimeLeft -= 10;
+        const secs = Math.floor(cipherTimeLeft / 100);
+        const ms = (cipherTimeLeft % 100);
+        document.getElementById('cipherTimerDisplay').innerText = 
+          `${String(secs).padStart(2, '0')}:${String(ms).padStart(2, '0')}`;
+
+        if (cipherTimeLeft <= 0) {
+          clearInterval(cipherTimer);
+          const disp = document.getElementById('cipherSoloDisplay');
+          disp.className = "h-16 bg-rose-950/70 rounded-2xl border-2 border-rose-500 flex items-center justify-center text-xs font-bold text-rose-300 mb-6 shake";
+          disp.innerText = "انتهى الوقت! صمد القفل الرقمي ✖";
+          setTimeout(() => {
+            cipherSoloInput = [];
+            disp.className = "h-16 bg-slate-950 rounded-2xl border-2 border-slate-800 flex items-center justify-center gap-3 text-2xl font-mono text-white mb-6";
+            disp.innerText = "- - - -";
+            startCipherCountdown();
+          }, 1200);
+        }
+      }, 100);
+    }
+
+    function handleSoloCipherInput(symbol) {
       playLuxuryChime();
-      if (playerNum === 1) {
-        if (cipherP1.length < 4) cipherP1.push(symbol);
-        document.getElementById('cipherP1Display').innerText = cipherP1.join(' ');
-        if (cipherP1.length === 4) checkCipherMatch(1, cipherP1);
-      } else {
-        if (cipherP2.length < 4) cipherP2.push(symbol);
-        document.getElementById('cipherP2Display').innerText = cipherP2.join(' ');
-        if (cipherP2.length === 4) checkCipherMatch(2, cipherP2);
+      if (cipherSoloInput.length < 4) {
+        cipherSoloInput.push(symbol);
+        document.getElementById('cipherSoloDisplay').innerText = cipherSoloInput.join(' ');
+      }
+
+      if (cipherSoloInput.length === 4) {
+        const isMatch = cipherSoloInput.every((val, idx) => val === cipherTarget[idx]);
+        const disp = document.getElementById('cipherSoloDisplay');
+        
+        if (isMatch) {
+          clearInterval(cipherTimer);
+          playLuxuryChime();
+          disp.className = "h-16 bg-emerald-950/70 rounded-2xl border-2 border-emerald-400 flex items-center justify-center text-sm font-black text-emerald-300 mb-6";
+          disp.innerHTML = "🎉 فككت الشيفرة بسرعة فائقة!";
+          setTimeout(() => {
+            closeAllModals();
+            showToast("مبروك! فككت الشيفرة قبل انتهاء الوقت", "⏱️");
+          }, 1800);
+        } else {
+          disp.className = "h-16 bg-rose-950/70 rounded-2xl border-2 border-rose-500 flex items-center justify-center text-xs font-bold text-rose-300 mb-6 shake";
+          disp.innerHTML = "نمط غير مطابق ✖";
+          setTimeout(() => {
+            cipherSoloInput = [];
+            disp.className = "h-16 bg-slate-950 rounded-2xl border-2 border-slate-800 flex items-center justify-center gap-3 text-2xl font-mono text-white mb-6";
+            disp.innerText = "- - - -";
+          }, 850);
+        }
       }
     }
 
-    function checkCipherMatch(playerNum, inputArr) {
-      const isMatch = inputArr.every((val, index) => val === cipherTarget[index]);
-      const displayEl = document.getElementById(playerNum === 1 ? 'cipherP1Display' : 'cipherP2Display');
-
-      if (isMatch) {
-        playLuxuryChime();
-        displayEl.className = "h-14 bg-emerald-950/70 rounded-xl border-2 border-emerald-400 flex items-center justify-center gap-2 text-sm font-black text-emerald-300 mb-4 transition-all duration-200";
-        displayEl.innerHTML = `🎉 فوز مستحق للمتحدي ${playerNum}!`;
-        setTimeout(() => {
-          closeAllModals();
-          showToast(`🏆 انتصار ساحق للمتحدي ${playerNum} بفك الشيفرة أولاً!`, '🎉');
-        }, 1800);
-      } else {
-        displayEl.className = "h-14 bg-rose-950/70 rounded-xl border-2 border-rose-500 flex items-center justify-center gap-2 text-xs font-bold text-rose-300 mb-4 shake transition-all duration-200";
-        displayEl.innerHTML = "نمط غير مطابق ✖";
-        setTimeout(() => {
-          if (playerNum === 1) cipherP1 = [];
-          else cipherP2 = [];
-          displayEl.className = "h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4 transition-all duration-200";
-          displayEl.innerText = "- - - -";
-        }, 850);
-      }
-    }
-
-    // --- 4. شوط كسر التعادل: صافرة الـ 90+ ---
+    // --- 4. شوط الحسم: صافرة الـ 90+ (فردي) ---
     function openAdminPinModal() {
       stopAudioChain();
       closeAllModals();
@@ -895,7 +890,6 @@
     }
 
     function startWhistleDuel() {
-      whistlePlayer = 1;
       document.getElementById('whistleModal').classList.remove('opacity-0', 'pointer-events-none');
       setupWhistleTurn();
     }
@@ -904,10 +898,6 @@
       whistleState = "IDLE";
       whistleCentiseconds = 0;
       document.getElementById('whistleTimerDisplay').innerText = "00:00";
-      document.getElementById('whistlePlayerIndicator').innerText = whistlePlayer === 1 
-        ? "شوط الحسم: محاولة المتحدي الأول ⚔️" 
-        : "شوط الحسم: محاولة المتحدي الثاني ⚔️";
-      
       const btn = document.getElementById('whistleBtn');
       btn.innerText = "إطلاق الصافرة ⏱️";
       btn.className = "w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-black text-lg hover:scale-[1.01] active:scale-95 transition shadow-lg shadow-amber-500/20";
@@ -961,31 +951,21 @@
       if (isWinner) {
         icon.innerText = "🏆";
         title.innerText = "معجزة كروية في الـ 90!";
-        desc.innerText = `أصاب المتحدي ${whistlePlayer} النافذة الذهبية بدقة! تُفتح الخزنة وتُسلّم بطاقة المدرج الذكي لليوم فوراً!`;
+        desc.innerText = `أصبت النافذة الذهبية بدقة! تُفتح الخزنة وتُسلّم بطاقة المدرج الذكي لليوم فوراً!`;
         btn.innerText = "تتويج البطل وإنهاء الشوط 🎉";
         btn.onclick = () => { modal.classList.add('opacity-0', 'pointer-events-none'); closeAllModals(); };
       } else {
         icon.innerText = "❌";
         title.innerText = "مرّت بجوار القائم!";
-        if (whistlePlayer === 1) {
-          desc.innerText = `سجل المتحدي الأول ${timeStr}. الفرصة تنتقل الآن للمتحدي الثاني!`;
-          btn.innerText = "انتقال الدور للمتحدي الثاني ⚔️";
-          btn.onclick = () => {
-            modal.classList.add('opacity-0', 'pointer-events-none');
-            whistlePlayer = 2;
-            setupWhistleTurn();
-          };
-        } else {
-          desc.innerText = `سجل المتحدي الثاني ${timeStr}. صمدت الخزنة ولم يحقق أحد التوقيت الصارم؛ تظل بطاقة اليوم في أمان!`;
-          btn.innerText = "إغلاق التحدي والعودة للمعرض 🔒";
-          btn.onclick = () => { modal.classList.add('opacity-0', 'pointer-events-none'); closeAllModals(); };
-        }
+        desc.innerText = `سجلت ${timeStr} (خارج نطاق 90:00 - 90:50). صمدت الخزنة وتظل بطاقة اليوم محفوظة!`;
+        btn.innerText = "إغلاق التحدي والعودة للمعرض 🔒";
+        btn.onclick = () => { modal.classList.add('opacity-0', 'pointer-events-none'); closeAllModals(); };
       }
 
       modal.classList.remove('opacity-0', 'pointer-events-none');
     }
 
-    // دوال المعرض والخدمات العامة
+    // دوال المعرض والخدمات الأصلية
     function openPromoVideoModal() {
       stopAudioChain();
       closeAllModals();
@@ -1201,6 +1181,7 @@
 
     function closeAllModals() {
       stopAudioChain();
+      if (cipherTimer) { clearInterval(cipherTimer); cipherTimer = null; }
       ['callStaffModal', 'rajhiModal', 'fitModal', 'zoomModal', 'fazaaModal', 'nfcVerifyModal', 'qualificationModal', 'promoVideoModal', 'arenaModal', 'adminPinModal', 'whistleModal', 'whistleResultModal', 'cipherGameModal', 'bargainingGameModal', 'singleVaultModal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
