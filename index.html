@@ -35,9 +35,22 @@
     }
     .btn-attention { animation: pulse-gold 1.8s infinite; }
     .gold-glow { text-shadow: 0 0 20px rgba(245, 158, 11, 0.6); }
+
+    @keyframes shake-anim {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .shake { animation: shake-anim 0.4s ease-in-out; }
   </style>
 </head>
 <body id="screenBody" class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden" onclick="handleFirstUserInteraction()">
+
+  <!-- إشعار سينمائي علوي بديل للـ Alert -->
+  <div id="toastNotification" class="fixed top-16 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-2xl glass-card border border-amber-500/40 shadow-2xl flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300">
+    <span id="toastIcon" class="text-xl">⚡</span>
+    <span id="toastMessage" class="text-xs font-bold text-white leading-relaxed"></span>
+  </div>
 
   <!-- الشريط العلوي الفاخر -->
   <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-md px-6 py-2.5 flex items-center justify-between border-b border-slate-900 shadow-xl">
@@ -87,7 +100,7 @@
       </div>
     </div>
 
-    <!-- يسار الشريط: أدوات تجربة عِـزوة والتحديات -->
+    <!-- يسار الشريط: أزرار التحديات والأدوات -->
     <div class="flex items-center gap-2">
       <button onclick="openArenaModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1.5 shadow-lg border border-amber-300">
         <i class="fa-solid fa-trophy text-[11px]"></i>
@@ -269,9 +282,9 @@
               <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl text-amber-400 mb-3">🔐</div>
               <span class="text-[10px] font-black text-amber-400 block mb-1">تحدي فردي (1 لاعب)</span>
               <h4 class="text-lg font-black text-white mb-2">الخزنة الزجاجية السرية</h4>
-              <p class="text-xs text-slate-400 leading-relaxed">سباق تخمين لاكتشاف الرمز السري الثلاثي وفك القفل الرقمي فورا.</p>
+              <p class="text-xs text-slate-400 leading-relaxed">سباق تخمين لاكتشاف الرمز السري الثلاثي وفك القفل الرقمي فوراً.</p>
             </div>
-            <button onclick="startSingleVaultGame()" class="mt-4 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition">دخول التحدي ⚡</button>
+            <button onclick="openSingleVaultModal()" class="mt-4 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition">دخول التحدي ⚡</button>
           </div>
 
           <!-- 2. المساومة الخفية (اختبار الخِـوّة أو الغدر) -->
@@ -295,6 +308,25 @@
             </div>
             <button onclick="openCipherGame()" class="mt-4 w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition">بدء سباق المفاتيح ⏱️</button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== نافذة المسابقة 1: الخزنة الزجاجية السرية (بدون prompt) ==================== -->
+    <div id="singleVaultModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
+      <div class="glass-card border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full text-center relative shadow-2xl">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">✕</button>
+        <div class="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-2xl text-amber-400 mx-auto mb-3">🔐</div>
+        <h3 class="text-xl font-black text-white mb-1">الخزنة الزجاجية السرية</h3>
+        <p class="text-xs text-slate-400 mb-4">أدخل الرمز السري الثلاثي لفك القفل الرقمي</p>
+        
+        <input type="password" id="vaultPinInput" maxlength="3" placeholder="•••" class="w-full tracking-widest text-center text-3xl font-black py-3 bg-slate-950 border border-slate-700 rounded-xl focus:border-amber-400 focus:outline-none mb-3 text-amber-300">
+        
+        <div id="vaultStatusMessage" class="min-h-[22px] text-xs font-bold mb-3"></div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="closeAllModals()" class="py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold">إلغاء</button>
+          <button onclick="submitVaultPin()" class="py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black">فك القفل ⚡</button>
         </div>
       </div>
     </div>
@@ -330,6 +362,8 @@
           </div>
         </div>
 
+        <div id="dilemmaResultBanner" class="min-h-[30px] mb-4 text-xs font-bold text-amber-400"></div>
+
         <button onclick="revealDilemmaResult()" class="w-full py-4 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 font-black text-sm rounded-xl hover:brightness-110 transition shadow-lg">
           كشف القرارات وإعلان النتيجة ⚖️
         </button>
@@ -354,7 +388,7 @@
           <!-- المتحدي الأول -->
           <div class="bg-slate-900/80 border border-blue-500/30 rounded-2xl p-5 text-center flex flex-col justify-between">
             <span class="text-xs font-black text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/30 inline-block mb-3">المتحدي الأول (يمين)</span>
-            <div id="cipherP1Display" class="h-12 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4">- - - -</div>
+            <div id="cipherP1Display" class="h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4 transition-all duration-200">- - - -</div>
             <div class="grid grid-cols-2 gap-2">
               <button onclick="handleCipherInput(1, '⚽')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl active:scale-95 transition">⚽</button>
               <button onclick="handleCipherInput(1, '🏆')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl active:scale-95 transition">🏆</button>
@@ -366,7 +400,7 @@
           <!-- المتحدي الثاني -->
           <div class="bg-slate-900/80 border border-emerald-500/30 rounded-2xl p-5 text-center flex flex-col justify-between">
             <span class="text-xs font-black text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30 inline-block mb-3">المتحدي الثاني (يسار)</span>
-            <div id="cipherP2Display" class="h-12 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4">- - - -</div>
+            <div id="cipherP2Display" class="h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4 transition-all duration-200">- - - -</div>
             <div class="grid grid-cols-2 gap-2">
               <button onclick="handleCipherInput(2, '⚽')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl active:scale-95 transition">⚽</button>
               <button onclick="handleCipherInput(2, '🏆')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl active:scale-95 transition">🏆</button>
@@ -510,7 +544,7 @@
 
     <div id="rajhiModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/40 text-right shadow-2xl relative">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base"><i class="fa-solid fa-xmark"></i></button>
         <h3 class="text-base font-black text-white mb-2">مصرف الراجحي • مؤسسة عِـزوة للتجارة</h3>
         <div class="p-3 bg-slate-900 rounded-xl text-xs space-y-2">
           <div class="flex justify-between"><span>المبلغ:</span><span class="text-amber-400 font-bold">179 ريال</span></div>
@@ -616,6 +650,23 @@
     let whistleInterval = null;
     let whistleCentiseconds = 0;
 
+    // دالة إشعار سينمائي علوي بديل للـ Alert
+    let toastTimeout = null;
+    function showToast(msg, icon = '⚡') {
+      const toast = document.getElementById('toastNotification');
+      const msgEl = document.getElementById('toastMessage');
+      const iconEl = document.getElementById('toastIcon');
+      
+      msgEl.innerHTML = msg;
+      iconEl.innerText = icon;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 3500);
+    }
+
     function unlockAudioContext() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -674,19 +725,36 @@
       document.getElementById('arenaModal').classList.remove('opacity-0', 'pointer-events-none');
     }
 
-    // --- 1. الخزنة الزجاجية السرية ---
-    function startSingleVaultGame() {
+    // --- 1. الخزنة الزجاجية السرية (نافذة ناعمة بدون prompt وبدون alert) ---
+    function openSingleVaultModal() {
+      stopAudioChain();
       closeAllModals();
-      const code = prompt("أدخل الرقم السري لفك قفل الخزنة الزجاجية (3 أرقام):");
+      const input = document.getElementById('vaultPinInput');
+      input.value = "";
+      document.getElementById('vaultStatusMessage').innerText = "";
+      document.getElementById('singleVaultModal').classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => input.focus(), 150);
+    }
+
+    function submitVaultPin() {
+      const code = document.getElementById('vaultPinInput').value;
+      const statusEl = document.getElementById('vaultStatusMessage');
       if (code === "909" || code === "041") {
         playLuxuryChime();
-        alert("🎉 مبروك! فككت قفل الخزنة الزجاجية واستحققت الجائزة الفورية!");
-      } else if (code) {
-        alert("الرمز غير صحيح، صمدت الخزنة الزجاجية!");
+        statusEl.className = "min-h-[22px] text-xs font-black text-emerald-400";
+        statusEl.innerText = "🎉 فُتحت الخزنة واستحققت الجائزة الفورية!";
+        setTimeout(() => {
+          closeAllModals();
+          showToast("تم فتح الخزنة الزجاجية السرية بنجاح!", "🏆");
+        }, 1500);
+      } else {
+        statusEl.className = "min-h-[22px] text-xs font-bold text-rose-400 shake";
+        statusEl.innerText = "الرمز غير صحيح، صمدت الخزنة الزجاجية!";
+        setTimeout(() => statusEl.classList.remove('shake'), 400);
       }
     }
 
-    // --- 2. المساومة الخفية (اختبار الخِـوّة أو الغدر) ---
+    // --- 2. المساومة الخفية (اختبار الخِـوّة أو الغدر - بدون alert) ---
     function openBargainingGame() {
       stopAudioChain();
       closeAllModals();
@@ -696,6 +764,7 @@
       document.getElementById('p1ChoiceStatus').className = "text-xs text-slate-500 mb-4 font-bold";
       document.getElementById('p2ChoiceStatus').innerText = "في انتظار القرار...";
       document.getElementById('p2ChoiceStatus').className = "text-xs text-slate-500 mb-4 font-bold";
+      document.getElementById('dilemmaResultBanner').innerText = "";
       document.getElementById('bargainingGameModal').classList.remove('opacity-0', 'pointer-events-none');
     }
 
@@ -713,40 +782,53 @@
     }
 
     function revealDilemmaResult() {
+      const banner = document.getElementById('dilemmaResultBanner');
       if (!p1Dilemma || !p2Dilemma) {
-        alert("يجب على كلا المتسابقين اختيار (خِـوّة) أو (غدر) أولاً!");
+        banner.className = "min-h-[30px] mb-4 text-xs font-bold text-rose-400 shake";
+        banner.innerText = "يجب على كلا المتسابقين اختيار (خِـوّة) أو (غدر) أولاً!";
+        setTimeout(() => banner.classList.remove('shake'), 400);
         return;
       }
 
       if (p1Dilemma === 'cooperate' && p2Dilemma === 'cooperate') {
         playLuxuryChime();
-        alert("🤝 كفو! الاثنان اختارا الخِـوّة.. تقاسم الجائزة بالتساوي!");
-        closeAllModals();
+        banner.className = "min-h-[30px] mb-4 text-sm font-black text-emerald-400";
+        banner.innerText = "🤝 كفو! الاثنان اختارا الخِـوّة.. تقاسم الجائزة بالتساوي!";
+        setTimeout(() => closeAllModals(), 2500);
       } else if (p1Dilemma === 'betray' && p2Dilemma === 'cooperate') {
         playLuxuryChime();
-        alert("🗡️ غدر! المتحدي الأول اختار الغدر وخطف الجائزة كاملة وحرم الثاني!");
-        closeAllModals();
+        banner.className = "min-h-[30px] mb-4 text-sm font-black text-amber-400";
+        banner.innerText = "🗡️ غدر! المتحدي الأول اختار الغدر وخطف الجائزة كاملة وحرم الثاني!";
+        setTimeout(() => closeAllModals(), 2500);
       } else if (p1Dilemma === 'cooperate' && p2Dilemma === 'betray') {
         playLuxuryChime();
-        alert("🗡️ غدر! المتحدي الثاني اختار الغدر وخطف الجائزة كاملة وحرم الأول!");
-        closeAllModals();
+        banner.className = "min-h-[30px] mb-4 text-sm font-black text-amber-400";
+        banner.innerText = "🗡️ غدر! المتحدي الثاني اختار الغدر وخطف الجائزة كاملة وحرم الأول!";
+        setTimeout(() => closeAllModals(), 2500);
       } else if (p1Dilemma === 'betray' && p2Dilemma === 'betray') {
-        // تعادل الغدر المدمر -> النقل لشوط الـ 90+
+        // تعادل الغدر المدمر -> النقل لشوط الـ 90+ بدون أي alert
         playLuxuryChime();
-        alert("💥 غدر متبادل! الاثنان اختارا الغدر فخسر كلاهما الجائزة فوراً!\nالفرصة الأخيرة الآن لكسر التعادل عبر «صافرة الـ 90+» بإشراف المشرف.");
-        closeAllModals();
-        openAdminPinModal();
+        banner.className = "min-h-[30px] mb-4 text-xs font-black text-rose-400";
+        banner.innerHTML = "💥 غدر متبادل وخسارة مشتركة!<br><span class='text-amber-400 font-bold'>جارٍ الانتقال لشوط الحسم (صافرة الـ 90+)...</span>";
+        setTimeout(() => {
+          closeAllModals();
+          openAdminPinModal();
+        }, 2200);
       }
     }
 
-    // --- 3. تفكيك الشيفرة المشتركة (سباق المفاتيح المتطابقة) ---
+    // --- 3. تفكيك الشيفرة المشتركة (سباق المفاتيح المتطابقة - بدون alert نهائياً) ---
     function openCipherGame() {
       stopAudioChain();
       closeAllModals();
       cipherP1 = [];
       cipherP2 = [];
-      document.getElementById('cipherP1Display').innerText = "- - - -";
-      document.getElementById('cipherP2Display').innerText = "- - - -";
+      const d1 = document.getElementById('cipherP1Display');
+      const d2 = document.getElementById('cipherP2Display');
+      d1.className = "h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4 transition-all duration-200";
+      d2.className = "h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4 transition-all duration-200";
+      d1.innerText = "- - - -";
+      d2.innerText = "- - - -";
       document.getElementById('cipherGameModal').classList.remove('opacity-0', 'pointer-events-none');
     }
 
@@ -765,14 +847,26 @@
 
     function checkCipherMatch(playerNum, inputArr) {
       const isMatch = inputArr.every((val, index) => val === cipherTarget[index]);
+      const displayEl = document.getElementById(playerNum === 1 ? 'cipherP1Display' : 'cipherP2Display');
+
       if (isMatch) {
         playLuxuryChime();
-        alert(`🏆 انتصار ساحق! فاز (المتحدي ${playerNum}) بتطابق المفاتيح وفك الشيفرة أولاً!`);
-        closeAllModals();
+        displayEl.className = "h-14 bg-emerald-950/70 rounded-xl border-2 border-emerald-400 flex items-center justify-center gap-2 text-sm font-black text-emerald-300 mb-4 transition-all duration-200";
+        displayEl.innerHTML = `🎉 فوز مستحق للمتحدي ${playerNum}!`;
+        setTimeout(() => {
+          closeAllModals();
+          showToast(`🏆 انتصار ساحق للمتحدي ${playerNum} بفك الشيفرة أولاً!`, '🎉');
+        }, 1800);
       } else {
-        alert(`المتحدي ${playerNum} أدخل نمط مفاتيح غير مطابق! أعيدوا المحاولة.`);
-        if (playerNum === 1) { cipherP1 = []; document.getElementById('cipherP1Display').innerText = "- - - -"; }
-        else { cipherP2 = []; document.getElementById('cipherP2Display').innerText = "- - - -"; }
+        // وميض واهتزاز أحمر بدون أي alert
+        displayEl.className = "h-14 bg-rose-950/70 rounded-xl border-2 border-rose-500 flex items-center justify-center gap-2 text-xs font-bold text-rose-300 mb-4 shake transition-all duration-200";
+        displayEl.innerHTML = "نمط غير مطابق ✖";
+        setTimeout(() => {
+          if (playerNum === 1) cipherP1 = [];
+          else cipherP2 = [];
+          displayEl.className = "h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4 transition-all duration-200";
+          displayEl.innerText = "- - - -";
+        }, 850);
       }
     }
 
@@ -1104,7 +1198,7 @@
 
     function closeAllModals() {
       stopAudioChain();
-      ['callStaffModal', 'rajhiModal', 'fitModal', 'zoomModal', 'fazaaModal', 'nfcVerifyModal', 'qualificationModal', 'promoVideoModal', 'arenaModal', 'adminPinModal', 'whistleModal', 'whistleResultModal', 'cipherGameModal', 'bargainingGameModal'].forEach(id => {
+      ['callStaffModal', 'rajhiModal', 'fitModal', 'zoomModal', 'fazaaModal', 'nfcVerifyModal', 'qualificationModal', 'promoVideoModal', 'arenaModal', 'adminPinModal', 'whistleModal', 'whistleResultModal', 'cipherGameModal', 'bargainingGameModal', 'singleVaultModal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
