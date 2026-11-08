@@ -13,7 +13,7 @@
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Cairo', sans-serif; background-color: #030712; color: #f3f4f6; user-select: none; }
+    body { font-family: 'Cairo', sans-serif; background-color: #030712; color: #f3f4f6; user-select: none; width: 100vw; height: 100vh; overflow: hidden; }
     .fade-transition { transition: all 0.25s ease-out; }
     .glass-card { background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
     .gold-glow { text-shadow: 0 0 20px rgba(245, 158, 11, 0.6); }
@@ -30,7 +30,7 @@
     ::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.3); border-radius: 4px; }
   </style>
 </head>
-<body id="screenBody" class="w-full min-h-screen lg:h-screen flex flex-col justify-between relative bg-black overflow-x-hidden lg:overflow-hidden pb-16 lg:pb-0" onclick="handleFirstUserInteraction()">
+<body id="screenBody" class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden" onclick="handleFirstUserInteraction()">
 
   <!-- إشعار سينمائي علوي -->
   <div id="toastNotification" class="fixed top-14 left-1/2 -translate-x-1/2 z-[100] px-5 py-2.5 rounded-2xl glass-card border border-amber-500/40 shadow-2xl flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300 w-11/12 max-w-sm">
@@ -38,166 +38,175 @@
     <span id="toastMessage" class="text-xs font-bold text-white leading-relaxed"></span>
   </div>
 
-  <!-- الشريط العلوي الفاخر المباشر -->
-  <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-md px-3 lg:px-6 py-2.5 flex items-center justify-between border-b border-slate-900 shadow-xl">
-    <div class="flex items-center gap-2">
-      <div class="flex items-center gap-2 mr-1">
-        <img src="./logo.jpeg" alt="EZWA" class="w-8 h-8 rounded-lg border border-amber-500/30 bg-slate-900 object-contain">
-        <span class="font-black text-sm text-white hidden sm:inline">عِـزوة</span>
+  <!-- الشريط العلوي الشامل (كامل الأزرار منظمة بدقة بدون زحمة) -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-md px-3 lg:px-5 py-2 flex items-center justify-between border-b border-slate-900 shadow-xl">
+    
+    <!-- الجانب الأيمن: شعار عزوة وأنماط العرض والقنوات -->
+    <div class="flex items-center gap-1.5 lg:gap-2">
+      <div class="flex items-center gap-1.5 mr-1">
+        <img src="./logo.jpeg" alt="EZWA" class="w-7 h-7 rounded-lg border border-amber-500/30 bg-slate-900 object-contain">
+        <span class="font-black text-xs text-white hidden sm:inline">عِـزوة</span>
       </div>
 
-      <div class="flex items-center gap-1.5 bg-slate-900/80 p-0.5 rounded-xl border border-slate-800">
-        <button onclick="setScreenLayout('catalog')" id="btnCatalog" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition">
-          المعروض
+      <div class="flex items-center gap-1 bg-slate-900/90 p-0.5 rounded-xl border border-slate-800">
+        <button onclick="setScreenLayout('catalog')" id="btnCatalog" class="px-2 py-1 rounded-lg text-[10px] font-bold text-slate-400 hover:text-white transition">
+          المعروض (1)
         </button>
-        <button onclick="setScreenLayout('split')" id="btnSplit" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-500 text-slate-950 transition">
-          مزدوج
+        <button onclick="setScreenLayout('split')" id="btnSplit" class="px-2 py-1 rounded-lg text-[10px] font-bold bg-amber-500 text-slate-950 transition">
+          مزدوج (2)
         </button>
       </div>
 
       <!-- قائمة القنوات الأربع الحية -->
       <div class="relative">
-        <button onclick="toggleDropdown('tvDropdown')" id="btnTVMenu" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-200 border border-slate-800 flex items-center gap-2 hover:border-amber-400 transition">
-          <i class="fa-solid fa-tv text-amber-400 text-xs"></i>
-          <span id="activeChannelLabel">البث: القرآن الكريم</span>
-          <i class="fa-solid fa-chevron-down text-[9px] opacity-70"></i>
+        <button onclick="toggleDropdown('tvDropdown')" id="btnTVMenu" class="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-900 text-slate-200 border border-slate-800 flex items-center gap-1.5 hover:border-amber-400 transition">
+          <i class="fa-solid fa-tv text-amber-400 text-[10px]"></i>
+          <span id="activeChannelLabel">البث (3)</span>
+          <i class="fa-solid fa-chevron-down text-[8px] opacity-70"></i>
         </button>
 
-        <div id="tvDropdown" class="absolute top-full right-0 mt-2 w-52 glass-card rounded-2xl p-2 shadow-2xl opacity-0 pointer-events-none transition-all duration-150 z-50">
-          <div class="text-[10px] text-slate-400 px-2 py-1 font-bold">القنوات المباشرة:</div>
-          <button onclick="changeChannel('quran'); closeAllDropdowns();" class="w-full text-right px-2.5 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition text-amber-300 flex items-center justify-between">
-            <span>القرآن الكريم</span>
-            <kbd class="text-[9px] bg-slate-800 px-1 rounded text-slate-400">Q</kbd>
+        <div id="tvDropdown" class="absolute top-full right-0 mt-2 w-48 glass-card rounded-2xl p-1.5 shadow-2xl opacity-0 pointer-events-none transition-all duration-150 z-50">
+          <button onclick="changeChannel('quran'); closeAllDropdowns();" class="w-full text-right px-2.5 py-1.5 rounded-xl text-xs font-bold hover:bg-slate-800 text-amber-300 flex items-center justify-between">
+            <span>القرآن الكريم</span><kbd class="text-[9px] bg-slate-800 px-1 rounded text-slate-400 font-mono">Q</kbd>
           </button>
-          <button onclick="changeChannel('sunnah'); closeAllDropdowns();" class="w-full text-right px-2.5 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition text-slate-200 flex items-center justify-between">
-            <span>السنة النبوية</span>
-            <kbd class="text-[9px] bg-slate-800 px-1 rounded text-slate-400">S</kbd>
+          <button onclick="changeChannel('sunnah'); closeAllDropdowns();" class="w-full text-right px-2.5 py-1.5 rounded-xl text-xs font-bold hover:bg-slate-800 text-slate-200 flex items-center justify-between">
+            <span>السنة النبوية</span><kbd class="text-[9px] bg-slate-800 px-1 rounded text-slate-400 font-mono">S</kbd>
           </button>
-          <button onclick="changeChannel('alarabiya'); closeAllDropdowns();" class="w-full text-right px-2.5 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition text-slate-200 flex items-center justify-between">
-            <span>العربية</span>
-            <kbd class="text-[9px] bg-slate-800 px-1 rounded text-slate-400">A</kbd>
+          <button onclick="changeChannel('alarabiya'); closeAllDropdowns();" class="w-full text-right px-2.5 py-1.5 rounded-xl text-xs font-bold hover:bg-slate-800 text-slate-200 flex items-center justify-between">
+            <span>العربية</span><kbd class="text-[9px] bg-slate-800 px-1 rounded text-slate-400 font-mono">A</kbd>
           </button>
-          <button onclick="changeChannel('aljazeera'); closeAllDropdowns();" class="w-full text-right px-2.5 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition text-slate-200 flex items-center justify-between">
-            <span>الجزيرة</span>
-            <kbd class="text-[9px] bg-slate-800 px-1 rounded text-slate-400">J</kbd>
+          <button onclick="changeChannel('aljazeera'); closeAllDropdowns();" class="w-full text-right px-2.5 py-1.5 rounded-xl text-xs font-bold hover:bg-slate-800 text-slate-200 flex items-center justify-between">
+            <span>الجزيرة</span><kbd class="text-[9px] bg-slate-800 px-1 rounded text-slate-400 font-mono">J</kbd>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- يسار الشريط: وقت الصلاة المباشر + المسابقة الثقافية + الأدوات -->
-    <div class="flex items-center gap-2">
+    <!-- الجانب الأيسر: كافة أزرار الخدمات المسترجعة كاملة -->
+    <div class="flex items-center gap-1.5">
       
-      <!-- الصلاة ظاهرة في الشريط مباشرة -->
-      <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs">
-        <i class="fa-solid fa-mosque text-amber-400 text-xs"></i>
-        <span id="nextPrayerName" class="text-slate-300 font-bold hidden sm:inline">الصلاة:</span>
-        <span id="nextPrayerTime" class="text-amber-400 font-mono font-black">--:--</span>
-      </div>
-
-      <button onclick="openCulturalQuizModal()" class="px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1.5 shadow-md shadow-amber-500/20">
-        <i class="fa-solid fa-feather-pointed text-[11px]"></i>
-        <span class="hidden sm:inline">المسابقة الثقافية</span>
-        <span class="sm:hidden">المسابقة</span>
+      <!-- زر المسابقة الثقافية الراقية -->
+      <button onclick="openCulturalQuizModal()" class="px-2.5 py-1 rounded-xl text-[11px] font-black bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1 shadow">
+        <i class="fa-solid fa-feather-pointed text-[10px]"></i>
+        <span>المسابقة</span>
       </button>
 
-      <div class="relative">
-        <button onclick="toggleDropdown('toolsDropdown')" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1">
-          <i class="fa-solid fa-sliders text-amber-400 text-xs"></i>
-          <span class="hidden sm:inline">الأدوات</span>
-        </button>
+      <!-- زر فزعة عزوة -->
+      <button onclick="openFazaaModal()" class="px-2 py-1 rounded-xl text-[11px] font-bold bg-slate-900 border border-slate-800 text-slate-200 hover:text-white transition flex items-center gap-1">
+        <i class="fa-solid fa-shield-halved text-[10px] text-amber-400"></i>
+        <span class="hidden sm:inline">فزعة عِـزوة</span>
+      </button>
 
-        <div id="toolsDropdown" class="absolute top-full left-0 mt-2 w-52 glass-card rounded-2xl p-2 shadow-2xl opacity-0 pointer-events-none transition-all duration-150 z-50 text-right">
-          <button onclick="openAdminPinModal(); closeAllDropdowns();" class="w-full text-right px-2.5 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition text-amber-400 flex items-center justify-between">
-            <span>صافرة الـ 90+ (إشراف)</span>
-            <i class="fa-solid fa-lock text-[10px]"></i>
-          </button>
+      <!-- زر الرادار المستقل المسترجع -->
+      <button onclick="togglePresenceRadar()" class="px-2 py-1 rounded-xl text-[11px] font-bold bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 transition flex items-center gap-1.5 shadow">
+        <span id="radarStatusDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+        <span id="radarBtnText" class="hidden sm:inline">الرادار: متوقف (R)</span>
+      </button>
 
-          <button onclick="triggerCallSupervisorModal(); closeAllDropdowns();" class="w-full text-right px-2.5 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition text-slate-200 flex items-center justify-between">
-            <span>نداء المشرف (طوارئ)</span>
-            <i class="fa-solid fa-bell text-xs text-rose-400"></i>
-          </button>
-        </div>
+      <!-- زر مستشار المقاس الهندسي -->
+      <button onclick="openFitAdvisorModal()" class="px-2 py-1 rounded-xl text-[11px] font-bold bg-slate-900 border border-amber-500/30 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex items-center gap-1 shadow">
+        <i class="fa-solid fa-ruler-combined text-[10px]"></i>
+        <span class="hidden sm:inline">المقاس (M)</span>
+      </button>
+
+      <!-- زر نداء المشرف -->
+      <button onclick="triggerCallSupervisorModal()" title="نداء المشرف" class="px-2 py-1 rounded-xl text-[11px] font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1">
+        <i class="fa-solid fa-bell text-[10px] text-rose-400"></i>
+        <span class="hidden md:inline">المشرف (C)</span>
+      </button>
+
+      <!-- زر صافرة الـ 90+ الإداري -->
+      <button onclick="openAdminPinModal()" title="إشراف الـ 90+" class="px-2 py-1 rounded-xl text-[10px] font-bold bg-slate-900 border border-amber-500/40 text-amber-400 hover:bg-slate-800 transition">
+        <i class="fa-solid fa-lock text-[9px]"></i>
+        <span>الـ 90+</span>
+      </button>
+
+      <!-- وقت الصلاة المباشر -->
+      <div class="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-800 text-[11px]">
+        <i class="fa-solid fa-mosque text-amber-400 text-[10px]"></i>
+        <span id="nextPrayerName" class="text-slate-300 hidden md:inline">الصلاة:</span>
+        <span id="nextPrayerTime" class="text-amber-400 font-mono font-bold">--:--</span>
       </div>
 
-      <button onclick="toggleFullScreen()" title="ملء الشاشة" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-amber-400 text-xs transition">
+      <button onclick="toggleFullScreen()" title="ملء الشاشة" class="p-1.5 rounded-xl bg-slate-900 border border-slate-800 text-amber-400 text-xs transition">
         <i class="fa-solid fa-expand"></i>
       </button>
     </div>
   </header>
 
-  <!-- مساحة العرض الرئيسية: مقسمة نصفين متوازيين -->
-  <main id="mainContainer" class="flex-1 w-full relative flex flex-col lg:flex-row pt-14 pb-16 lg:pb-0 overflow-y-auto lg:overflow-hidden fade-transition">
+  <!-- مساحة العرض الرئيسية: الصور مصغرة وموزعة بتوازن تام دون ابتلاع الشاشة -->
+  <main id="mainContainer" class="flex-1 w-full h-full relative flex flex-col lg:flex-row pt-12 pb-14 lg:pb-0 overflow-y-auto lg:overflow-hidden fade-transition">
     
-    <!-- 1. قسم الكتالوج والمعروضات (نصف الشاشة) -->
-    <section id="productSection" class="w-full lg:w-1/2 p-3 lg:p-5 flex flex-col justify-between bg-slate-950 border-b lg:border-b-0 lg:border-l border-slate-900 fade-transition overflow-y-auto">
+    <!-- 1. قسم الكتالوج والمعروضات (الصور مصغرة والوصف ظاهر فوراً) -->
+    <section id="productSection" class="w-full lg:w-1/2 h-full p-3 lg:p-4 flex flex-col justify-between bg-slate-950 border-b lg:border-b-0 lg:border-l border-slate-900 fade-transition overflow-y-auto">
       
-      <!-- الشريط العلوي للإصدار المحدود -->
-      <div class="flex items-center justify-between border-b border-slate-900 pb-2 mb-2">
-        <div class="flex items-center gap-2">
-          <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md border border-amber-500/20">اكتشف الرياض • الإصدار الأول</span>
-          <span class="text-[11px] text-slate-400">إصدار مرقم محدود (متبقي 9 قطع)</span>
+      <!-- شريط الإصدار المحدود -->
+      <div class="flex items-center justify-between border-b border-slate-900 pb-1.5 mb-1.5">
+        <div class="flex items-center gap-1.5">
+          <span class="text-[11px] font-black text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">اكتشف الرياض • الإصدار الأول</span>
+          <span class="text-[10px] text-slate-400">إصدار مرقم محدود (متبقي 9 قطع)</span>
         </div>
-        <div class="w-24 bg-slate-800 h-1.5 rounded-full overflow-hidden">
+        <div class="w-20 bg-slate-800 h-1 rounded-full overflow-hidden">
           <div class="bg-amber-400 h-full rounded-full" style="width: 82%;"></div>
         </div>
       </div>
 
-      <!-- صور المنتج -->
+      <!-- صور المنتج بحجم منسق وملموم لا يطغى على مساحة النص -->
       <div class="w-full my-auto">
-        <div class="w-full h-64 sm:h-72 lg:h-[320px] rounded-2xl bg-slate-900/90 border border-slate-800 grid grid-cols-2 p-1.5 gap-1.5 relative overflow-hidden shadow-2xl">
+        <div class="w-full h-48 sm:h-56 lg:h-[230px] rounded-2xl bg-slate-900/90 border border-slate-800 grid grid-cols-2 p-1 gap-1.5 relative overflow-hidden shadow-xl">
           <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center cursor-zoom-in" onclick="openZoomModal('front')">
             <img id="mainFrontImage" src="./model-front.png" alt="الواجهة الأمامية" class="w-full h-full object-cover rounded-xl">
-            <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-lg bg-black/80 backdrop-blur-md text-[9px] font-bold text-amber-300 border border-amber-500/30">الواجهة الأمامية</span>
+            <span class="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md text-[8px] font-bold text-amber-300 border border-amber-500/30">الواجهة الأمامية</span>
           </div>
           <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center cursor-zoom-in" onclick="openZoomModal('back')">
             <img id="mainBackImage" src="./model-back.png" alt="الواجهة الخلفية" class="w-full h-full object-cover rounded-xl">
-            <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-lg bg-black/80 backdrop-blur-md text-[9px] font-bold text-amber-300 border border-amber-500/30">الظهر • الطبعة الذهبية</span>
+            <span class="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md text-[8px] font-bold text-amber-300 border border-amber-500/30">الظهر • الطبعة الذهبية</span>
           </div>
         </div>
       </div>
 
-      <!-- التفاصيل والوصف العام للمنتج -->
-      <div class="mt-2 space-y-2">
+      <!-- التفاصيل والوصف العام للمنتج ظاهر بالكامل -->
+      <div class="mt-2 space-y-1.5">
         <div class="flex items-center justify-between">
-          <h2 class="text-xl lg:text-2xl font-black text-white">قصر المصمك</h2>
-          <button onclick="playMasmakStoryAudio()" id="btnStoryAudio" class="px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[10px] font-bold flex items-center gap-1.5 hover:bg-amber-500 hover:text-slate-950 transition">
-            <i class="fa-solid fa-volume-high text-[10px]"></i>
-            <span id="storyBtnLabel">قصة التصميم (30 ثانية)</span>
+          <h2 class="text-lg lg:text-xl font-black text-white">قصر المصمك</h2>
+          <button onclick="playMasmakStoryAudio()" id="btnStoryAudio" class="px-2 py-1 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[10px] font-bold flex items-center gap-1 hover:bg-amber-500 hover:text-slate-950 transition">
+            <i class="fa-solid fa-volume-high text-[9px]"></i>
+            <span id="storyBtnLabel">القصة (30 ثانية)</span>
           </button>
         </div>
 
         <div class="flex items-baseline gap-2">
           <span id="productPrice" class="text-2xl font-black text-amber-400">199</span>
-          <span class="text-xs text-slate-400 font-bold">ريال سعودي</span>
-          <span id="appliedFazaaBadge" class="hidden text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-md font-bold">خصم فزعة (-20 ريال)</span>
+          <span class="text-[11px] text-slate-400 font-bold">ريال سعودي</span>
+          <span id="appliedFazaaBadge" class="hidden text-[9px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded font-bold">خصم فزعة (-20 ريال)</span>
         </div>
 
-        <p class="text-slate-300 text-xs leading-relaxed bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
-          مستوحى من ملحمة قصر المصمك الشاهد على توحيد المملكة؛ قماش قطن 100% فاخر بقصة بوكس فيت معاصرة، وطبعة خلفية ذهبية مستلهمة من الهندسة المعمارية النجدية، وبطاقة NFC مشفرة بحاشية السدو العريقة للدخول للتجربة الرقمية.
+        <!-- الوصف العام للمنتج واضح ومقروء تماماً -->
+        <p class="text-slate-300 text-[11px] leading-relaxed bg-slate-900/80 p-2 rounded-xl border border-slate-800">
+          مستوحى من ملحمة قصر المصمك الشاهد على توحيد المملكة؛ قماش قطن 100% فاخر بقصة بوكس فيت معاصرة، وطبعة خلفية ذهبية مستلهمة من الهندسة المعمارية النجدية، وبطاقة NFC مشفرة بحاشية السدو العريقة للدخول إلى التجربة الرقمية التفاعلية.
         </p>
 
         <!-- شريحة السدو الذكية NFC -->
-        <div class="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-wifi rotate-90 text-amber-400 text-sm"></i>
-            <span class="text-[11px] text-slate-300 font-bold">شريحة السدو الذكية (NFC)</span>
+        <div class="p-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <i class="fa-solid fa-wifi rotate-90 text-amber-400 text-xs"></i>
+            <span class="text-[10px] text-slate-300 font-bold">شريحة السدو الذكية (NFC) بحاشية التيشيرت</span>
           </div>
-          <button onclick="simulateNfcVerification()" class="px-3 py-1 rounded-lg bg-amber-500 text-slate-950 font-black text-[10px]">تحقق</button>
+          <button onclick="simulateNfcVerification()" class="px-2.5 py-0.5 rounded-lg bg-amber-500 text-slate-950 font-black text-[10px]">تحقق</button>
         </div>
 
         <!-- محطة السداد الفوري والتحويل -->
-        <div class="border-t border-slate-900 pt-2 flex items-center justify-between">
-          <div class="flex items-center gap-2.5">
+        <div class="border-t border-slate-900 pt-1.5 flex items-center justify-between">
+          <div class="flex items-center gap-2">
             <div class="p-1 bg-white rounded-lg cursor-pointer" onclick="openQualificationGate()">
-              <img id="qrPaymentImg" src="" alt="الراجحي" class="w-9 h-9 object-contain">
+              <img id="qrPaymentImg" src="" alt="الراجحي" class="w-8 h-8 object-contain">
             </div>
             <div class="text-right">
-              <span class="text-xs font-black text-white block">سداد الراجحي</span>
-              <span class="text-[10px] text-slate-400 block"><span id="rajhiFooterPrice" class="text-amber-400 font-bold">199 ريال</span></span>
+              <span class="text-[11px] font-black text-white block">سداد مصرف الراجحي</span>
+              <span class="text-[9px] text-slate-400 block"><span id="rajhiFooterPrice" class="text-amber-400 font-bold">199 ريال</span></span>
             </div>
           </div>
-          <button onclick="openQualificationGate()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 text-xs font-black shadow-md hover:brightness-110 transition">
+          <button onclick="openQualificationGate()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 text-xs font-black shadow-md hover:brightness-110 transition">
             طلب الاقتناء والسداد
           </button>
         </div>
@@ -206,7 +215,7 @@
     </section>
 
     <!-- 2. قسم البث التلفزيوني المباشر (النصف المقابل) -->
-    <section id="tvSection" class="w-full lg:w-1/2 min-h-[340px] lg:h-full relative z-20 bg-black flex items-center justify-center fade-transition">
+    <section id="tvSection" class="w-full lg:w-1/2 min-h-[300px] lg:h-full relative z-20 bg-black flex items-center justify-center fade-transition">
       <video id="hlsVideo" class="w-full h-full max-h-full max-w-full object-contain" autoplay playsinline muted controls></video>
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
@@ -214,10 +223,14 @@
   </main>
 
   <!-- شريط الملاحة السفلي للجوال -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-md border-t border-slate-900 py-2 px-6 flex justify-around items-center lg:hidden shadow-2xl">
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-md border-t border-slate-900 py-1.5 px-6 flex justify-around items-center lg:hidden shadow-2xl">
     <button onclick="openFitAdvisorModal()" class="flex flex-col items-center text-slate-400 hover:text-amber-400 transition">
       <i class="fa-solid fa-ruler-combined text-sm mb-0.5"></i>
       <span class="text-[9px] font-bold">المقاس</span>
+    </button>
+    <button onclick="openFazaaModal()" class="flex flex-col items-center text-slate-400 hover:text-amber-400 transition">
+      <i class="fa-solid fa-shield-halved text-sm mb-0.5"></i>
+      <span class="text-[9px] font-bold">فزعة</span>
     </button>
     <button onclick="openCulturalQuizModal()" class="flex flex-col items-center text-amber-400">
       <i class="fa-solid fa-feather-pointed text-sm mb-0.5"></i>
@@ -229,19 +242,21 @@
     </button>
   </nav>
 
+  <!-- ==================== نوافذ المعرض والمسابقة الثقافية ==================== -->
+
   <!-- نافذة المسابقة الثقافية (سؤال وجواب) -->
   <div id="culturalQuizModal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4 overflow-y-auto">
-    <div class="glass-card rounded-3xl p-6 lg:p-8 max-w-lg w-full border border-amber-500/40 shadow-2xl relative my-auto">
+    <div class="glass-card rounded-3xl p-5 lg:p-7 max-w-md w-full border border-amber-500/40 shadow-2xl relative my-auto">
       <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
 
-      <div class="text-center mb-6">
-        <span class="text-[10px] font-black text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30 inline-block mb-2">تحدي صقور نجد الثقافي</span>
-        <h3 class="text-xl font-black text-white">مسابقة أصالة قصر المصمك</h3>
-        <p class="text-xs text-slate-400 mt-1">أجب عن 3 أسئلة تراثية متتالية لانتزاع تولة مسك عِـزوة الملكي فوراً 🎁</p>
+      <div class="text-center mb-5">
+        <span class="text-[10px] font-black text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30 inline-block mb-1.5">تحدي صقور نجد الثقافي</span>
+        <h3 class="text-lg font-black text-white">مسابقة أصالة قصر المصمك</h3>
+        <p class="text-[11px] text-slate-400 mt-1">أجب عن 3 أسئلة تراثية متتالية لانتزاع تولة مسك عِـزوة الملكي فوراً 🎁</p>
 
-        <div class="flex items-center justify-between mt-4 px-2">
+        <div class="flex items-center justify-between mt-3 px-1">
           <span id="quizStepText" class="text-xs font-mono font-bold text-amber-400">السؤال 1 من 3</span>
-          <div class="flex items-center gap-1.5 text-xs font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-xl text-slate-300">
+          <div class="flex items-center gap-1 text-[11px] font-mono bg-slate-900 border border-slate-800 px-2.5 py-0.5 rounded-xl text-slate-300">
             <i class="fa-solid fa-hourglass-half text-amber-400 text-[10px]"></i>
             <span id="quizTimerText">15 ثانية</span>
           </div>
@@ -249,29 +264,52 @@
       </div>
 
       <div id="quizContentBox">
-        <h4 id="questionTitle" class="text-sm font-bold text-slate-100 bg-slate-900/80 p-3.5 rounded-2xl border border-slate-800 mb-4 text-right leading-relaxed">
+        <h4 id="questionTitle" class="text-xs font-bold text-slate-100 bg-slate-900/80 p-3 rounded-xl border border-slate-800 mb-3 text-right leading-relaxed">
           --
         </h4>
-        <div id="optionsContainer" class="space-y-2.5"></div>
+        <div id="optionsContainer" class="space-y-2"></div>
       </div>
 
-      <div id="quizSuccessBox" class="hidden text-center py-4 space-y-4">
-        <div class="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mx-auto text-emerald-400 text-3xl animate-bounce">
+      <div id="quizSuccessBox" class="hidden text-center py-3 space-y-3">
+        <div class="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mx-auto text-emerald-400 text-2xl animate-bounce">
           🏆
         </div>
-        <h3 class="text-xl font-black text-white">كفو يالذيب! نلت وسام المعرفة</h3>
-        <p class="text-xs text-slate-300 leading-relaxed bg-slate-900/90 p-3.5 rounded-2xl border border-emerald-500/30">
+        <h3 class="text-lg font-black text-white">كفو يالذيب! نلت وسام المعرفة</h3>
+        <p class="text-[11px] text-slate-300 leading-relaxed bg-slate-900/90 p-3 rounded-xl border border-emerald-500/30">
           تم توثيق إجاباتك الكاملة بنجاح!<br>
           <strong class="text-amber-400 block mt-1">الجائزة الفورية: تولة مسك عِـزوة الملكي الفاخرة + خصم 10% مجاناً 🎁</strong>
         </p>
-        <button onclick="closeAllModals()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-xs hover:brightness-110 transition shadow-lg">
+        <button onclick="closeAllModals()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-xs shadow-lg">
           استلام الهدية من مشرف الجناح فوراً
         </button>
       </div>
     </div>
   </div>
 
-  <!-- نافذة المشرف (PIN) -->
+  <!-- نافذة فزعة عزوة -->
+  <div id="fazaaModal" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4 overflow-y-auto">
+    <div class="glass-card rounded-3xl p-5 max-w-lg w-full border border-amber-500/30 text-center relative my-auto">
+      <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400"><i class="fa-solid fa-xmark"></i></button>
+      <h3 class="text-base font-black text-white mb-1">اختر بوابتك.. وجتك فزعة عِـزوة!</h3>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 my-4">
+        <div class="h-32 rounded-xl bg-slate-900 border border-amber-500/30 flex items-center justify-center cursor-pointer p-2" onclick="openMasmakGate(1, 'خصم 10% فوري', 'price')">
+          <span class="text-xs font-bold text-amber-400">بوابة ١<br><small class="text-[9px] text-slate-400">فزعة السعر</small></span>
+        </div>
+        <div class="h-32 rounded-xl bg-slate-900 border border-amber-500/30 flex items-center justify-center cursor-pointer p-2" onclick="openMasmakGate(2, 'ترقية التغليف مجاناً', 'gift')">
+          <span class="text-xs font-bold text-amber-400">بوابة ٢<br><small class="text-[9px] text-slate-400">فزعة الإهداء</small></span>
+        </div>
+        <div class="h-32 rounded-xl bg-slate-900 border border-amber-500/30 flex items-center justify-center cursor-pointer p-2" onclick="openMasmakGate(3, 'تولة مسك عِـزوة مجاناً', 'musk')">
+          <span class="text-xs font-bold text-amber-400">بوابة ٣<br><small class="text-[9px] text-slate-400">فزعة العطر</small></span>
+        </div>
+        <div class="h-32 rounded-xl bg-slate-900 border border-amber-500/30 flex items-center justify-center cursor-pointer p-2" onclick="openMasmakGate(4, 'عضوية أركان VIP', 'vip')">
+          <span class="text-xs font-bold text-amber-400">بوابة ٤<br><small class="text-[9px] text-slate-400">فزعة النخبة</small></span>
+        </div>
+      </div>
+      <div id="fazaaResultBanner" class="text-xs font-bold text-emerald-400 min-h-[20px]">انقر لاكتشاف فزعتك</div>
+    </div>
+  </div>
+
+  <!-- نافذة المشرف (PIN) لصافرة الـ 90+ -->
   <div id="adminPinModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
     <div class="glass-card border border-amber-500/40 rounded-3xl p-5 max-w-xs w-full text-center shadow-2xl">
       <h3 class="text-sm font-black text-amber-400 mb-1">إذن المشرف (PIN)</h3>
@@ -288,41 +326,43 @@
   <div id="whistleModal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
     <div class="glass-card border-2 border-amber-500/50 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl relative">
       <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400">✕</button>
-      <h3 class="text-lg font-black text-white">صافرة الـ 90+</h3>
+      <h3 class="text-base font-black text-white">صافرة الـ 90+</h3>
       <p class="text-[10px] text-slate-400 mb-2">أوقف العداد بدقة [ 90:00 - 90:50 ]</p>
-      <div class="py-4 bg-slate-950 rounded-xl border border-slate-800 my-3">
-        <div id="whistleTimerDisplay" class="text-5xl font-black font-mono tracking-wider text-slate-100 gold-glow">00:00</div>
+      <div class="py-3 bg-slate-950 rounded-xl border border-slate-800 my-3">
+        <div id="whistleTimerDisplay" class="text-4xl font-black font-mono tracking-wider text-slate-100 gold-glow">00:00</div>
       </div>
-      <button id="whistleBtn" onclick="handleWhistleClick()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-black text-sm shadow-lg">
+      <button id="whistleBtn" onclick="handleWhistleClick()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-black text-xs shadow-lg">
         إطلاق الصافرة ⏱️
       </button>
     </div>
   </div>
 
-  <!-- باقي نوافذ المعرض -->
+  <!-- نافذة المقاس الهندسي -->
   <div id="fitModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
-    <div class="glass-card rounded-3xl p-5 max-w-sm w-full border border-amber-500/30 text-right">
+    <div class="glass-card rounded-3xl p-5 max-w-xs w-full border border-amber-500/30 text-right">
       <button onclick="closeAllModals()" class="text-slate-400 float-left"><i class="fa-solid fa-xmark"></i></button>
-      <h3 class="text-sm font-black text-white mb-2">مستشار قصة البوكس فيت</h3>
+      <h3 class="text-xs font-black text-white mb-2">مستشار قصة البوكس فيت</h3>
       <div class="p-3 bg-amber-500/10 rounded-xl text-center border border-amber-500/30">
-        <span class="text-[11px] text-amber-400 font-bold">المقاس الموصى به:</span>
+        <span class="text-[10px] text-amber-400 font-bold">المقاس الهندسي الموصى به:</span>
         <div class="text-3xl font-black text-amber-400 font-mono mt-1">XL</div>
-        <span class="text-[10px] text-slate-300">(يعادل وسع 2XL في العادي لراحة محيط الصدر)</span>
+        <span class="text-[10px] text-slate-300 block mt-1">(يعادل 2XL في العادي لراحة محيط الصدر والكتف)</span>
       </div>
     </div>
   </div>
 
+  <!-- نافذة حجز واقتناء القطعة -->
   <div id="qualificationModal" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
-    <div class="glass-card rounded-3xl p-5 max-w-sm w-full border border-amber-500/40 text-center relative">
+    <div class="glass-card rounded-3xl p-5 max-w-xs w-full border border-amber-500/40 text-center relative">
       <button onclick="closeAllModals()" class="absolute top-3 left-3 text-slate-400"><i class="fa-solid fa-xmark"></i></button>
-      <h3 class="text-base font-black text-white mt-1">حجز واقتناء القطعة</h3>
+      <h3 class="text-sm font-black text-white mt-1">حجز واقتناء القطعة</h3>
       <p class="text-xs text-slate-300 my-2">إصدار مرقم محدود [EZWA-041] بسعر <span class="text-amber-400 font-bold">179 ريال</span></p>
-      <button onclick="proceedToImmediatePurchase()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">
+      <button onclick="proceedToImmediatePurchase()" class="w-full py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">
         الانتقال للسداد الفوري (الراجحي)
       </button>
     </div>
   </div>
 
+  <!-- نافذة الراجحي -->
   <div id="rajhiModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
     <div class="glass-card rounded-3xl p-5 max-w-xs w-full text-right">
       <button onclick="closeAllModals()" class="text-slate-400 float-left"><i class="fa-solid fa-xmark"></i></button>
@@ -335,11 +375,12 @@
     </div>
   </div>
 
+  <!-- نافذة نداء المشرف -->
   <div id="callStaffModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
     <div class="glass-card rounded-3xl p-5 max-w-xs w-full text-center">
       <button onclick="closeAllModals()" class="text-slate-400 float-left"><i class="fa-solid fa-xmark"></i></button>
-      <h3 class="text-sm font-black text-white mb-2">نداء مشرف المعرض</h3>
-      <button onclick="confirmSupervisorWhatsApp()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">إشعار الجوال (+966502777884)</button>
+      <h3 class="text-xs font-black text-white mb-2">نداء مشرف المعرض</h3>
+      <button onclick="confirmSupervisorWhatsApp()" class="w-full py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">إشعار الجوال (+966502777884)</button>
     </div>
   </div>
 
@@ -351,12 +392,16 @@
   <div id="nfcVerifyModal" class="fixed inset-0 z-50 bg-slate-950/95 flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
     <div class="glass-card rounded-3xl p-5 max-w-xs w-full text-center border border-emerald-500/40">
       <button onclick="closeAllModals()" class="text-slate-400 float-left"><i class="fa-solid fa-xmark"></i></button>
-      <h3 class="text-sm font-black text-white mt-2">توثيق أصالة القطعة</h3>
+      <h3 class="text-xs font-black text-white mt-2">توثيق أصالة القطعة</h3>
       <p class="text-[11px] text-slate-300 mt-1">EZWA-MSMK-2026-041</p>
     </div>
   </div>
 
-  <!-- ==================== المحرك البرمجي الشامل ==================== -->
+  <!-- كاميرا ورادار الحضور -->
+  <video id="radarCamera" class="hidden" autoplay playsinline muted></video>
+  <canvas id="radarCanvas" class="hidden"></canvas>
+
+  <!-- ==================== المحرك البرمجي المتكامل ==================== -->
   <script>
     const SUPERVISOR_PHONE = "966502777884";
     const ADMIN_PIN = "9090";
@@ -367,7 +412,6 @@
       amount: "199"
     };
 
-    // القنوات الأربع الحية
     const CHANNELS = {
       quran: { short: "القرآن الكريم", type: "hls", url: "https://win.holol.com/live/quran/playlist.m3u8" },
       sunnah: { short: "السنة النبوية", type: "hls", url: "https://win.holol.com/live/sunnah/playlist.m3u8" },
@@ -375,7 +419,6 @@
       aljazeera: { short: "الجزيرة", type: "iframe", url: "https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&mute=1&playsinline=1" }
     };
 
-    // مواقيت الصلاة لمدينة الرياض
     const prayerTimesRiyadh = [
       { name: "الفجر", time: "04:55" },
       { name: "الظهر", time: "11:45" },
@@ -442,6 +485,10 @@
     let whistleInterval = null;
     let whistleCentiseconds = 0;
 
+    let isRadarActive = false;
+    let radarStream = null;
+    let radarInterval = null;
+
     let toastTimeout = null;
     function showToast(msg, icon = '✨') {
       const toast = document.getElementById('toastNotification');
@@ -488,16 +535,16 @@
       const btnSplit = document.getElementById('btnSplit');
 
       if (mode === 'split') {
-        if (btnSplit) btnSplit.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-500 text-slate-950 transition";
-        if (btnCatalog) btnCatalog.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition";
+        if (btnSplit) btnSplit.className = "px-2 py-1 rounded-lg text-[10px] font-bold bg-amber-500 text-slate-950 transition";
+        if (btnCatalog) btnCatalog.className = "px-2 py-1 rounded-lg text-[10px] font-bold text-slate-400 hover:text-white transition";
         prodSec.classList.remove('hidden');
         tvSec.classList.remove('hidden');
-        prodSec.className = "w-full lg:w-1/2 p-3 lg:p-5 flex flex-col justify-between bg-slate-950 border-b lg:border-b-0 lg:border-l border-slate-900 fade-transition overflow-y-auto";
-        tvSec.className = "w-full lg:w-1/2 min-h-[340px] lg:h-full relative z-20 bg-black flex items-center justify-center fade-transition";
+        prodSec.className = "w-full lg:w-1/2 h-full p-3 lg:p-4 flex flex-col justify-between bg-slate-950 border-b lg:border-b-0 lg:border-l border-slate-900 fade-transition overflow-y-auto";
+        tvSec.className = "w-full lg:w-1/2 min-h-[300px] lg:h-full relative z-20 bg-black flex items-center justify-center fade-transition";
         playStream(CHANNELS[activeChannelKey]);
       } else if (mode === 'catalog') {
-        if (btnCatalog) btnCatalog.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-500 text-slate-950 transition";
-        if (btnSplit) btnSplit.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition";
+        if (btnCatalog) btnCatalog.className = "px-2 py-1 rounded-lg text-[10px] font-bold bg-amber-500 text-slate-950 transition";
+        if (btnSplit) btnSplit.className = "px-2 py-1 rounded-lg text-[10px] font-bold text-slate-400 hover:text-white transition";
         prodSec.classList.remove('hidden');
         prodSec.className = "w-full h-full p-4 lg:p-6 flex flex-col justify-between bg-slate-950 overflow-y-auto";
         tvSec.classList.add('hidden');
@@ -539,7 +586,7 @@
 
       qData.options.forEach((optText, idx) => {
         const btn = document.createElement('button');
-        btn.className = "w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 text-xs font-bold hover:border-amber-400 hover:bg-slate-800/80 transition flex items-center justify-between";
+        btn.className = "w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 text-xs font-bold hover:border-amber-400 hover:bg-slate-800/80 transition flex items-center justify-between";
         btn.innerHTML = `<span>${optText}</span><i class="fa-regular fa-circle text-slate-600 text-xs"></i>`;
         btn.onclick = () => handleQuizAnswer(idx, btn);
         optsBox.appendChild(btn);
@@ -572,6 +619,24 @@
       }
     }
 
+    function openFazaaModal() {
+      closeAllModals();
+      document.getElementById('fazaaModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function openMasmakGate(gateNum, prizeTitle, type) {
+      playLuxuryChime();
+      document.getElementById('fazaaResultBanner').textContent = `مبروك! جتك فزعة عِـزوة: ${prizeTitle}`;
+      if (type === 'price') {
+        MASMAK_PRODUCT.price = "179";
+        document.getElementById('productPrice').textContent = "179";
+        document.getElementById('appliedFazaaBadge').classList.remove('hidden');
+        document.getElementById('rajhiFooterPrice').textContent = "179 ريال";
+        initRajhiQR();
+      }
+      setTimeout(() => closeAllModals(), 2000);
+    }
+
     function openAdminPinModal() {
       closeAllModals();
       const modal = document.getElementById('adminPinModal');
@@ -599,7 +664,7 @@
         whistleState = "RUNNING";
         const btn = document.getElementById('whistleBtn');
         btn.innerText = "أوقف العداد الآن! 🛑";
-        btn.className = "w-full py-3 rounded-xl bg-red-600 text-white font-black text-sm";
+        btn.className = "w-full py-2.5 rounded-xl bg-red-600 text-white font-black text-xs";
 
         const start = Date.now();
         whistleInterval = setInterval(() => {
@@ -622,6 +687,20 @@
       }
     }
 
+    function togglePresenceRadar() {
+      isRadarActive = !isRadarActive;
+      const dot = document.getElementById('radarStatusDot');
+      const txt = document.getElementById('radarBtnText');
+      if (isRadarActive) {
+        dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-ping";
+        txt.textContent = "الرادار: نشط (R)";
+        showToast("تم تفعيل رادار الحضور الذكي", "📡");
+      } else {
+        dot.className = "w-2 h-2 rounded-full bg-slate-500";
+        txt.textContent = "الرادار: متوقف (R)";
+      }
+    }
+
     function openQualificationGate() {
       closeAllModals();
       document.getElementById('qualificationModal').classList.remove('opacity-0', 'pointer-events-none');
@@ -634,7 +713,7 @@
 
     function initRajhiQR() {
       const qrData = encodeURIComponent(`مصرف الراجحي - عِـزوة\nالآيبان: ${RAJHI_ACCOUNT.iban}\nالمبلغ: ${MASMAK_PRODUCT.price} ريال`);
-      document.getElementById('qrPaymentImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${qrData}`;
+      document.getElementById('qrPaymentImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${qrData}`;
     }
 
     function sendReceiptToSeller() {
@@ -681,7 +760,7 @@
       storyAudioFile.play().then(() => {
         const lbl = document.getElementById('storyBtnLabel');
         lbl.textContent = "جاري الاستماع...";
-        setTimeout(() => lbl.textContent = "القصة (30ث)", 30000);
+        setTimeout(() => lbl.textContent = "القصة (30 ثانية)", 30000);
       }).catch(() => {});
     }
 
@@ -693,7 +772,7 @@
     }
 
     function closeAllDropdowns() {
-      ['tvDropdown', 'toolsDropdown'].forEach(id => {
+      ['tvDropdown'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
@@ -728,13 +807,13 @@
     function changeChannel(key) {
       if (!CHANNELS[key]) return;
       activeChannelKey = key;
-      document.getElementById('activeChannelLabel').textContent = `البث: ${CHANNELS[key].short}`;
+      document.getElementById('activeChannelLabel').textContent = `${CHANNELS[key].short}`;
       playStream(CHANNELS[key]);
     }
 
     function closeAllModals() {
       if (quizInterval) { clearInterval(quizInterval); quizInterval = null; }
-      ['callStaffModal', 'rajhiModal', 'fitModal', 'zoomModal', 'nfcVerifyModal', 'qualificationModal', 'adminPinModal', 'whistleModal', 'culturalQuizModal'].forEach(id => {
+      ['callStaffModal', 'rajhiModal', 'fitModal', 'zoomModal', 'nfcVerifyModal', 'qualificationModal', 'adminPinModal', 'whistleModal', 'culturalQuizModal', 'fazaaModal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
@@ -756,6 +835,9 @@
       const k = e.key.toLowerCase();
       if (k === '1') setScreenLayout('catalog');
       if (k === '2') setScreenLayout('split');
+      if (k === 'r') togglePresenceRadar();
+      if (k === 'm') openFitAdvisorModal();
+      if (k === 'c') triggerCallSupervisorModal();
       if (k === 'q') changeChannel('quran');
       if (k === 's') changeChannel('sunnah');
       if (k === 'a') changeChannel('alarabiya');
@@ -764,7 +846,7 @@
     });
 
     window.addEventListener('click', (e) => {
-      if (!e.target.closest('#toolsDropdown') && !e.target.closest('#tvDropdown') && !e.target.closest('button')) {
+      if (!e.target.closest('#tvDropdown') && !e.target.closest('button')) {
         closeAllDropdowns();
       }
     });
@@ -773,7 +855,7 @@
     updatePrayerTime();
     setInterval(updatePrayerTime, 30000);
 
-    // التشغيل الافتراضي بالوضع المزدوج
+    // التشغيل التلقائي بالوضع المزدوج
     setScreenLayout('split');
   </script>
 </body>
