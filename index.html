@@ -18,7 +18,6 @@
     .glass-card { background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
     .gold-glow { text-shadow: 0 0 25px rgba(245, 158, 11, 0.7); }
 
-    /* تأثيرات الخزنة المعكوسة التفاعلية */
     .eye-reticle {
       box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.5), inset 0 0 30px rgba(0, 0, 0, 0.9);
       animation: pulse-reticle 3s infinite ease-in-out;
@@ -39,7 +38,7 @@
 </head>
 <body id="screenBody" class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden" onclick="handleFirstUserInteraction()">
 
-  <!-- الشريط العلوي المدمج والمنسق بالكامل -->
+  <!-- الشريط العلوي المنظم -->
   <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-md px-4 py-2 flex items-center justify-between border-b border-slate-900 shadow-xl">
     
     <!-- يمين: الهوية + العرض + القنوات -->
@@ -86,7 +85,7 @@
     <!-- يسار: الأزرار المدمجة بما فيها تجربة الخزنة المعكوسة -->
     <div class="flex items-center gap-2">
       
-      <!-- زر التحدي الحصري: الخزنة المعكوسة -->
+      <!-- زر الخزنة المعكوسة -->
       <button onclick="openShadowVaultModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1.5 shadow-lg shadow-amber-500/20">
         <i class="fa-solid fa-eye text-xs"></i>
         <span>الخزنة المعكوسة</span>
@@ -128,7 +127,7 @@
     </div>
   </header>
 
-  <!-- مساحة العرض الرئيسية: الصور جنباً إلى جنب مع النصوص دون قص -->
+  <!-- مساحة العرض الرئيسية -->
   <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-14 fade-transition">
     
     <!-- 1. قسم الكتالوج والمنتج المعروض -->
@@ -261,7 +260,7 @@
 
   </main>
 
-  <!-- ==================== نافذة التحدي الكبرى: الخزنة المعكوسة (صمت الـ 60 ثانية) ==================== -->
+  <!-- ==================== نافذة التحدي: الخزنة المعكوسة (45 ثانية) ==================== -->
   <div id="shadowVaultModal" class="fixed inset-0 z-50 bg-black/98 backdrop-blur-2xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
     <div class="relative w-full max-w-2xl h-[85vh] rounded-3xl border border-amber-500/40 bg-slate-950/90 flex flex-col justify-between p-6 sm:p-8 shadow-2xl text-center overflow-hidden">
       
@@ -277,11 +276,11 @@
         </span>
         <h3 class="text-2xl font-black text-white tracking-wide">الخزنة المعكوسة</h3>
         <p id="vaultInstructions" class="text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">
-          «صاحب الهيبة لا يرمش، والواثق لا يلتفت».. ثبّت نظرك مباشرة في عين العدسة دون حراك طوال 60 ثانية لكسر عتمة الخزنة.
+          «صاحب الهيبة لا يرمش، والواثق لا يلتفت».. ثبّت نظرك مباشرة في عين العدسة دون رمش أو حراك طوال 45 ثانية لكسر عتمة الخزنة.
         </p>
       </div>
 
-      <!-- مساحة الرصد البصري التفاعلي (عين نجد) -->
+      <!-- مساحة الرصد البصري التفاعلي -->
       <div class="relative w-64 h-64 mx-auto rounded-full eye-reticle flex items-center justify-center overflow-hidden bg-black/80 my-auto">
         
         <!-- كاميرا الرصد المباشرة للعين -->
@@ -290,10 +289,10 @@
         <!-- إطار الاستهداف الذهبي -->
         <div class="absolute inset-2 rounded-full border border-dashed border-amber-500/40 pointer-events-none"></div>
 
-        <!-- العداد التنازلي الحابس للأنفاس -->
+        <!-- العداد التنازلي (45 ثانية) -->
         <div class="relative z-10 flex flex-col items-center">
           <div id="shadowTimerDisplay" class="text-6xl font-black font-mono tracking-widest text-amber-400 gold-glow">
-            60
+            45
           </div>
           <span id="stabilityStatus" class="text-[10px] font-bold text-slate-400 tracking-wider mt-1">
             جاهز للاختبار
@@ -307,15 +306,15 @@
       <!-- التوجيهات وزر تفعيل الاختبار -->
       <div class="space-y-3">
         <div id="vaultLiveWarning" class="min-h-[20px] text-xs font-bold text-amber-400">
-          انقر أدناه لبدء اختبار الـ 60 ثانية.. سيتم تفعيل الرصد الحركي فوراً.
+          انقر أدناه لبدء اختبار الـ 45 ثانية.. رادار الرمش الحركي فائق الحساسية سيبدأ فوراً.
         </div>
         
         <button id="btnStartShadowChallenge" onclick="startShadowChallenge()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-sm hover:brightness-110 transition shadow-lg shadow-amber-500/20">
-          دخول التحدي وإغلاق الأنفاس 👁️
+          دخول التحدي وإغلاق الأنفاس (45ث) 👁️
         </button>
       </div>
 
-      <!-- شاشة الانتصار الاستثنائية (تظهر فقط عند الصمود التام 60 ثانية) -->
+      <!-- شاشة الانتصار -->
       <div id="shadowVictoryScreen" class="absolute inset-0 bg-slate-950/98 backdrop-blur-2xl flex flex-col justify-center items-center p-6 text-center space-y-4 hidden z-30">
         <div class="w-20 h-20 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center text-4xl text-amber-400 animate-bounce">
           👑
@@ -323,7 +322,7 @@
         <span class="text-xs font-bold text-amber-400 tracking-widest uppercase">كُسرت العتمة • استحقاق الهيبة</span>
         <h4 class="text-2xl font-black text-white">أنت تمتلك وقار صقور نجد</h4>
         <p class="text-xs text-slate-300 max-w-sm leading-relaxed bg-slate-900/90 p-4 rounded-2xl border border-amber-500/40">
-          صمدت أمام عين نجد لـ 60 ثانية كاملة بثبات فولاذي لا يتزعزع!<br>
+          صمدت أمام عين نجد لـ 45 ثانية كاملة بثبات فولاذي لا يتزعزع دون رمش!<br>
           <strong class="text-amber-400 block mt-2 font-mono text-sm">رمز الاقتناء الحصري: [MSMK-BLACK-01]</strong>
           استلم هديتك الملكية أو ترقية التيشيرت فوراً من مشرف المعرض.
         </p>
@@ -335,7 +334,6 @@
     </div>
   </div>
 
-  <!-- كاميرا ورادار الحركة الخفي لتحليل الثبات -->
   <canvas id="motionCanvas" class="hidden" width="64" height="64"></canvas>
 
   <!-- فزعة عزوة -->
@@ -449,13 +447,12 @@
     let audioCtx = null;
     const storyAudioFile = new Audio('./story.mp3.mp3');
 
-    // محرك الخزنة المعكوسة (الـ 60 ثانية الصامتة)
+    // محرك الخزنة المعكوسة (45 ثانية)
     let shadowTimer = null;
-    let shadowSeconds = 60;
+    let shadowSeconds = 45;
     let shadowCameraStream = null;
     let motionInterval = null;
     let prevFrameData = null;
-    let motionFailCount = 0;
     let isChallengeRunning = false;
 
     const prayerTimesRiyadh = [
@@ -540,7 +537,6 @@
       resetShadowChallengeState();
       document.getElementById('shadowVaultModal').classList.remove('opacity-0', 'pointer-events-none');
 
-      // تفعيل كاميرا الرصد للعين والوجه
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240, facingMode: "user" } });
         shadowCameraStream = stream;
@@ -555,16 +551,15 @@
       if (shadowTimer) clearInterval(shadowTimer);
       if (motionInterval) clearInterval(motionInterval);
       isChallengeRunning = false;
-      shadowSeconds = 60;
-      motionFailCount = 0;
+      shadowSeconds = 45;
       prevFrameData = null;
-      document.getElementById('shadowTimerDisplay').innerText = "60";
+      document.getElementById('shadowTimerDisplay').innerText = "45";
       document.getElementById('stabilityStatus').innerText = "جاهز للاختبار";
       document.getElementById('stabilityStatus').className = "text-[10px] font-bold text-slate-400 tracking-wider mt-1";
       document.getElementById('btnStartShadowChallenge').classList.remove('hidden');
       document.getElementById('shadowVictoryScreen').classList.add('hidden');
       document.getElementById('scannerBar').classList.add('opacity-0');
-      document.getElementById('vaultLiveWarning').innerText = "انقر أدناه لبدء اختبار الـ 60 ثانية.. سيتم تفعيل الرصد الحركي فوراً.";
+      document.getElementById('vaultLiveWarning').innerText = "انقر أدناه لبدء اختبار الـ 45 ثانية.. رادار الرمش الحركي فائق الحساسية سيبدأ فوراً.";
       document.getElementById('vaultLiveWarning').className = "min-h-[20px] text-xs font-bold text-amber-400";
     }
 
@@ -572,12 +567,11 @@
       unlockAudioContext();
       isChallengeRunning = true;
       document.getElementById('btnStartShadowChallenge').classList.add('hidden');
-      document.getElementById('stabilityStatus').innerText = "الرصد الحركي نشط 🔒";
+      document.getElementById('stabilityStatus').innerText = "رادار العين نشط 🔒";
       document.getElementById('stabilityStatus').className = "text-[10px] font-bold text-emerald-400 tracking-wider mt-1";
-      document.getElementById('vaultLiveWarning').innerText = "اثبت مكانك! لا تلتفت ولا ترمش.. عين نجد تراقبك.";
+      document.getElementById('vaultLiveWarning').innerText = "اثبت مكانك! لا تلتفت ولا ترمش.. أي رمشة تنهي التحدي فوراً.";
       document.getElementById('scannerBar').classList.remove('opacity-0');
 
-      // تشغيل خوارزمية تحليل الثبات الحركي (Motion Stability Detector)
       startMotionDetection();
 
       shadowTimer = setInterval(() => {
@@ -585,8 +579,7 @@
         document.getElementById('shadowTimerDisplay').innerText = String(shadowSeconds).padStart(2, '0');
         playDeepPulse();
 
-        // مشتتات مفاجئة لاختبار ثبات الأعصاب
-        if (shadowSeconds === 45 || shadowSeconds === 30 || shadowSeconds === 15) {
+        if (shadowSeconds === 35 || shadowSeconds === 20 || shadowSeconds === 10) {
           document.getElementById('shadowVaultModal').classList.add('glitch-flash');
           setTimeout(() => document.getElementById('shadowVaultModal').classList.remove('glitch-flash'), 250);
         }
@@ -597,6 +590,7 @@
       }, 1000);
     }
 
+    // خوارزمية رصد الرمش فائقة الحساسية لمنطقة بؤبؤ العين
     function startMotionDetection() {
       const video = document.getElementById('shadowEyeVideo');
       const canvas = document.getElementById('motionCanvas');
@@ -604,7 +598,14 @@
 
       motionInterval = setInterval(() => {
         if (!isChallengeRunning || !video.videoWidth) return;
-        ctx.drawImage(video, 0, 0, 64, 64);
+        
+        // اقتصاص منطقة العينين في المنتصف بدقة عالية
+        const cropW = video.videoWidth * 0.5;
+        const cropH = video.videoHeight * 0.35;
+        const startX = (video.videoWidth - cropW) / 2;
+        const startY = (video.videoHeight - cropH) / 2;
+
+        ctx.drawImage(video, startX, startY, cropW, cropH, 0, 0, 64, 64);
         const frame = ctx.getImageData(0, 0, 64, 64);
 
         if (prevFrameData) {
@@ -614,23 +615,20 @@
           }
           const avgDiff = diff / (64 * 64);
 
-          // إذا تحرك الرأس أو حدث اهتزاز كبير
-          if (avgDiff > 28) {
-            motionFailCount++;
-            if (motionFailCount >= 3) {
-              triggerShadowFail("اهتزت النظرة أو التفت الرأس! صمدت الخزنة.");
-            }
+          // حساسية صارمة لرصد أي رمشة جفن أو اهتزاز
+          if (avgDiff > 11.5) {
+            triggerShadowFail("رُصدت رمشة عين أو اهتزاز في النظرة! صمدت الخزنة.");
           }
         }
         prevFrameData = frame;
-      }, 200);
+      }, 100);
     }
 
     function triggerShadowFail(reason) {
       clearInterval(shadowTimer);
       clearInterval(motionInterval);
       isChallengeRunning = false;
-      document.getElementById('stabilityStatus').innerText = "فقدان الثبات ✖";
+      document.getElementById('stabilityStatus').innerText = "فقدان الثبات (رمشة عين) ✖";
       document.getElementById('stabilityStatus').className = "text-[10px] font-bold text-rose-500 tracking-wider mt-1";
       document.getElementById('vaultLiveWarning').innerText = `${reason} حظاً أوفر في المرة القادمة.`;
       document.getElementById('vaultLiveWarning').className = "min-h-[20px] text-xs font-bold text-rose-400 shake";
