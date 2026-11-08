@@ -38,6 +38,10 @@
     .btn-attention {
       animation: pulse-gold 1.8s infinite;
     }
+
+    .gold-glow {
+      text-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+    }
   </style>
 </head>
 <body id="screenBody" class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden" onclick="handleFirstUserInteraction()">
@@ -91,11 +95,23 @@
       </div>
     </div>
 
-    <!-- يسار الشريط: أدوات تجربة عِـزوة -->
+    <!-- يسار الشريط: أدوات تجربة عِـزوة وقفل مسار الـ 90+ الإداري -->
     <div class="flex items-center gap-2">
+      <!-- زر مسابقات الجناح التفاعلية -->
+      <button onclick="openArenaModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1.5 shadow-lg border border-amber-300">
+        <i class="fa-solid fa-trophy text-[11px]"></i>
+        <span>مسابقات الجناح</span>
+      </button>
+
+      <!-- زر القفل الإداري لصافرة الـ 90+ -->
+      <button onclick="openAdminPinModal()" title="إشراف الجناح • كسر التعادل" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-amber-500/30 text-amber-400 hover:bg-slate-800 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-lock text-[11px]"></i>
+        <span>الـ 90+</span>
+      </button>
+
       <!-- زر فزعة عِـزوة -->
-      <button onclick="openFazaaModal()" id="btnFazaaNav" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1.5 shadow-lg border border-amber-300">
-        <i class="fa-solid fa-shield-halved text-[11px]"></i>
+      <button onclick="openFazaaModal()" id="btnFazaaNav" class="px-3 py-1.5 rounded-xl text-xs font-black bg-slate-900 text-slate-200 hover:text-white transition flex items-center gap-1.5 border border-slate-800">
+        <i class="fa-solid fa-shield-halved text-[11px] text-amber-400"></i>
         <span>فزعة عِـزوة</span>
       </button>
 
@@ -167,11 +183,11 @@
       <div class="my-auto py-1">
         <div class="grid grid-cols-12 gap-5 items-stretch">
           
-          <!-- صورة المنتج التفاعلية (الأمام والخلف معاً بتوزيع متناسق بدون تغطية الوجه) -->
+          <!-- صورة المنتج التفاعلية -->
           <div class="col-span-6 flex flex-col items-center">
             <div class="w-full h-[400px] lg:h-[430px] rounded-2xl bg-slate-900/90 border border-slate-800 grid grid-cols-2 p-1.5 gap-1.5 relative overflow-hidden shadow-2xl group">
               
-              <!-- الواجهة الأمامية (يمين) -->
+              <!-- الواجهة الأمامية -->
               <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center border border-slate-800/80 cursor-zoom-in group/front" onclick="openZoomModal('front')">
                 <img id="mainFrontImage" src="./model-front.png" alt="الواجهة الأمامية - قصر المصمك" class="w-full h-full object-cover rounded-xl fade-transition group-hover/front:scale-105 transition-transform duration-300">
                 <span class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-lg bg-black/85 backdrop-blur-md text-[9px] font-bold text-amber-300 border border-amber-500/30 shadow">
@@ -179,7 +195,7 @@
                 </span>
               </div>
 
-              <!-- الواجهة الخلفية (يسار) -->
+              <!-- الواجهة الخلفية -->
               <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center border border-slate-800/80 cursor-zoom-in group/back" onclick="openZoomModal('back')">
                 <img id="mainBackImage" src="./model-back.png" alt="الواجهة الخلفية - قصر المصمك" class="w-full h-full object-cover rounded-xl fade-transition group-hover/back:scale-105 transition-transform duration-300">
                 <span class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-lg bg-black/85 backdrop-blur-md text-[9px] font-bold text-amber-300 border border-amber-500/30 shadow">
@@ -187,13 +203,13 @@
                 </span>
               </div>
 
-              <!-- عدسة التكبير في الزاوية العلوية اليسرى -->
+              <!-- عدسة التكبير -->
               <button onclick="openZoomModal('front')" title="تكبير ومعاينة أدق التفاصيل" class="absolute top-3 left-3 w-8 h-8 rounded-xl bg-black/80 hover:bg-amber-500 text-white hover:text-slate-950 backdrop-blur-md border border-white/10 hover:border-amber-400 flex items-center justify-center transition shadow-lg z-10">
                 <i class="fa-solid fa-magnifying-glass-plus text-xs"></i>
               </button>
             </div>
 
-            <!-- شريط التوجيه أسفل الصورتين -->
+            <!-- شريط التوجيه -->
             <div class="flex items-center justify-between w-full mt-2 px-1 text-[10px] text-slate-400">
               <span class="flex items-center gap-1 font-bold text-amber-400/90">
                 <i class="fa-solid fa-hand-pointer text-[9px]"></i>
@@ -214,7 +230,6 @@
                   <span class="text-xs font-black text-amber-400 bg-amber-500/15 px-2.5 py-0.5 rounded-md border border-amber-500/30">اكتشف الرياض</span>
                   <span class="text-[10px] font-bold text-slate-300 bg-slate-900 px-2 py-0.5 rounded-md border border-slate-800">الإصدار الأول</span>
                 </div>
-                <!-- زر قصة المصمك الصوتية الفورية -->
                 <button onclick="playMasmakStoryAudio()" id="btnStoryAudio" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 text-[10px] font-bold flex items-center gap-1.5 transition border border-amber-500/30 shadow">
                   <i class="fa-solid fa-volume-high text-[10px]"></i>
                   <span id="storyBtnLabel">قصة التصميم (30 ثانية)</span>
@@ -250,7 +265,7 @@
               </div>
             </div>
 
-            <!-- توثيق شريحة السدو الذكية (NFC) مع زر الفيديو الترويجي -->
+            <!-- توثيق شريحة السدو الذكية (NFC) -->
             <div class="mt-2.5 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <i class="fa-solid fa-wifi rotate-90 text-amber-400 text-sm"></i>
@@ -286,7 +301,6 @@
               <span class="font-bold text-[10px]">مستشار المقاس</span>
             </button>
 
-            <!-- ربط حجز القطعة ببروتوكول التحقق والاستحقاق الذكي -->
             <button onclick="openQualificationGate()" class="p-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/30 border border-amber-500/50 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex flex-col items-center justify-center text-center shadow">
               <i class="fa-solid fa-shield-halved text-sm mb-1 text-amber-400"></i>
               <span class="font-bold text-[10px]">طلب الاقتناء (حجب)</span>
@@ -325,26 +339,164 @@
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
 
-    <!-- ==================== نافذة استعراض فيديو الـ NFC الترويجي ==================== -->
+    <!-- ==================== نافذة مسابقات الجناح التفاعلية (Arena Modal) ==================== -->
+    <div id="arenaModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 lg:p-8 max-w-4xl w-full border border-amber-500/30 shadow-2xl relative">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="text-center mb-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-black mb-2">
+            <span>ساحة المنافسات الكروية</span>
+          </div>
+          <h3 class="text-2xl font-black text-white">اختر مسار التحدي</h3>
+          <p class="text-xs text-slate-400 mt-1">تحديات مباشرة لانتزاع الجوائز الفورية، وعند التعادل يتدخل المشرف لفتح شوط الـ 90+</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- 1. الخزنة الزجاجية -->
+          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-amber-500/60 transition">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl text-amber-400 mb-3">
+                🔐
+              </div>
+              <span class="text-[10px] font-black text-amber-400 block mb-1">تحدي فردي (1 لاعب)</span>
+              <h4 class="text-lg font-black text-white mb-2">الخزنة الزجاجية</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                سباق مع العداد لاكتشاف الرمز السري ثلاثي الأرقام وفك القفل الرقمي لانتزاع الجائزة الفورية.
+              </p>
+            </div>
+            <button onclick="triggerGameLaunch('الخزنة الزجاجية')" class="mt-4 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition">
+              دخول التحدي ⚡
+            </button>
+          </div>
+
+          <!-- 2. المساومة الخفية -->
+          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-blue-500/60 transition">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-xl text-blue-400 mb-3">
+                ⚖️
+              </div>
+              <span class="text-[10px] font-black text-blue-400 block mb-1">مواجهة ثنائية (2 لاعبين)</span>
+              <h4 class="text-lg font-black text-white mb-2">المساومة الخفية</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                مزايدة رقمية صامتة بين متنافسين؛ صاحب التقدير الأقرب لنقاط المدرج يخطف الجولة، والتعادل ينقلهما للحسم!
+              </p>
+            </div>
+            <button onclick="triggerGameLaunch('المساومة الخفية')" class="mt-4 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition">
+              بدء المبارزة ⚔️
+            </button>
+          </div>
+
+          <!-- 3. تفكيك الشيفرة -->
+          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-emerald-500/60 transition">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xl text-emerald-400 mb-3">
+                🧩
+              </div>
+              <span class="text-[10px] font-black text-emerald-400 block mb-1">مواجهة ثنائية (2 لاعبين)</span>
+              <h4 class="text-lg font-black text-white mb-2">تفكيك الشيفرة</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                شاشة مقسومة بين اثنين لإدخال نمط كروي سريع؛ أول من يطابق النمط يفوز، وتطابق التوقيت يشعل شوط الـ 90+.
+              </p>
+            </div>
+            <button onclick="triggerGameLaunch('تفكيك الشيفرة المشتركة')" class="mt-4 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition">
+              بدء السباق ⏱️
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-6 p-3 bg-amber-500/10 rounded-xl border border-amber-500/20 text-center">
+          <p class="text-xs text-slate-300">
+            تنويه: في حال تعادل المتنافسين، يتدخل المشرف لفك قفل <strong class="text-amber-400">«صافرة الـ 90+»</strong> لحسم بطاقة المدرج الذكي NFC اليومية.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== نافذة رمز المشرف الإداري (PIN Modal) ==================== -->
+    <div id="adminPinModal" class="absolute inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
+      <div class="glass-card border border-amber-500/40 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl">
+        <div class="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl text-amber-400 mx-auto mb-3">
+          🔑
+        </div>
+        <h3 class="text-base font-black text-amber-400 mb-1">إذن مشرف الجناح</h3>
+        <p class="text-[11px] text-slate-400 mb-4">أدخل الرمز لفتح شوط كسر التعادل (صافرة الـ 90+)</p>
+        
+        <input type="password" id="adminPinInput" maxlength="4" placeholder="••••" 
+               class="w-full tracking-widest text-center text-2xl font-black py-2.5 bg-slate-950 border border-slate-700 rounded-xl focus:border-amber-400 focus:outline-none mb-3 text-amber-300">
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="closeAllModals()" class="py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold">إلغاء</button>
+          <button onclick="verifyAdminPin()" class="py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black">تفعيل الحسم</button>
+        </div>
+        <p id="adminPinError" class="text-rose-400 text-[11px] mt-2 hidden font-bold">الرمز غير صحيح</p>
+      </div>
+    </div>
+
+    <!-- ==================== نافذة شوط كسر التعادل: صافرة الـ 90+ ==================== -->
+    <div id="whistleModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
+      <div class="glass-card border-2 border-amber-500/50 rounded-3xl p-6 sm:p-8 max-w-lg w-full text-center shadow-2xl relative">
+        <button onclick="closeAllModals()" class="absolute top-5 left-5 text-slate-400 hover:text-white text-lg">✕</button>
+
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-black mb-4">
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+          <span id="whistlePlayerIndicator">شوط الحسم: محاولة المتحدي الأول ⚔️</span>
+        </div>
+
+        <h3 class="text-2xl font-black text-white mb-1">صافرة الـ 90+</h3>
+        <p class="text-xs text-slate-400 mb-2">اقتنص الصافرة بدقة لانتزاع بطاقة المدرج الذكي NFC</p>
+        <div class="inline-block bg-slate-950 px-4 py-1 rounded-xl border border-slate-800 text-amber-300 font-mono text-xs font-bold mb-6">
+          النافذة الصارمة: [ 90:00 - 90:50 ]
+        </div>
+
+        <!-- عداد التوقيت الرقمي -->
+        <div class="py-6 bg-slate-950 rounded-2xl border border-slate-800 mb-6">
+          <div id="whistleTimerDisplay" class="text-6xl font-black font-mono tracking-wider text-slate-100 gold-glow">
+            00:00
+          </div>
+          <div class="text-[11px] text-slate-500 font-mono mt-1">الدقيقة الكروية وأجزاؤها</div>
+        </div>
+
+        <button id="whistleBtn" onclick="handleWhistleClick()" 
+                class="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-black text-lg hover:scale-[1.01] active:scale-95 transition-all shadow-lg shadow-amber-500/20">
+          إطلاق الصافرة ⏱️
+        </button>
+        <p class="text-[11px] text-slate-500 mt-2">المحاولة حاسمة، اضغط لإيقاف العداد عند الـ 90 تماماً</p>
+      </div>
+    </div>
+
+    <!-- نافذة إعلان نتيجة الـ 90+ -->
+    <div id="whistleResultModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
+      <div class="glass-card border border-slate-700 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
+        <div id="whistleResultIcon" class="text-5xl mb-3">⏱️</div>
+        <h4 id="whistleResultTitle" class="text-xl font-black text-white mb-1">نتيجة المحاولة</h4>
+        <div id="whistleResultTime" class="text-3xl font-mono font-black text-amber-400 mb-2">90:35</div>
+        <p id="whistleResultDesc" class="text-xs text-slate-300 leading-relaxed mb-6"></p>
+        
+        <button id="whistleResultBtn" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm transition">
+          متابعة
+        </button>
+      </div>
+    </div>
+
+    <!-- نافذة استعراض فيديو الـ NFC الترويجي -->
     <div id="promoVideoModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
       <div class="relative max-w-sm w-full bg-slate-950 rounded-3xl border-2 border-amber-500/40 p-4 shadow-2xl flex flex-col items-center">
-        
         <button onclick="closePromoVideoModal()" class="absolute top-3 left-3 z-20 w-8 h-8 rounded-full bg-slate-900/90 text-slate-400 hover:text-white flex items-center justify-center border border-slate-700 transition">
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
-
         <div class="text-center mb-2.5">
           <span class="text-[10px] text-amber-400 font-bold uppercase tracking-widest block">EZWA Phygital Experience</span>
           <h3 class="text-sm font-black text-white">شاهد كيف يتصل التيشيرت بجوالك!</h3>
         </div>
-
         <div class="w-full h-[460px] rounded-2xl overflow-hidden bg-black border border-slate-800 relative flex items-center justify-center shadow-inner">
           <video id="nfcPromoVideo" class="w-full h-full object-cover" playsinline loop muted autoplay preload="auto" style="transform: translateZ(0); will-change: transform;">
             <source src="./promo-nfc.mp4" type="video/mp4">
             متصفحك لا يدعم تشغيل الفيديو.
           </video>
         </div>
-
         <div class="w-full mt-3 flex items-center justify-between gap-2">
           <button onclick="closePromoVideoModal(); openQualificationGate();" class="flex-1 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-xs hover:brightness-110 transition shadow flex items-center justify-center gap-1.5">
             <i class="fa-solid fa-shield-halved text-[11px]"></i>
@@ -354,14 +506,12 @@
             إغلاق
           </button>
         </div>
-
       </div>
     </div>
 
-    <!-- ==================== نافذة حجب البيع الذكي واختبار الاستحقاق ==================== -->
+    <!-- نافذة حجب البيع الذكي واختبار الاستحقاق -->
     <div id="qualificationModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4 lg:p-6">
       <div class="glass-card rounded-3xl p-6 lg:p-8 max-w-lg w-full border-2 border-amber-500/40 text-center relative shadow-2xl overflow-hidden">
-        
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
           <i class="fa-solid fa-xmark"></i>
         </button>
@@ -452,11 +602,10 @@
             </button>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- ==================== نافذة «فزعة عِـزوة» - بوابات المصمك ==================== -->
+    <!-- نافذة «فزعة عِـزوة» - بوابات المصمك -->
     <div id="fazaaModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 lg:p-8 max-w-2xl w-full border-2 border-amber-500/40 text-center relative shadow-2xl">
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">
@@ -470,7 +619,6 @@
         <p class="text-xs text-slate-300 mt-1">المس إحدى بوابات قصر المصمك التاريخية لتكشف عن فزعتك التقديرية في المعرض اليوم:</p>
         
         <div class="grid grid-cols-4 gap-3 my-6 gate-perspective">
-          
           <div class="relative h-48 rounded-2xl overflow-hidden border border-amber-500/30 cursor-pointer shadow-xl group" onclick="openMasmakGate(1, 'خصم 10% فوري على القطعة', 'price')">
             <div class="absolute inset-0 bg-gradient-to-b from-amber-500/20 to-slate-900 p-2 flex flex-col items-center justify-center text-center">
               <i class="fa-solid fa-tag text-2xl text-amber-400 mb-1"></i>
@@ -546,7 +694,6 @@
               <span class="text-[10px] font-bold text-amber-400/90 font-mono tracking-widest">بوابة ٤</span>
             </div>
           </div>
-
         </div>
 
         <div id="fazaaResultBanner" class="text-xs font-bold text-emerald-400 min-h-[28px] flex items-center justify-center">
@@ -770,9 +917,10 @@
   <video id="radarCamera" class="hidden" autoplay playsinline muted></video>
   <canvas id="radarCanvas" class="hidden"></canvas>
 
-  <!-- ==================== المحرك البرمجي للبائع الذكي المستقل ==================== -->
+  <!-- ==================== المحرك البرمجي للبائع الذكي والمسابقات ==================== -->
   <script>
     const SUPERVISOR_PHONE = "966502777884";
+    const ADMIN_PIN = "9090"; // رمز المشرف لصافرة الـ 90+
 
     const RAJHI_ACCOUNT = {
       bank: "مصرف الراجحي",
@@ -806,7 +954,7 @@
     let selectedW = 'w95';
     let selectedStyle = 'regular';
 
-    // تهيئة المقاطع الصوتية
+    // مقاطع الصوت
     const audioWelcome = new Audio('./welcome.mp3');
     const audioPitch1  = new Audio('./pitch1.mp3');
     const audioPitch2  = new Audio('./pitch2.mp3');
@@ -824,12 +972,17 @@
     let qualificationTimer = null;
     let remainingLockSeconds = 180;
 
+    // متغيرات صافرة الـ 90+
+    let whistlePlayer = 1;
+    let whistleState = "IDLE"; // IDLE, RUNNING, STOPPED
+    let whistleInterval = null;
+    let whistleCentiseconds = 0;
+
     function unlockAudioContext() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    // ==================== دالة الإسكات الشامل والفوري ====================
     function stopAudioChain() {
       if (activeChainTimeout) {
         clearTimeout(activeChainTimeout);
@@ -851,17 +1004,14 @@
       isAudioChainRunning = false;
     }
 
-    // مراقب اللمس الشامل
     document.addEventListener('pointerdown', (e) => {
       if (e.target.closest('#firstInteractionNotice')) return;
-      
       const isInteractive = e.target.closest('button, input, select, [onclick], .cursor-pointer, .fit-btn, .masmak-door, header');
       if (isInteractive) {
         stopAudioChain();
       }
     }, true);
 
-    // ==================== تحويل وضع الشاشة الآمن ====================
     function switchLayoutSafely(mode) {
       currentLayout = mode;
       closeAllModals();
@@ -899,18 +1049,15 @@
       playGreetingSequence();
     }
 
-    // ==================== محرك السلسلة الصوتية المتتابعة ====================
     function playGreetingSequence() {
       unlockAudioContext();
       if (isAudioChainRunning) return;
       isAudioChainRunning = true;
-
       playLuxuryChime();
 
       activeChainTimeout = setTimeout(() => {
         audioWelcome.currentTime = 0;
         audioWelcome.volume = 1.0;
-
         audioWelcome.play().then(() => {
           audioWelcome.onended = () => {
             activeChainTimeout = setTimeout(() => {
@@ -918,7 +1065,6 @@
             }, PAUSE_AFTER_WELCOME);
           };
         }).catch(err => {
-          console.warn("تعذر تشغيل الترحيب:", err);
           playAudioPitch1();
         });
       }, 700);
@@ -928,7 +1074,6 @@
       if (!isAudioChainRunning) return;
       audioPitch1.currentTime = 0;
       audioPitch1.volume = 1.0;
-
       audioPitch1.play().then(() => {
         audioPitch1.onended = () => {
           activeChainTimeout = setTimeout(() => {
@@ -936,7 +1081,6 @@
           }, PAUSE_AFTER_PITCH1);
         };
       }).catch(err => {
-        console.warn("تعذر تشغيل pitch1:", err);
         playAudioPitch2();
       });
     }
@@ -945,10 +1089,8 @@
       if (!isAudioChainRunning) return;
       highlightButton('btnFitNav');
       highlightButton('btnFitBottom');
-
       audioPitch2.currentTime = 0;
       audioPitch2.volume = 1.0;
-
       audioPitch2.play().then(() => {
         audioPitch2.onended = () => {
           activeChainTimeout = setTimeout(() => {
@@ -956,7 +1098,6 @@
           }, PAUSE_AFTER_PITCH2);
         };
       }).catch(err => {
-        console.warn("تعذر تشغيل pitch2:", err);
         playAudioPitch3();
       });
     }
@@ -965,16 +1106,13 @@
       if (!isAudioChainRunning) return;
       highlightButton('btnFazaaNav');
       highlightButton('btnFazaaBottom');
-
       audioPitch3.currentTime = 0;
       audioPitch3.volume = 1.0;
-
       audioPitch3.play().then(() => {
         audioPitch3.onended = () => {
           isAudioChainRunning = false;
         };
       }).catch(err => {
-        console.warn("تعذر تشغيل pitch3:", err);
         isAudioChainRunning = false;
       });
     }
@@ -994,16 +1132,145 @@
       
       storyAudioFile.currentTime = 0;
       storyAudioFile.volume = 1.0;
-      
       storyAudioFile.play().then(() => {
         const btnLabel = document.getElementById('storyBtnLabel');
         if (btnLabel) {
           btnLabel.textContent = "جاري الاستماع للقصة...";
           setTimeout(() => { btnLabel.textContent = "قصة التصميم (30 ثانية)"; }, 30000);
         }
-      }).catch(err => {
-        console.warn("تعذر تشغيل قصة المصمك:", err);
-      });
+      }).catch(err => {});
+    }
+
+    // ==================== إدارة المسابقات وصافرة الـ 90+ ====================
+    function openArenaModal() {
+      stopAudioChain();
+      closeAllModals();
+      document.getElementById('arenaModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function triggerGameLaunch(gameName) {
+      alert(`تم إطلاق ${gameName} للمتسابقين.\nفي حال حدوث تعادل، اضغط على زر (الـ 90+) في الشريط العلوي لإدخال الرمز وحسم التحدي.`);
+      closeAllModals();
+    }
+
+    function openAdminPinModal() {
+      stopAudioChain();
+      closeAllModals();
+      const modal = document.getElementById('adminPinModal');
+      const input = document.getElementById('adminPinInput');
+      document.getElementById('adminPinError').classList.add('hidden');
+      input.value = "";
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => input.focus(), 150);
+    }
+
+    function verifyAdminPin() {
+      const val = document.getElementById('adminPinInput').value;
+      if (val === ADMIN_PIN) {
+        closeAllModals();
+        startWhistleDuel();
+      } else {
+        document.getElementById('adminPinError').classList.remove('hidden');
+      }
+    }
+
+    function startWhistleDuel() {
+      whistlePlayer = 1;
+      document.getElementById('whistleModal').classList.remove('opacity-0', 'pointer-events-none');
+      setupWhistleTurn();
+    }
+
+    function setupWhistleTurn() {
+      whistleState = "IDLE";
+      whistleCentiseconds = 0;
+      document.getElementById('whistleTimerDisplay').innerText = "00:00";
+      document.getElementById('whistlePlayerIndicator').innerText = whistlePlayer === 1 
+        ? "شوط الحسم: محاولة المتحدي الأول ⚔️" 
+        : "شوط الحسم: محاولة المتحدي الثاني ⚔️";
+      
+      const btn = document.getElementById('whistleBtn');
+      btn.innerText = "إطلاق الصافرة ⏱️";
+      btn.className = "w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-black text-lg hover:scale-[1.01] active:scale-95 transition-all shadow-lg shadow-amber-500/20";
+    }
+
+    function handleWhistleClick() {
+      if (whistleState === "IDLE") {
+        whistleState = "RUNNING";
+        const btn = document.getElementById('whistleBtn');
+        btn.innerText = "أوقف العداد الآن! 🛑";
+        btn.className = "w-full py-4 rounded-2xl bg-red-600 text-white font-black text-lg hover:bg-red-500 active:scale-95 transition-all shadow-lg shadow-red-600/30";
+
+        const start = Date.now();
+        whistleInterval = setInterval(() => {
+          const elapsed = (Date.now() - start) / 1000;
+          let simMins;
+          if (elapsed < 3) simMins = elapsed * 24;
+          else if (elapsed < 6) simMins = 72 + (elapsed - 3) * 5.5;
+          else simMins = 88.5 + (elapsed - 6) * 1.2;
+
+          const mins = Math.floor(simMins);
+          const hundredths = Math.floor((simMins - mins) * 100);
+          whistleCentiseconds = (mins * 100) + hundredths;
+
+          document.getElementById('whistleTimerDisplay').innerText = 
+            `${String(mins).padStart(2, '0')}:${String(hundredths).padStart(2, '0')}`;
+        }, 15);
+
+      } else if (whistleState === "RUNNING") {
+        clearInterval(whistleInterval);
+        whistleState = "STOPPED";
+        evaluateWhistleTurn();
+      }
+    }
+
+    function evaluateWhistleTurn() {
+      const mins = Math.floor(whistleCentiseconds / 100);
+      const hundredths = whistleCentiseconds % 100;
+      const timeStr = `${String(mins).padStart(2, '0')}:${String(hundredths).padStart(2, '0')}`;
+
+      // شرط الفوز الصارم: 90:00 إلى 90:50 فقط
+      const isWinner = (mins === 90 && hundredths >= 0 && hundredths <= 50);
+
+      const modal = document.getElementById('whistleResultModal');
+      const icon = document.getElementById('whistleResultIcon');
+      const title = document.getElementById('whistleResultTitle');
+      const timeEl = document.getElementById('whistleResultTime');
+      const desc = document.getElementById('whistleResultDesc');
+      const btn = document.getElementById('whistleResultBtn');
+
+      timeEl.innerText = timeStr;
+
+      if (isWinner) {
+        icon.innerText = "🏆";
+        title.innerText = "معجزة كروية في الـ 90!";
+        desc.innerText = `أصاب المتحدي ${whistlePlayer} النافذة الذهبية بدقة! تُفتح الخزنة الزجاجية وتُسلّم بطاقة المدرج الذكي NFC لليوم فوراً!`;
+        btn.innerText = "تتويج البطل وإنهاء الشوط 🎉";
+        btn.onclick = () => {
+          modal.classList.add('opacity-0', 'pointer-events-none');
+          closeAllModals();
+        };
+      } else {
+        icon.innerText = "❌";
+        title.innerText = "مرّت بجوار القائم!";
+        if (whistlePlayer === 1) {
+          desc.innerText = `سجل المتحدي الأول ${timeStr} (خارج نطاق 90:00 - 90:50). الفرصة تنتقل الآن للمتحدي الثاني!`;
+          btn.innerText = "انتقال الدور للمتحدي الثاني ⚔️";
+          btn.onclick = () => {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            whistlePlayer = 2;
+            setupWhistleTurn();
+          };
+        } else {
+          desc.innerText = `سجل المتحدي الثاني ${timeStr}. صمدت الخزنة ولم يحقق أحد التوقيت الصارم؛ تظل بطاقة اليوم في أمان!`;
+          btn.innerText = "إغلاق التحدي والعودة للمعرض 🔒";
+          btn.onclick = () => {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            closeAllModals();
+          };
+        }
+      }
+
+      modal.classList.remove('opacity-0', 'pointer-events-none');
     }
 
     // ==================== استعراض فيديو الـ NFC الترويجي ====================
@@ -1011,7 +1278,6 @@
       stopAudioChain();
       closeAllModals();
       
-      // إيقاف بث التلفزيون المباشر في الخلفية لتفريغ معالج الرسوميات (GPU) ومنع التقطيع
       const hlsV = document.getElementById('hlsVideo');
       if (hlsV && !hlsV.paused) {
         hlsV.pause();
@@ -1024,7 +1290,7 @@
       modal.classList.remove('opacity-0', 'pointer-events-none');
       if (video) {
         video.currentTime = 0;
-        video.play().catch(e => console.warn("يحتاج تفاعل للتشغيل:", e));
+        video.play().catch(e => {});
       }
     }
 
@@ -1038,7 +1304,6 @@
       }
       if (modal) modal.classList.add('opacity-0', 'pointer-events-none');
 
-      // استئناف بث القناة المباشرة بعد إغلاق نافذة الفيديو
       const hlsV = document.getElementById('hlsVideo');
       if (hlsV && hlsV.getAttribute('data-was-playing') === 'true' && currentLayout !== 'catalog') {
         hlsV.play().catch(() => {});
@@ -1307,16 +1572,13 @@
             if (diff > 4500) {
               const dot = document.getElementById('radarStatusDot');
               if (dot) dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping";
-
               triggerCustomerArrival();
               cooldownTimer = 40;
             }
           }
           lastFrame = frame;
         }, 1000);
-      } catch (e) {
-        console.warn("إذن الكاميرا غير مفعل:", e);
-      }
+      } catch (e) {}
     }
 
     function stopRadarCamera() {
@@ -1333,9 +1595,7 @@
 
     function openZoomModal(targetView) {
       stopAudioChain();
-      if (targetView) {
-        currentViewAngle = targetView;
-      }
+      if (targetView) currentViewAngle = targetView;
       const zoomModal = document.getElementById('zoomModal');
       const zoomImg = document.getElementById('zoomedProductImage');
       zoomImg.src = (currentViewAngle === 'front') ? MASMAK_PRODUCT.frontImg : MASMAK_PRODUCT.backImg;
@@ -1597,7 +1857,7 @@
 
     function closeAllModals() {
       stopAudioChain();
-      ['callStaffModal', 'rajhiModal', 'fitModal', 'zoomModal', 'fazaaModal', 'nfcVerifyModal', 'qualificationModal', 'promoVideoModal'].forEach(id => {
+      ['callStaffModal', 'rajhiModal', 'fitModal', 'zoomModal', 'fazaaModal', 'nfcVerifyModal', 'qualificationModal', 'promoVideoModal', 'arenaModal', 'adminPinModal', 'whistleModal', 'whistleResultModal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
