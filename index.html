@@ -55,7 +55,7 @@
         </button>
       </div>
 
-      <!-- قائمة القنوات الأربع التلفزيونية المباشرة -->
+      <!-- اختيار القنوات المباشرة -->
       <div class="relative">
         <button onclick="toggleDropdown('tvDropdown')" id="btnTVMenu" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-200 border border-slate-800 flex items-center gap-2 hover:border-amber-400 transition">
           <i class="fa-solid fa-tv text-amber-400 text-xs"></i>
@@ -98,7 +98,7 @@
           <span class="hidden sm:inline">الأدوات</span>
         </button>
 
-        <div id="toolsDropdown" class="absolute top-full left-0 mt-2 w-52 glass-card rounded-2xl p-2 shadow-2xl opacity-0 pointer-events-none transition-all duration-150 z-50 text-right">
+        <div id="toolsDropdown" class="absolute top-full left-0 mt-2 w-56 glass-card rounded-2xl p-2 shadow-2xl opacity-0 pointer-events-none transition-all duration-150 z-50 text-right">
           <div class="text-[10px] text-slate-500 px-2 py-1 font-bold">خدمات المعرض والإشراف:</div>
           
           <button onclick="openAdminPinModal(); closeAllDropdowns();" class="w-full text-right px-2.5 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition text-amber-400 flex items-center justify-between">
@@ -111,10 +111,15 @@
             <i class="fa-solid fa-bell text-xs text-rose-400"></i>
           </button>
 
-          <div class="border-t border-slate-800 my-1"></div>
-          <div class="px-2 py-1 flex items-center justify-between text-[11px] text-slate-400">
-            <span id="nextPrayerName">الصلاة:</span>
-            <span id="nextPrayerTime" class="text-amber-400 font-mono font-bold">--:--</span>
+          <div class="border-t border-slate-800 my-1.5"></div>
+          
+          <!-- عرض وقت الصلاة الصريح والمحدث دائماً -->
+          <div class="px-2.5 py-1.5 bg-slate-900/90 rounded-xl border border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-1.5 text-xs text-slate-300">
+              <i class="fa-solid fa-mosque text-amber-400 text-xs"></i>
+              <span id="nextPrayerName" class="font-bold">الصلاة القادمة:</span>
+            </div>
+            <span id="nextPrayerTime" class="text-amber-400 font-mono font-black text-xs">--:--</span>
           </div>
         </div>
       </div>
@@ -156,7 +161,7 @@
         </div>
       </div>
 
-      <!-- التفاصيل والوصف العام -->
+      <!-- التفاصيل والوصف العام للمنتج -->
       <div class="mt-2 space-y-2">
         <div class="flex items-center justify-between">
           <h2 class="text-xl lg:text-2xl font-black text-white">قصر المصمك</h2>
@@ -173,7 +178,7 @@
         </div>
 
         <p class="text-slate-300 text-xs leading-relaxed bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
-          مستوحى من ملحمة قصر المصمك الشاهد على توحيد المملكة؛ قماش قطن 100% فاخر بقصة بوكس فيت معاصرة، وطبعة خلفية ذهبية مستلهمة من الهندسة المعمارية النجدية، وبطاقة NFC مشفرة بحاشية السدو العريقة.
+          مستوحى من ملحمة قصر المصمك الشاهد على توحيد المملكة؛ قماش قطن 100% فاخر بقصة بوكس فيت معاصرة، وطبعة خلفية ذهبية مستلهمة من الهندسة المعمارية النجدية، وبطاقة NFC مشفرة بحاشية السدو العريقة للدخول للتجربة الرقمية.
         </p>
 
         <!-- شريحة السدو الذكية NFC -->
@@ -373,6 +378,33 @@
       alarabiya: { short: "العربية", type: "hls", url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8" },
       aljazeera: { short: "الجزيرة", type: "iframe", url: "https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&mute=1&playsinline=1" }
     };
+
+    // مواقيت الصلاة لمدينة الرياض
+    const prayerTimesRiyadh = [
+      { name: "الفجر", time: "04:55" },
+      { name: "الظهر", time: "11:45" },
+      { name: "العصر", time: "15:00" },
+      { name: "المغرب", time: "17:15" },
+      { name: "العشاء", time: "18:45" }
+    ];
+
+    function updatePrayerTime() {
+      const now = new Date();
+      const currentHours = String(now.getHours()).padStart(2, '0');
+      const currentMinutes = String(now.getMinutes()).padStart(2, '0');
+      const currentTimeStr = `${currentHours}:${currentMinutes}`;
+
+      let nextPrayer = prayerTimesRiyadh.find(p => p.time > currentTimeStr);
+      if (!nextPrayer) {
+        nextPrayer = prayerTimesRiyadh[0];
+      }
+
+      const nameEl = document.getElementById('nextPrayerName');
+      const timeEl = document.getElementById('nextPrayerTime');
+      
+      if (nameEl) nameEl.textContent = `صلاة ${nextPrayer.name}:`;
+      if (timeEl) timeEl.textContent = nextPrayer.time;
+    }
 
     const MASMAK_PRODUCT = {
       price: "199",
@@ -671,7 +703,6 @@
       });
     }
 
-    // تشغيل البث المباشر
     function playStream(channel) {
       const video = document.getElementById('hlsVideo');
       const iframe = document.getElementById('iframeVideo');
@@ -724,7 +755,6 @@
       if (!hasInteracted) hasInteracted = true;
     }
 
-    // دعم اختصارات لوحة المفاتيح للتنقل بين القنوات
     window.addEventListener('keydown', (e) => {
       unlockAudioContext();
       const k = e.key.toLowerCase();
@@ -744,7 +774,10 @@
     });
 
     initRajhiQR();
-    // تشغيل الشاشة في الوضع المزدوج (بث + معروض)
+    updatePrayerTime();
+    setInterval(updatePrayerTime, 30000);
+
+    // تفعيل الوضع المزدوج افتراضياً لتظهر شاشة البث بجانب المعروض مباشرة
     setScreenLayout('split');
   </script>
 </body>
