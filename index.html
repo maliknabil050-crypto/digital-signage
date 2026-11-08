@@ -38,7 +38,7 @@
     <span id="toastMessage" class="text-xs font-bold text-white leading-relaxed"></span>
   </div>
 
-  <!-- الشريط العلوي الفاخر -->
+  <!-- الشريط العلوي الفاخر المباشر -->
   <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-md px-3 lg:px-6 py-2.5 flex items-center justify-between border-b border-slate-900 shadow-xl">
     <div class="flex items-center gap-2">
       <div class="flex items-center gap-2 mr-1">
@@ -55,7 +55,7 @@
         </button>
       </div>
 
-      <!-- اختيار القنوات المباشرة -->
+      <!-- قائمة القنوات الأربع الحية -->
       <div class="relative">
         <button onclick="toggleDropdown('tvDropdown')" id="btnTVMenu" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-200 border border-slate-800 flex items-center gap-2 hover:border-amber-400 transition">
           <i class="fa-solid fa-tv text-amber-400 text-xs"></i>
@@ -85,11 +85,20 @@
       </div>
     </div>
 
-    <!-- يسار الشريط: المسابقة الثقافية وقائمة الأدوات -->
-    <div class="flex items-center gap-1.5">
-      <button onclick="openCulturalQuizModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1.5 shadow-md shadow-amber-500/20">
+    <!-- يسار الشريط: وقت الصلاة المباشر + المسابقة الثقافية + الأدوات -->
+    <div class="flex items-center gap-2">
+      
+      <!-- الصلاة ظاهرة في الشريط مباشرة -->
+      <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+        <i class="fa-solid fa-mosque text-amber-400 text-xs"></i>
+        <span id="nextPrayerName" class="text-slate-300 font-bold hidden sm:inline">الصلاة:</span>
+        <span id="nextPrayerTime" class="text-amber-400 font-mono font-black">--:--</span>
+      </div>
+
+      <button onclick="openCulturalQuizModal()" class="px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1.5 shadow-md shadow-amber-500/20">
         <i class="fa-solid fa-feather-pointed text-[11px]"></i>
-        <span>المسابقة الثقافية</span>
+        <span class="hidden sm:inline">المسابقة الثقافية</span>
+        <span class="sm:hidden">المسابقة</span>
       </button>
 
       <div class="relative">
@@ -98,9 +107,7 @@
           <span class="hidden sm:inline">الأدوات</span>
         </button>
 
-        <div id="toolsDropdown" class="absolute top-full left-0 mt-2 w-56 glass-card rounded-2xl p-2 shadow-2xl opacity-0 pointer-events-none transition-all duration-150 z-50 text-right">
-          <div class="text-[10px] text-slate-500 px-2 py-1 font-bold">خدمات المعرض والإشراف:</div>
-          
+        <div id="toolsDropdown" class="absolute top-full left-0 mt-2 w-52 glass-card rounded-2xl p-2 shadow-2xl opacity-0 pointer-events-none transition-all duration-150 z-50 text-right">
           <button onclick="openAdminPinModal(); closeAllDropdowns();" class="w-full text-right px-2.5 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition text-amber-400 flex items-center justify-between">
             <span>صافرة الـ 90+ (إشراف)</span>
             <i class="fa-solid fa-lock text-[10px]"></i>
@@ -110,17 +117,6 @@
             <span>نداء المشرف (طوارئ)</span>
             <i class="fa-solid fa-bell text-xs text-rose-400"></i>
           </button>
-
-          <div class="border-t border-slate-800 my-1.5"></div>
-          
-          <!-- عرض وقت الصلاة الصريح والمحدث دائماً -->
-          <div class="px-2.5 py-1.5 bg-slate-900/90 rounded-xl border border-slate-800 flex items-center justify-between">
-            <div class="flex items-center gap-1.5 text-xs text-slate-300">
-              <i class="fa-solid fa-mosque text-amber-400 text-xs"></i>
-              <span id="nextPrayerName" class="font-bold">الصلاة القادمة:</span>
-            </div>
-            <span id="nextPrayerTime" class="text-amber-400 font-mono font-black text-xs">--:--</span>
-          </div>
         </div>
       </div>
 
@@ -130,7 +126,7 @@
     </div>
   </header>
 
-  <!-- مساحة العرض الرئيسية: مقسمة لنصفين متوازيين -->
+  <!-- مساحة العرض الرئيسية: مقسمة نصفين متوازيين -->
   <main id="mainContainer" class="flex-1 w-full relative flex flex-col lg:flex-row pt-14 pb-16 lg:pb-0 overflow-y-auto lg:overflow-hidden fade-transition">
     
     <!-- 1. قسم الكتالوج والمعروضات (نصف الشاشة) -->
@@ -233,7 +229,7 @@
     </button>
   </nav>
 
-  <!-- ==================== نافذة المسابقة الثقافية (سؤال وجواب) ==================== -->
+  <!-- نافذة المسابقة الثقافية (سؤال وجواب) -->
   <div id="culturalQuizModal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4 overflow-y-auto">
     <div class="glass-card rounded-3xl p-6 lg:p-8 max-w-lg w-full border border-amber-500/40 shadow-2xl relative my-auto">
       <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
@@ -275,7 +271,7 @@
     </div>
   </div>
 
-  <!-- نافذة المشرف (PIN) لصافرة الـ 90+ -->
+  <!-- نافذة المشرف (PIN) -->
   <div id="adminPinModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
     <div class="glass-card border border-amber-500/40 rounded-3xl p-5 max-w-xs w-full text-center shadow-2xl">
       <h3 class="text-sm font-black text-amber-400 mb-1">إذن المشرف (PIN)</h3>
@@ -360,7 +356,7 @@
     </div>
   </div>
 
-  <!-- ==================== المحرك البرمجي ==================== -->
+  <!-- ==================== المحرك البرمجي الشامل ==================== -->
   <script>
     const SUPERVISOR_PHONE = "966502777884";
     const ADMIN_PIN = "9090";
@@ -777,7 +773,7 @@
     updatePrayerTime();
     setInterval(updatePrayerTime, 30000);
 
-    // تفعيل الوضع المزدوج افتراضياً لتظهر شاشة البث بجانب المعروض مباشرة
+    // التشغيل الافتراضي بالوضع المزدوج
     setScreenLayout('split');
   </script>
 </body>
