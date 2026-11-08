@@ -312,13 +312,13 @@
       </div>
     </div>
 
-    <!-- ==================== نافذة المسابقة 1: الخزنة الزجاجية السرية (بدون prompt) ==================== -->
+    <!-- ==================== نافذة المسابقة 1: الخزنة الزجاجية السرية ==================== -->
     <div id="singleVaultModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
       <div class="glass-card border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full text-center relative shadow-2xl">
         <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">✕</button>
         <div class="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-2xl text-amber-400 mx-auto mb-3">🔐</div>
         <h3 class="text-xl font-black text-white mb-1">الخزنة الزجاجية السرية</h3>
-        <p class="text-xs text-slate-400 mb-4">أدخل الرمز السري الثلاثي لفك القفل الرقمي</p>
+        <p class="text-xs text-slate-400 mb-4">أدخل الرمز السري الثلاثي لفك القفل الرقمي واقتناص الجائزة</p>
         
         <input type="password" id="vaultPinInput" maxlength="3" placeholder="•••" class="w-full tracking-widest text-center text-3xl font-black py-3 bg-slate-950 border border-slate-700 rounded-xl focus:border-amber-400 focus:outline-none mb-3 text-amber-300">
         
@@ -544,7 +544,7 @@
 
     <div id="rajhiModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/40 text-right shadow-2xl relative">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
         <h3 class="text-base font-black text-white mb-2">مصرف الراجحي • مؤسسة عِـزوة للتجارة</h3>
         <div class="p-3 bg-slate-900 rounded-xl text-xs space-y-2">
           <div class="flex justify-between"><span>المبلغ:</span><span class="text-amber-400 font-bold">179 ريال</span></div>
@@ -556,7 +556,7 @@
 
     <div id="callStaffModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
       <div class="glass-card rounded-3xl p-6 max-w-sm w-full border border-rose-500/40 text-center relative shadow-2xl">
-        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base"><i class="fa-solid fa-xmark"></i></button>
         <h3 class="text-lg font-black text-white mb-2">نداء مشرف المعرض</h3>
         <button onclick="confirmSupervisorWhatsApp()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">إشعار المشرف (+966502777884)</button>
       </div>
@@ -725,7 +725,7 @@
       document.getElementById('arenaModal').classList.remove('opacity-0', 'pointer-events-none');
     }
 
-    // --- 1. الخزنة الزجاجية السرية (نافذة ناعمة بدون prompt وبدون alert) ---
+    // --- 1. الخزنة الزجاجية السرية (مع توضيح مسمى الجائزة الفورية بدقة) ---
     function openSingleVaultModal() {
       stopAudioChain();
       closeAllModals();
@@ -741,12 +741,16 @@
       const statusEl = document.getElementById('vaultStatusMessage');
       if (code === "909" || code === "041") {
         playLuxuryChime();
-        statusEl.className = "min-h-[22px] text-xs font-black text-emerald-400";
-        statusEl.innerText = "🎉 فُتحت الخزنة واستحققت الجائزة الفورية!";
+        statusEl.className = "min-h-[22px] text-xs font-black text-emerald-400 leading-relaxed";
+        statusEl.innerHTML = `
+          🎉 كفو! تم فك قفل الخزنة الزجاجية بنجاح!<br>
+          <span class="text-amber-400 font-bold block mt-1">الجائزة المستحقة: تولة مسك عِـزوة الملكي الفاخرة مجاناً 🎁</span>
+          <span class="text-[10px] text-slate-300 block mt-0.5">توجه لمشرف المعرض لاستلام هديتك فوراً</span>
+        `;
         setTimeout(() => {
           closeAllModals();
-          showToast("تم فتح الخزنة الزجاجية السرية بنجاح!", "🏆");
-        }, 1500);
+          showToast("مبروك! ربحت تولة مسك عِـزوة الملكي من الخزنة السرية", "🎁");
+        }, 3000);
       } else {
         statusEl.className = "min-h-[22px] text-xs font-bold text-rose-400 shake";
         statusEl.innerText = "الرمز غير صحيح، صمدت الخزنة الزجاجية!";
@@ -754,7 +758,7 @@
       }
     }
 
-    // --- 2. المساومة الخفية (اختبار الخِـوّة أو الغدر - بدون alert) ---
+    // --- 2. المساومة الخفية (اختبار الخِـوّة أو الغدر) ---
     function openBargainingGame() {
       stopAudioChain();
       closeAllModals();
@@ -806,7 +810,7 @@
         banner.innerText = "🗡️ غدر! المتحدي الثاني اختار الغدر وخطف الجائزة كاملة وحرم الأول!";
         setTimeout(() => closeAllModals(), 2500);
       } else if (p1Dilemma === 'betray' && p2Dilemma === 'betray') {
-        // تعادل الغدر المدمر -> النقل لشوط الـ 90+ بدون أي alert
+        // تعادل الغدر المدمر -> النقل لشوط الـ 90+
         playLuxuryChime();
         banner.className = "min-h-[30px] mb-4 text-xs font-black text-rose-400";
         banner.innerHTML = "💥 غدر متبادل وخسارة مشتركة!<br><span class='text-amber-400 font-bold'>جارٍ الانتقال لشوط الحسم (صافرة الـ 90+)...</span>";
@@ -817,7 +821,7 @@
       }
     }
 
-    // --- 3. تفكيك الشيفرة المشتركة (سباق المفاتيح المتطابقة - بدون alert نهائياً) ---
+    // --- 3. تفكيك الشيفرة المشتركة (سباق المفاتيح المتطابقة) ---
     function openCipherGame() {
       stopAudioChain();
       closeAllModals();
@@ -858,7 +862,6 @@
           showToast(`🏆 انتصار ساحق للمتحدي ${playerNum} بفك الشيفرة أولاً!`, '🎉');
         }, 1800);
       } else {
-        // وميض واهتزاز أحمر بدون أي alert
         displayEl.className = "h-14 bg-rose-950/70 rounded-xl border-2 border-rose-500 flex items-center justify-center gap-2 text-xs font-bold text-rose-300 mb-4 shake transition-all duration-200";
         displayEl.innerHTML = "نمط غير مطابق ✖";
         setTimeout(() => {
