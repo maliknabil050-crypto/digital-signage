@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>عِـزوة • تجربة البائع الرقمي المستقل</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,11 +12,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Cairo', sans-serif; background-color: #030712; color: #f3f4f6; user-select: none; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Cairo', sans-serif; background-color: #030712; color: #f3f4f6; overflow: hidden; user-select: none; width: 100vw; height: 100vh; }
     .fade-transition { transition: all 0.25s ease-out; }
-    .glass-card { background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .glass-card { background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); }
     
+    .gate-perspective { perspective: 1000px; }
+    .masmak-door {
+      transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+      transform-style: preserve-3d;
+      transform-origin: right center;
+    }
+    .masmak-door.open { transform: rotateY(-110deg); }
+    .wood-texture {
+      background: linear-gradient(135deg, #2b1810 0%, #170d08 100%);
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+    }
+
+    @keyframes pulse-gold {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+      50% { box-shadow: 0 0 0 14px rgba(245, 158, 11, 0); }
+    }
+    .btn-attention { animation: pulse-gold 1.8s infinite; }
     .gold-glow { text-shadow: 0 0 20px rgba(245, 158, 11, 0.6); }
 
     @keyframes shake-anim {
@@ -25,436 +42,1080 @@
       40%, 80% { transform: translateX(6px); }
     }
     .shake { animation: shake-anim 0.4s ease-in-out; }
-
-    ::-webkit-scrollbar { width: 4px; height: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.3); border-radius: 4px; }
   </style>
 </head>
-<body id="screenBody" class="w-full min-h-screen lg:h-screen flex flex-col justify-between relative bg-black overflow-x-hidden lg:overflow-hidden pb-16 lg:pb-0" onclick="handleFirstUserInteraction()">
+<body id="screenBody" class="w-screen h-screen flex flex-col justify-between relative bg-black overflow-hidden" onclick="handleFirstUserInteraction()">
 
-  <!-- إشعار سينمائي علوي -->
-  <div id="toastNotification" class="fixed top-14 left-1/2 -translate-x-1/2 z-[100] px-5 py-2.5 rounded-2xl glass-card border border-amber-500/40 shadow-2xl flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300 w-11/12 max-w-sm">
-    <span id="toastIcon" class="text-lg">✨</span>
+  <!-- إشعار سينمائي علوي بديل للـ Alert -->
+  <div id="toastNotification" class="fixed top-16 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-2xl glass-card border border-amber-500/40 shadow-2xl flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300">
+    <span id="toastIcon" class="text-xl">⚡</span>
     <span id="toastMessage" class="text-xs font-bold text-white leading-relaxed"></span>
   </div>
 
-  <!-- الشريط العلوي الفاخر المنسق للجوال والشاشات الكبيرة -->
-  <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-md px-3 lg:px-6 py-2.5 flex items-center justify-between border-b border-slate-900 shadow-xl">
+  <!-- الشريط العلوي الفاخر -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-md px-6 py-2.5 flex items-center justify-between border-b border-slate-900 shadow-xl">
     <div class="flex items-center gap-2">
-      <div class="flex items-center gap-2 mr-1">
-        <img src="./logo.jpeg" alt="EZWA" class="w-8 h-8 rounded-lg border border-amber-500/30 bg-slate-900 object-contain">
-        <span class="font-black text-sm text-white hidden sm:inline">عِـزوة</span>
-      </div>
+      <button onclick="setScreenLayout('catalog')" id="btnCatalog" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-1.5 border border-slate-800">
+        <i class="fa-solid fa-shirt text-[11px]"></i>
+        <span>المعروضات (1)</span>
+      </button>
 
-      <div class="flex items-center gap-1.5 bg-slate-900/80 p-0.5 rounded-xl border border-slate-800">
-        <button onclick="setScreenLayout('catalog')" id="btnCatalog" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-500 text-slate-950 transition">
-          المعروض
-        </button>
-        <button onclick="setScreenLayout('split')" id="btnSplit" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition hidden md:block">
-          مزدوج
-        </button>
-      </div>
+      <button onclick="setScreenLayout('split')" id="btnSplit" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5">
+        <i class="fa-solid fa-table-columns text-[11px]"></i>
+        <span>المزدوج (2)</span>
+      </button>
 
-      <!-- اختيار القنوات المباشرة -->
+      <!-- تبويب قنوات البث -->
       <div class="relative">
-        <button onclick="toggleDropdown('tvDropdown')" class="px-2.5 py-1.5 rounded-xl text-[11px] font-bold bg-slate-900 text-slate-300 border border-slate-800 flex items-center gap-1.5">
-          <i class="fa-solid fa-tv text-amber-400 text-[10px]"></i>
-          <span id="activeChannelLabel">البث (Q)</span>
-          <i class="fa-solid fa-chevron-down text-[8px] opacity-70"></i>
+        <button onclick="toggleDropdown('tvDropdown')" id="btnTVTab" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-2 border border-slate-800">
+          <i class="fa-solid fa-tv text-[11px] text-amber-400"></i>
+          <span id="activeChannelLabel">البث: القرآن (3)</span>
+          <i class="fa-solid fa-chevron-down text-[9px] opacity-70"></i>
         </button>
 
-        <div id="tvDropdown" class="absolute top-full right-0 mt-2 w-48 glass-card rounded-2xl p-1.5 shadow-2xl opacity-0 pointer-events-none transition-all duration-150 z-50">
-          <button onclick="changeChannel('quran'); closeAllDropdowns();" class="w-full text-right px-2.5 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition text-slate-200">القرآن الكريم</button>
-          <button onclick="changeChannel('sunnah'); closeAllDropdowns();" class="w-full text-right px-2.5 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition text-slate-200">السنة النبوية</button>
-          <button onclick="changeChannel('alarabiya'); closeAllDropdowns();" class="w-full text-right px-2.5 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition text-slate-200">العربية</button>
-          <button onclick="changeChannel('aljazeera'); closeAllDropdowns();" class="w-full text-right px-2.5 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition text-slate-200">الجزيرة</button>
+        <div id="tvDropdown" class="absolute top-full right-0 mt-2 w-56 glass-card rounded-2xl p-2 shadow-2xl opacity-0 pointer-events-none transition-all duration-150 z-50">
+          <button onclick="setScreenLayout('tv'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 mb-1 flex items-center justify-between">
+            <span>تفعيل البث بشاشة كاملة</span>
+            <kbd class="text-[9px] bg-slate-800 px-1.5 py-0.5 rounded text-slate-300 font-mono">3</kbd>
+          </button>
+          
+          <div class="text-[10px] text-slate-500 px-2.5 py-1 font-bold">اختيار القناة:</div>
+          <button onclick="changeChannel('quran'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition flex items-center justify-between text-slate-200" id="ch_quran">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-kaaba text-amber-400 text-xs"></i> القرآن الكريم</span>
+            <kbd class="text-[9px] text-slate-500 font-mono">Q</kbd>
+          </button>
+          <button onclick="changeChannel('sunnah'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition flex items-center justify-between text-slate-200" id="ch_sunnah">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-mosque text-emerald-400 text-xs"></i> السنة النبوية</span>
+            <kbd class="text-[9px] text-slate-500 font-mono">S</kbd>
+          </button>
+          <button onclick="changeChannel('alarabiya'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition flex items-center justify-between text-slate-200" id="ch_alarabiya">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-newspaper text-purple-400 text-xs"></i> العربية</span>
+            <kbd class="text-[9px] text-slate-500 font-mono">A</kbd>
+          </button>
+          <button onclick="changeChannel('aljazeera'); closeAllDropdowns();" class="w-full text-right px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition flex items-center justify-between text-slate-200" id="ch_aljazeera">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-globe text-orange-400 text-xs"></i> الجزيرة</span>
+            <kbd class="text-[9px] text-slate-500 font-mono">J</kbd>
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- يسار الشريط: المسابقة الثقافية وقائمة الأدوات -->
-    <div class="flex items-center gap-1.5">
-      <button onclick="openCulturalQuizModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1.5 shadow-md shadow-amber-500/20">
-        <i class="fa-solid fa-feather-pointed text-[11px]"></i>
-        <span>المسابقة الثقافية</span>
+    <!-- يسار الشريط: أزرار التحديات والأدوات -->
+    <div class="flex items-center gap-2">
+      <button onclick="openArenaModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-110 transition flex items-center gap-1.5 shadow-lg border border-amber-300">
+        <i class="fa-solid fa-trophy text-[11px]"></i>
+        <span>مسابقات الجناح</span>
       </button>
 
-      <div class="relative">
-        <button onclick="toggleDropdown('toolsDropdown')" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1">
-          <i class="fa-solid fa-sliders text-amber-400 text-xs"></i>
-          <span class="hidden sm:inline">الأدوات</span>
-        </button>
+      <button onclick="openAdminPinModal()" title="إشراف الجناح • كسر التعادل" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-amber-500/30 text-amber-400 hover:bg-slate-800 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-lock text-[11px]"></i>
+        <span>الـ 90+</span>
+      </button>
 
-        <div id="toolsDropdown" class="absolute top-full left-0 mt-2 w-52 glass-card rounded-2xl p-2 shadow-2xl opacity-0 pointer-events-none transition-all duration-150 z-50 text-right">
-          <div class="text-[10px] text-slate-500 px-2 py-1 font-bold">خدمات المعرض والإشراف:</div>
-          
-          <button onclick="openAdminPinModal(); closeAllDropdowns();" class="w-full text-right px-2.5 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition text-amber-400 flex items-center justify-between">
-            <span>صافرة الـ 90+ (إشراف)</span>
-            <i class="fa-solid fa-lock text-[10px]"></i>
-          </button>
+      <button onclick="openFazaaModal()" id="btnFazaaNav" class="px-3 py-1.5 rounded-xl text-xs font-black bg-slate-900 text-slate-200 hover:text-white transition flex items-center gap-1.5 border border-slate-800">
+        <i class="fa-solid fa-shield-halved text-[11px] text-amber-400"></i>
+        <span>فزعة عِـزوة</span>
+      </button>
 
-          <button onclick="triggerCallSupervisorModal(); closeAllDropdowns();" class="w-full text-right px-2.5 py-2 rounded-xl text-xs font-bold hover:bg-slate-800 transition text-slate-200 flex items-center justify-between">
-            <span>نداء المشرف (طوارئ)</span>
-            <i class="fa-solid fa-bell text-xs text-rose-400"></i>
-          </button>
+      <button onclick="togglePresenceRadar()" id="btnRadarToggle" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 transition flex items-center gap-2 shadow">
+        <span id="radarStatusDot" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
+        <span id="radarBtnText">الرادار: متوقف (R)</span>
+      </button>
 
-          <div class="border-t border-slate-800 my-1"></div>
-          <div class="px-2 py-1 flex items-center justify-between text-[11px] text-slate-400">
-            <span id="nextPrayerName">الصلاة:</span>
-            <span id="nextPrayerTime" class="text-amber-400 font-mono font-bold">--:--</span>
-          </div>
+      <button onclick="openFitAdvisorModal()" id="btnFitNav" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex items-center gap-1.5 shadow">
+        <i class="fa-solid fa-ruler-combined text-[11px]"></i>
+        <span>المقاس الهندسي (M)</span>
+      </button>
+
+      <button onclick="triggerCallSupervisorModal()" title="نداء مشرف المعرض" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+        <i class="fa-solid fa-bell text-[11px] text-amber-400"></i>
+        <span>المشرف (C)</span>
+      </button>
+
+      <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+        <div class="flex items-center gap-1.5 text-slate-300">
+          <i class="fa-solid fa-mosque text-amber-400 text-[11px]"></i>
+          <span id="nextPrayerName">الصلاة:</span>
+          <span id="nextPrayerTime" class="text-amber-400 font-bold font-mono">--:--</span>
         </div>
+        <span class="text-slate-700">|</span>
+        <div id="liveClock" class="font-mono text-xs font-bold text-slate-300">--:--</div>
       </div>
 
-      <button onclick="toggleFullScreen()" title="ملء الشاشة" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-amber-400 text-xs transition">
+      <button onclick="toggleFullScreen()" title="ملء الشاشة (F)" class="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-amber-400 text-xs transition">
         <i class="fa-solid fa-expand"></i>
       </button>
     </div>
   </header>
 
-  <!-- مساحة العرض الرئيسية المتوازنة -->
-  <main id="mainContainer" class="flex-1 w-full relative pt-14 pb-16 lg:pb-0 overflow-y-auto lg:overflow-hidden fade-transition">
-    
+  <!-- مساحة العرض الرئيسية -->
+  <main id="mainContainer" class="flex-1 w-full h-full relative overflow-hidden flex pt-14 fade-transition">
     <!-- قسم الكتالوج والمنتج المعروض -->
-    <section id="productSection" class="w-full h-full p-4 lg:p-6 flex flex-col justify-between bg-slate-950 fade-transition">
-      
-      <!-- الشريط العلوي للإصدار المحدود -->
-      <div class="flex items-center justify-between border-b border-slate-900 pb-2 mb-3">
-        <div class="flex items-center gap-2">
-          <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-md border border-amber-500/20">اكتشف الرياض • الإصدار الأول</span>
-          <span class="text-[11px] text-slate-400">إصدار مرقم محدود (متبقي 9 قطع)</span>
+    <section id="productSection" class="w-1/2 h-full p-4 lg:p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-900 pb-2.5">
+        <div class="flex items-center gap-3">
+          <img src="./logo.jpeg" alt="EZWA Logo" class="w-10 h-10 object-contain rounded-xl border border-amber-500/30 bg-slate-900 p-0.5 shadow-md">
+          <div>
+            <h1 class="text-lg font-black text-white leading-tight">عِـزوة • EZWA</h1>
+            <span class="text-amber-400 text-[10px] font-bold tracking-widest uppercase">أزياء الشارع الراقية المبتكرة</span>
+          </div>
         </div>
-        <div class="w-28 bg-slate-800 h-1.5 rounded-full overflow-hidden">
-          <div class="bg-amber-400 h-full rounded-full" style="width: 82%;"></div>
+        <div class="bg-slate-900/90 border border-amber-500/30 px-3.5 py-1.5 rounded-xl text-right">
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] text-slate-400">إصدار مرقم محدود:</span>
+            <span class="text-xs font-mono font-black text-amber-400">متبقي 9 قطع فقط</span>
+          </div>
+          <div class="w-full bg-slate-800 h-1 rounded-full mt-1.5 overflow-hidden">
+            <div class="bg-amber-400 h-full rounded-full" style="width: 82%;"></div>
+          </div>
         </div>
       </div>
 
-      <!-- شبكة العرض: الصور على اليمين والوصف والتفاصيل على اليسار -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center my-auto">
-        
-        <!-- يمين: صور المنتج -->
-        <div class="lg:col-span-6 w-full">
-          <div class="w-full h-72 sm:h-80 lg:h-[390px] rounded-2xl bg-slate-900/90 border border-slate-800 grid grid-cols-2 p-1.5 gap-1.5 relative overflow-hidden shadow-2xl">
-            <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center cursor-zoom-in" onclick="openZoomModal('front')">
-              <img id="mainFrontImage" src="./model-front.png" alt="الواجهة الأمامية" class="w-full h-full object-cover rounded-xl">
-              <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-lg bg-black/80 backdrop-blur-md text-[9px] font-bold text-amber-300 border border-amber-500/30">الواجهة الأمامية</span>
+      <div class="my-auto py-1">
+        <div class="grid grid-cols-12 gap-5 items-stretch">
+          <div class="col-span-6 flex flex-col items-center">
+            <div class="w-full h-[400px] lg:h-[430px] rounded-2xl bg-slate-900/90 border border-slate-800 grid grid-cols-2 p-1.5 gap-1.5 relative overflow-hidden shadow-2xl group">
+              <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center border border-slate-800/80 cursor-zoom-in" onclick="openZoomModal('front')">
+                <img id="mainFrontImage" src="./model-front.png" alt="الواجهة الأمامية" class="w-full h-full object-cover rounded-xl fade-transition">
+                <span class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-lg bg-black/85 backdrop-blur-md text-[9px] font-bold text-amber-300 border border-amber-500/30">الواجهة الأمامية</span>
+              </div>
+              <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center border border-slate-800/80 cursor-zoom-in" onclick="openZoomModal('back')">
+                <img id="mainBackImage" src="./model-back.png" alt="الواجهة الخلفية" class="w-full h-full object-cover rounded-xl fade-transition">
+                <span class="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-lg bg-black/85 backdrop-blur-md text-[9px] font-bold text-amber-300 border border-amber-500/30">الظهر • الطبعة الذهبية</span>
+              </div>
             </div>
-            <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center cursor-zoom-in" onclick="openZoomModal('back')">
-              <img id="mainBackImage" src="./model-back.png" alt="الواجهة الخلفية" class="w-full h-full object-cover rounded-xl">
-              <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-lg bg-black/80 backdrop-blur-md text-[9px] font-bold text-amber-300 border border-amber-500/30">الظهر • الطبعة الذهبية</span>
+          </div>
+
+          <div class="col-span-6 flex flex-col justify-between py-1">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-amber-400 bg-amber-500/15 px-2.5 py-0.5 rounded-md border border-amber-500/30">اكتشف الرياض</span>
+                <button onclick="playMasmakStoryAudio()" id="btnStoryAudio" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 text-[10px] font-bold flex items-center gap-1.5 transition border border-amber-500/30 shadow">
+                  <i class="fa-solid fa-volume-high text-[10px]"></i>
+                  <span id="storyBtnLabel">قصة التصميم (30 ثانية)</span>
+                </button>
+              </div>
+
+              <h2 class="text-2xl font-black text-white mt-2 leading-tight">قصر المصمك</h2>
+              <div class="flex items-baseline gap-2 mt-2">
+                <span id="productPrice" class="text-3xl font-black text-amber-400">199</span>
+                <span class="text-xs text-slate-400 font-bold">ريال سعودي</span>
+                <span id="appliedFazaaBadge" class="hidden text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-md font-bold">تم تطبيق فزعة عِـزوة (-20 ريال)</span>
+              </div>
+
+              <p class="text-slate-300 text-[11px] mt-2.5 leading-relaxed bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80">
+                مستوحى من قصر المصمك؛ قماش قطن 100% قصة بوكس فيت وطبعة خلفية ذهبية وبطاقة NFC مشفرة بحاشية السدو العريقة.
+              </p>
+            </div>
+
+            <div class="mt-2.5 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-wifi rotate-90 text-amber-400 text-sm"></i>
+                <div class="text-[10px] text-slate-300 leading-tight">
+                  <strong class="text-amber-300 block">شريحة السدو الذكية (NFC)</strong>
+                  المس حاشية التيشيرت لتفعيل التجربة
+                </div>
+              </div>
+              <button onclick="simulateNfcVerification()" class="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-black text-[10px] hover:bg-amber-400 transition shadow">التحقق</button>
             </div>
           </div>
         </div>
 
-        <!-- يسار: تفاصيل القطعة + الوصف العام كاملاً -->
-        <div class="lg:col-span-6 flex flex-col justify-between space-y-3">
-          <div>
-            <div class="flex items-center justify-between">
-              <h2 class="text-2xl lg:text-3xl font-black text-white">قصر المصمك</h2>
-              <button onclick="playMasmakStoryAudio()" id="btnStoryAudio" class="px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[10px] font-bold flex items-center gap-1.5 hover:bg-amber-500 hover:text-slate-950 transition">
-                <i class="fa-solid fa-volume-high text-[10px]"></i>
-                <span id="storyBtnLabel">قصة التصميم (30 ثانية)</span>
-              </button>
-            </div>
-
-            <div class="flex items-baseline gap-2 mt-2">
-              <span id="productPrice" class="text-3xl font-black text-amber-400">199</span>
-              <span class="text-xs text-slate-400 font-bold">ريال سعودي</span>
-              <span id="appliedFazaaBadge" class="hidden text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-md font-bold">خصم فزعة (-20 ريال)</span>
-            </div>
-
-            <!-- الوصف العام للمنتج كامل وواضح -->
-            <p class="text-slate-300 text-xs leading-relaxed bg-slate-900/80 p-3 rounded-xl border border-slate-800 mt-2.5">
-              مستوحى من ملحمة قصر المصمك الشاهد على توحيد المملكة؛ قماش قطن 100% فاخر بقصة بوكس فيت معاصرة، وطبعة خلفية ذهبية مستلهمة من الهندسة المعمارية النجدية، وبطاقة NFC مشفرة بحاشية السدو العريقة للدخول إلى التجربة الرقمية التفاعلية.
-            </p>
-
-            <!-- منسق مظهر نجد -->
-            <div class="mt-2.5 p-2 rounded-xl bg-slate-900/50 border border-slate-800/80 text-[11px] text-slate-400">
-              <span class="text-amber-400 font-bold">تنسيق المظهر:</span> بنطال كارجو بيج رملي أو فحمي مع سنيكرز أبيض كلاسيكي.
-            </div>
-          </div>
-
-          <!-- شريحة السدو الذكية NFC -->
-          <div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <i class="fa-solid fa-wifi rotate-90 text-amber-400 text-sm"></i>
-              <div class="text-[11px] text-slate-300">
-                <strong class="text-amber-300 block">شريحة السدو الذكية (NFC)</strong>
-                المس حاشية التيشيرت لتفعيل التجربة
-              </div>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <button onclick="openPromoVideoModal()" class="px-2.5 py-1 rounded-lg bg-slate-900 text-amber-300 border border-amber-500/30 font-bold text-[10px]">فيديو</button>
-              <button onclick="simulateNfcVerification()" class="px-3 py-1 rounded-lg bg-amber-500 text-slate-950 font-black text-[10px] hover:bg-amber-400 transition">التحقق</button>
-            </div>
-          </div>
-
-          <!-- محطة السداد الفوري والتحويل -->
-          <div class="border-t border-slate-900 pt-2.5 flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-              <div class="p-1 bg-white rounded-lg cursor-pointer" onclick="openQualificationGate()">
-                <img id="qrPaymentImg" src="" alt="الراجحي" class="w-10 h-10 object-contain">
-              </div>
-              <div class="text-right">
-                <span class="text-xs font-black text-white block">سداد مصرف الراجحي</span>
-                <span class="text-[10px] text-slate-400 block"><span id="rajhiFooterPrice" class="text-amber-400 font-bold">199 ريال</span></span>
-              </div>
-            </div>
-            <button onclick="openQualificationGate()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 text-xs font-black shadow-md hover:brightness-110 transition">
-              طلب الاقتناء والسداد
+        <div class="mt-3 pt-2.5 border-t border-slate-900">
+          <div class="grid grid-cols-4 gap-2">
+            <button onclick="triggerCallSupervisorModal()" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 transition flex flex-col items-center justify-center text-center shadow">
+              <i class="fa-solid fa-headset text-sm mb-1 text-amber-400"></i>
+              <span class="font-bold text-[10px]">نداء المشرف</span>
+            </button>
+            <button onclick="openFitAdvisorModal()" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:border-amber-400 transition flex flex-col items-center justify-center text-center shadow">
+              <i class="fa-solid fa-ruler-combined text-sm mb-1 text-emerald-400"></i>
+              <span class="font-bold text-[10px]">مستشار المقاس</span>
+            </button>
+            <button onclick="openQualificationGate()" class="p-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/30 border border-amber-500/50 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex flex-col items-center justify-center text-center shadow">
+              <i class="fa-solid fa-shield-halved text-sm mb-1 text-amber-400"></i>
+              <span class="font-bold text-[10px]">طلب الاقتناء</span>
+            </button>
+            <button onclick="openFazaaModal()" class="p-2 rounded-xl bg-slate-900 border border-amber-500/40 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition flex flex-col items-center justify-center text-center shadow">
+              <i class="fa-solid fa-award text-sm mb-1 text-amber-400"></i>
+              <span class="font-bold text-[10px]">فزعة عِـزوة</span>
             </button>
           </div>
-
         </div>
-
       </div>
 
+      <div class="border-t border-slate-900 pt-2">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="p-1 bg-white rounded-xl shadow-md cursor-pointer" onclick="openQualificationGate()">
+              <img id="qrPaymentImg" src="" alt="باركود الراجحي" class="w-12 h-12 object-contain">
+            </div>
+            <div class="text-right">
+              <span class="text-xs font-black text-white block">مصرف الراجحي - عِـزوة</span>
+              <span class="text-[10px] text-slate-400 block mt-0.5">امسح للسداد • <span id="rajhiFooterPrice" class="text-amber-400 font-bold">199 ريال</span></span>
+            </div>
+          </div>
+          <button onclick="openQualificationGate()" class="px-3.5 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500 hover:text-slate-950 text-[10px] font-bold transition">تفاصيل السداد</button>
+        </div>
+      </div>
     </section>
 
     <!-- قسم البث التلفزيوني -->
-    <section id="tvSection" class="w-full lg:w-1/2 h-full absolute inset-0 lg:relative z-20 bg-black flex items-center justify-center fade-transition hidden">
+    <section id="tvSection" class="w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition">
       <video id="hlsVideo" class="w-full h-full max-h-full max-w-full object-contain" autoplay playsinline muted controls></video>
       <iframe id="iframeVideo" class="w-full h-full border-0 hidden" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </section>
-  </main>
 
-  <!-- شريط الملاحة السفلي الذكي للهواتف -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-md border-t border-slate-900 py-2 px-6 flex justify-around items-center lg:hidden shadow-2xl">
-    <button onclick="openFitAdvisorModal()" class="flex flex-col items-center text-slate-400 hover:text-amber-400 transition">
-      <i class="fa-solid fa-ruler-combined text-sm mb-0.5"></i>
-      <span class="text-[9px] font-bold">المقاس</span>
-    </button>
-    <button onclick="openCulturalQuizModal()" class="flex flex-col items-center text-amber-400">
-      <i class="fa-solid fa-feather-pointed text-sm mb-0.5"></i>
-      <span class="text-[9px] font-bold">المسابقة</span>
-    </button>
-    <button onclick="openQualificationGate()" class="flex flex-col items-center text-slate-400 hover:text-amber-400 transition">
-      <i class="fa-solid fa-bag-shopping text-sm mb-0.5"></i>
-      <span class="text-[9px] font-bold">الاقتناء</span>
-    </button>
-  </nav>
+    <!-- ==================== نافذة اختيار المسابقات (Arena Modal) ==================== -->
+    <div id="arenaModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 lg:p-8 max-w-4xl w-full border border-amber-500/30 shadow-2xl relative">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base"><i class="fa-solid fa-xmark"></i></button>
 
-  <!-- ==================== نافذة المسابقة الثقافية الراقية (سؤال وجواب) ==================== -->
-  <div id="culturalQuizModal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4 overflow-y-auto">
-    <div class="glass-card rounded-3xl p-6 lg:p-8 max-w-lg w-full border border-amber-500/40 shadow-2xl relative my-auto">
-      <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        <div class="text-center mb-6">
+          <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30">ساحة المنافسات الكروية</span>
+          <h3 class="text-2xl font-black text-white mt-2">اختر مسار التحدي</h3>
+        </div>
 
-      <!-- ترويسة التحدي الثقافي -->
-      <div class="text-center mb-6">
-        <span class="text-[10px] font-black text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30 inline-block mb-2">تحدي صقور نجد الثقافي</span>
-        <h3 class="text-xl font-black text-white">مسابقة أصالة قصر المصمك</h3>
-        <p class="text-xs text-slate-400 mt-1">أجب عن 3 أسئلة تراثية متتالية لانتزاع تولة مسك عِـزوة الملكي فوراً 🎁</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- 1. الخزنة الزجاجية السرية -->
+          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-amber-500/60 transition">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl text-amber-400 mb-3">🔐</div>
+              <span class="text-[10px] font-black text-amber-400 block mb-1">تحدي فردي (1 لاعب)</span>
+              <h4 class="text-lg font-black text-white mb-2">الخزنة الزجاجية السرية</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">سباق تخمين لاكتشاف الرمز السري الثلاثي وفك القفل الرقمي فوراً.</p>
+            </div>
+            <button onclick="openSingleVaultModal()" class="mt-4 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition">دخول التحدي ⚡</button>
+          </div>
 
-        <!-- عداد الثواني والمؤشر -->
-        <div class="flex items-center justify-between mt-4 px-2">
-          <span id="quizStepText" class="text-xs font-mono font-bold text-amber-400">السؤال 1 من 3</span>
-          <div class="flex items-center gap-1.5 text-xs font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-xl text-slate-300">
-            <i class="fa-solid fa-hourglass-half text-amber-400 text-[10px]"></i>
-            <span id="quizTimerText">15 ثانية</span>
+          <!-- 2. المساومة الخفية (اختبار الخِـوّة أو الغدر) -->
+          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-amber-500/60 transition">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl text-amber-400 mb-3">⚖️</div>
+              <span class="text-[10px] font-black text-amber-400 block mb-1">مواجهة ثنائية (2 لاعبين)</span>
+              <h4 class="text-lg font-black text-white mb-2">المساومة الخفية</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">اختبار الخِـوّة أو الغدر النفسي؛ أحدهما يغدر فيخطف، أو يتعاونان، والغدر المتبادل ينقلهما للـ 90+!</p>
+            </div>
+            <button onclick="openBargainingGame()" class="mt-4 w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition">بدء المساومة 🤝🗡️</button>
+          </div>
+
+          <!-- 3. تفكيك الشيفرة المشتركة: سباق المفاتيح المتطابقة -->
+          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-emerald-500/60 transition">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xl text-emerald-400 mb-3">🧩</div>
+              <span class="text-[10px] font-black text-emerald-400 block mb-1">مواجهة ثنائية (2 لاعبين)</span>
+              <h4 class="text-lg font-black text-white mb-2">تفكيك الشيفرة</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">سباق المفاتيح المتطابقة؛ أول من يُدخل نمط المفاتيح الكروية بالترتيب يفك القفل وينتصر.</p>
+            </div>
+            <button onclick="openCipherGame()" class="mt-4 w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition">بدء سباق المفاتيح ⏱️</button>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- مساحة السؤال والخيارات -->
-      <div id="quizContentBox">
-        <h4 id="questionTitle" class="text-sm font-bold text-slate-100 bg-slate-900/80 p-3.5 rounded-2xl border border-slate-800 mb-4 text-right leading-relaxed">
-          --
-        </h4>
+    <!-- ==================== نافذة المسابقة 1: الخزنة الزجاجية السرية ==================== -->
+    <div id="singleVaultModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
+      <div class="glass-card border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full text-center relative shadow-2xl">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">✕</button>
+        <div class="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-2xl text-amber-400 mx-auto mb-3">🔐</div>
+        <h3 class="text-xl font-black text-white mb-1">الخزنة الزجاجية السرية</h3>
+        <p class="text-xs text-slate-400 mb-4">أدخل الرمز السري الثلاثي لفك القفل الرقمي واقتناص الجائزة</p>
+        
+        <input type="password" id="vaultPinInput" maxlength="3" placeholder="•••" class="w-full tracking-widest text-center text-3xl font-black py-3 bg-slate-950 border border-slate-700 rounded-xl focus:border-amber-400 focus:outline-none mb-3 text-amber-300">
+        
+        <div id="vaultStatusMessage" class="min-h-[22px] text-xs font-bold mb-3"></div>
 
-        <div id="optionsContainer" class="space-y-2.5">
-          <!-- يتم توليد الخيارات برمجياً -->
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="closeAllModals()" class="py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold">إلغاء</button>
+          <button onclick="submitVaultPin()" class="py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black">فك القفل ⚡</button>
         </div>
       </div>
+    </div>
 
-      <!-- نافذة التتويج النهائي للمسابقة -->
-      <div id="quizSuccessBox" class="hidden text-center py-4 space-y-4">
-        <div class="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mx-auto text-emerald-400 text-3xl animate-bounce">
-          🏆
+    <!-- ==================== نافذة المسابقة 2: المساومة الخفية (اختبار الخِـوّة أو الغدر) ==================== -->
+    <div id="bargainingGameModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card border border-amber-500/40 rounded-3xl p-6 max-w-3xl w-full text-center relative shadow-2xl">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base">✕</button>
+
+        <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30">المواجهة النفسية الصامتة</span>
+        <h3 class="text-2xl font-black text-white mt-2">المساومة الخفية • اختبار الخِـوّة أو الغدر</h3>
+        <p class="text-xs text-slate-400 mt-1 mb-6">يختار كل متسابق قراره سراً دون أن يراه الآخر؛ الغدر المتبادل يُسقطكما معاً إلى شوط الـ 90+!</p>
+
+        <div class="grid grid-cols-2 gap-6 mb-6">
+          <!-- المتحدي الأول -->
+          <div class="bg-slate-900/90 border border-blue-500/30 rounded-2xl p-5">
+            <span class="text-xs font-black text-blue-400 block mb-3">قرار المتحدي الأول</span>
+            <div id="p1ChoiceStatus" class="text-xs text-slate-500 mb-4 font-bold">في انتظار القرار...</div>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="setPlayerDilemmaChoice(1, 'cooperate')" id="p1BtnCoop" class="py-3.5 bg-slate-800 hover:bg-emerald-600/30 border border-emerald-500/40 rounded-xl text-emerald-400 font-black text-xs active:scale-95 transition">خِـوّة 🤝</button>
+              <button onclick="setPlayerDilemmaChoice(1, 'betray')" id="p1BtnBetray" class="py-3.5 bg-slate-800 hover:bg-rose-600/30 border border-rose-500/40 rounded-xl text-rose-400 font-black text-xs active:scale-95 transition">غدر 🗡️</button>
+            </div>
+          </div>
+
+          <!-- المتحدي الثاني -->
+          <div class="bg-slate-900/90 border border-emerald-500/30 rounded-2xl p-5">
+            <span class="text-xs font-black text-emerald-400 block mb-3">قرار المتحدي الثاني</span>
+            <div id="p2ChoiceStatus" class="text-xs text-slate-500 mb-4 font-bold">في انتظار القرار...</div>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="setPlayerDilemmaChoice(2, 'cooperate')" id="p2BtnCoop" class="py-3.5 bg-slate-800 hover:bg-emerald-600/30 border border-emerald-500/40 rounded-xl text-emerald-400 font-black text-xs active:scale-95 transition">خِـوّة 🤝</button>
+              <button onclick="setPlayerDilemmaChoice(2, 'betray')" id="p2BtnBetray" class="py-3.5 bg-slate-800 hover:bg-rose-600/30 border border-rose-500/40 rounded-xl text-rose-400 font-black text-xs active:scale-95 transition">غدر 🗡️</button>
+            </div>
+          </div>
         </div>
-        <h3 class="text-xl font-black text-white">كفو يالذيب! نلت شرف المعرفة</h3>
-        <p class="text-xs text-slate-300 leading-relaxed bg-slate-900/90 p-3.5 rounded-2xl border border-emerald-500/30">
-          تم توثيق إجاباتك الكاملة بنجاح استثنائي!<br>
-          <strong class="text-amber-400 block mt-1">الجائزة الفورية: تولة مسك عِـزوة الملكي الفاخرة + خصم 10% مجاناً 🎁</strong>
-        </p>
-        <button onclick="closeAllModals()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-xs hover:brightness-110 transition shadow-lg">
-          استلام الهدية من مشرف الجناح فوراً
+
+        <div id="dilemmaResultBanner" class="min-h-[30px] mb-4 text-xs font-bold text-amber-400"></div>
+
+        <button onclick="revealDilemmaResult()" class="w-full py-4 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 font-black text-sm rounded-xl hover:brightness-110 transition shadow-lg">
+          كشف القرارات وإعلان النتيجة ⚖️
         </button>
       </div>
-
     </div>
-  </div>
 
-  <!-- نافذة الـ PIN الإداري لصافرة الـ 90+ -->
-  <div id="adminPinModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
-    <div class="glass-card border border-amber-500/40 rounded-3xl p-5 max-w-xs w-full text-center shadow-2xl">
-      <h3 class="text-sm font-black text-amber-400 mb-1">إذن المشرف (PIN)</h3>
-      <input type="password" id="adminPinInput" maxlength="4" placeholder="••••" class="w-full tracking-widest text-center text-2xl font-black py-2 bg-slate-950 border border-slate-700 rounded-xl mb-3 text-amber-300">
-      <div class="grid grid-cols-2 gap-2">
-        <button onclick="closeAllModals()" class="py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">إلغاء</button>
-        <button onclick="verifyAdminPin()" class="py-2 rounded-xl bg-amber-500 text-slate-950 text-xs font-black">دخول</button>
-      </div>
-      <p id="adminPinError" class="text-rose-400 text-[10px] mt-2 hidden font-bold">الرمز غير صحيح</p>
-    </div>
-  </div>
+    <!-- ==================== نافذة المسابقة 3: تفكيك الشيفرة (سباق المفاتيح المتطابقة) ==================== -->
+    <div id="cipherGameModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4 lg:p-8">
+      <div class="glass-card border border-emerald-500/40 rounded-3xl p-6 max-w-5xl w-full h-[88vh] flex flex-col justify-between relative shadow-2xl">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base z-30"><i class="fa-solid fa-xmark"></i></button>
 
-  <!-- نافذة صافرة الـ 90+ الإدارية -->
-  <div id="whistleModal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
-    <div class="glass-card border-2 border-amber-500/50 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl relative">
-      <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400">✕</button>
-      <h3 class="text-lg font-black text-white">صافرة الـ 90+</h3>
-      <p class="text-[10px] text-slate-400 mb-2">أوقف العداد بدقة [ 90:00 - 90:50 ]</p>
-      <div class="py-4 bg-slate-950 rounded-xl border border-slate-800 my-3">
-        <div id="whistleTimerDisplay" class="text-5xl font-black font-mono tracking-wider text-slate-100 gold-glow">00:00</div>
-      </div>
-      <button id="whistleBtn" onclick="handleWhistleClick()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-black text-sm shadow-lg">
-        إطلاق الصافرة ⏱️
-      </button>
-    </div>
-  </div>
+        <div class="text-center border-b border-slate-800 pb-3">
+          <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest block mb-1">تفكيك الشيفرة المشتركة • سباق المفاتيح المتطابقة</span>
+          <h3 class="text-xl font-black text-white">أول من يطابق تسلسل المفاتيح الكروية يفوز فوراً!</h3>
+          <div class="inline-flex items-center gap-3 mt-2 bg-slate-900 border border-emerald-500/40 px-6 py-1.5 rounded-2xl">
+            <span class="text-xs text-slate-400">النمط المطلوب:</span>
+            <div class="flex gap-2 text-2xl font-black tracking-widest text-emerald-400 font-mono">⚽ 🏆 ⚡ 🎯</div>
+          </div>
+        </div>
 
-  <!-- باقي نوافذ المعرض (المقاس، الاستحقاق، الراجحي، النداء، التكبير) -->
-  <div id="fitModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
-    <div class="glass-card rounded-3xl p-5 max-w-sm w-full border border-amber-500/30 text-right">
-      <button onclick="closeAllModals()" class="text-slate-400 float-left"><i class="fa-solid fa-xmark"></i></button>
-      <h3 class="text-sm font-black text-white mb-2">مستشار قصة البوكس فيت</h3>
-      <div class="p-3 bg-amber-500/10 rounded-xl text-center border border-amber-500/30">
-        <span class="text-[11px] text-amber-400 font-bold">المقاس الموصى به:</span>
-        <div class="text-3xl font-black text-amber-400 font-mono mt-1">XL</div>
-        <span class="text-[10px] text-slate-300">(يعادل وسع 2XL في العادي لراحة محيط الصدر)</span>
-      </div>
-    </div>
-  </div>
+        <div class="grid grid-cols-2 gap-6 my-auto">
+          <!-- المتحدي الأول -->
+          <div class="bg-slate-900/80 border border-blue-500/30 rounded-2xl p-5 text-center flex flex-col justify-between">
+            <span class="text-xs font-black text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/30 inline-block mb-3">المتحدي الأول (يمين)</span>
+            <div id="cipherP1Display" class="h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4 transition-all duration-200">- - - -</div>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="handleCipherInput(1, '⚽')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl active:scale-95 transition">⚽</button>
+              <button onclick="handleCipherInput(1, '🏆')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl active:scale-95 transition">🏆</button>
+              <button onclick="handleCipherInput(1, '⚡')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl active:scale-95 transition">⚡</button>
+              <button onclick="handleCipherInput(1, '🎯')" class="py-4 bg-slate-800 hover:bg-blue-600 rounded-xl text-2xl active:scale-95 transition">🎯</button>
+            </div>
+          </div>
 
-  <div id="qualificationModal" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
-    <div class="glass-card rounded-3xl p-5 max-w-sm w-full border border-amber-500/40 text-center relative">
-      <button onclick="closeAllModals()" class="absolute top-3 left-3 text-slate-400"><i class="fa-solid fa-xmark"></i></button>
-      <h3 class="text-base font-black text-white mt-1">حجز واقتناء القطعة</h3>
-      <p class="text-xs text-slate-300 my-2">إصدار مرقم محدود [EZWA-041] بسعر <span class="text-amber-400 font-bold">179 ريال</span></p>
-      <button onclick="proceedToImmediatePurchase()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">
-        الانتقال للسداد الفوري (الراجحي)
-      </button>
-    </div>
-  </div>
+          <!-- المتحدي الثاني -->
+          <div class="bg-slate-900/80 border border-emerald-500/30 rounded-2xl p-5 text-center flex flex-col justify-between">
+            <span class="text-xs font-black text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30 inline-block mb-3">المتحدي الثاني (يسار)</span>
+            <div id="cipherP2Display" class="h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4 transition-all duration-200">- - - -</div>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="handleCipherInput(2, '⚽')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl active:scale-95 transition">⚽</button>
+              <button onclick="handleCipherInput(2, '🏆')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl active:scale-95 transition">🏆</button>
+              <button onclick="handleCipherInput(2, '⚡')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl active:scale-95 transition">⚡</button>
+              <button onclick="handleCipherInput(2, '🎯')" class="py-4 bg-slate-800 hover:bg-emerald-600 rounded-xl text-2xl active:scale-95 transition">🎯</button>
+            </div>
+          </div>
+        </div>
 
-  <div id="rajhiModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
-    <div class="glass-card rounded-3xl p-5 max-w-xs w-full text-right">
-      <button onclick="closeAllModals()" class="text-slate-400 float-left"><i class="fa-solid fa-xmark"></i></button>
-      <h3 class="text-xs font-black text-white mb-2">التحويل • مصرف الراجحي</h3>
-      <div class="p-2.5 bg-slate-900 rounded-xl text-xs space-y-1.5 border border-slate-800">
-        <div class="flex justify-between"><span>المبلغ:</span><span class="text-amber-400 font-bold">179 ريال</span></div>
-        <div class="p-1.5 bg-black rounded font-mono text-[10px] text-center text-amber-300 select-all">SA0380000000000000000000</div>
-      </div>
-      <button onclick="sendReceiptToSeller()" class="mt-3 w-full py-2 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">إرسال الإشعار واتساب</button>
-    </div>
-  </div>
-
-  <div id="callStaffModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
-    <div class="glass-card rounded-3xl p-5 max-w-xs w-full text-center">
-      <button onclick="closeAllModals()" class="text-slate-400 float-left"><i class="fa-solid fa-xmark"></i></button>
-      <h3 class="text-sm font-black text-white mb-2">نداء مشرف المعرض</h3>
-      <button onclick="confirmSupervisorWhatsApp()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">إشعار الجوال (+966502777884)</button>
-    </div>
-  </div>
-
-  <div id="zoomModal" class="fixed inset-0 z-50 bg-black/95 flex items-center justify-center fade-transition opacity-0 pointer-events-none p-2">
-    <button onclick="closeZoomModal()" class="absolute top-4 left-4 w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
-    <img id="zoomedProductImage" src="./model-front.png" class="max-w-full max-h-[85vh] object-contain rounded-xl">
-  </div>
-
-  <div id="promoVideoModal" class="fixed inset-0 z-50 bg-black/95 flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
-    <div class="max-w-xs w-full bg-slate-950 rounded-3xl p-3 border border-amber-500/40 relative">
-      <button onclick="closePromoVideoModal()" class="absolute top-2 left-2 text-slate-400"><i class="fa-solid fa-xmark"></i></button>
-      <div class="w-full h-96 rounded-xl overflow-hidden bg-black mt-4">
-        <video id="nfcPromoVideo" class="w-full h-full object-cover" playsinline loop muted autoplay>
-          <source src="./promo-nfc.mp4" type="video/mp4">
-        </video>
+        <div class="border-t border-slate-800 pt-3 flex items-center justify-between">
+          <span class="text-xs text-slate-400">تطابق التوقيت معاً؟</span>
+          <button onclick="openAdminPinModal()" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 rounded-xl text-xs font-black hover:brightness-110 transition flex items-center gap-1.5 shadow">
+            <i class="fa-solid fa-lock text-[11px]"></i>
+            <span>تفعيل شوط كسر التعادل (صافرة الـ 90+)</span>
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div id="nfcVerifyModal" class="fixed inset-0 z-50 bg-slate-950/95 flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
-    <div class="glass-card rounded-3xl p-5 max-w-xs w-full text-center border border-emerald-500/40">
-      <button onclick="closeAllModals()" class="text-slate-400 float-left"><i class="fa-solid fa-xmark"></i></button>
-      <h3 class="text-sm font-black text-white mt-2">توثيق أصالة القطعة</h3>
-      <p class="text-[11px] text-slate-300 mt-1">EZWA-MSMK-2026-041</p>
+    <!-- ==================== نافذة المشرف (PIN) لصافرة الـ 90+ ==================== -->
+    <div id="adminPinModal" class="absolute inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
+      <div class="glass-card border border-amber-500/40 rounded-3xl p-6 max-w-xs w-full text-center shadow-2xl">
+        <div class="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl text-amber-400 mx-auto mb-3">🔑</div>
+        <h3 class="text-base font-black text-amber-400 mb-1">إذن مشرف الجناح</h3>
+        <p class="text-[11px] text-slate-400 mb-4">أدخل الرمز لفتح شوط كسر التعادل (صافرة الـ 90+)</p>
+        <input type="password" id="adminPinInput" maxlength="4" placeholder="••••" class="w-full tracking-widest text-center text-2xl font-black py-2.5 bg-slate-950 border border-slate-700 rounded-xl focus:border-amber-400 focus:outline-none mb-3 text-amber-300">
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="closeAllModals()" class="py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold">إلغاء</button>
+          <button onclick="verifyAdminPin()" class="py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black">تفعيل الحسم</button>
+        </div>
+        <p id="adminPinError" class="text-rose-400 text-[11px] mt-2 hidden font-bold">الرمز غير صحيح</p>
+      </div>
     </div>
-  </div>
 
-  <!-- ==================== المحرك البرمجي الشامل ==================== -->
+    <!-- ==================== المسابقة 4: شوط الحسم (صافرة الـ 90+) ==================== -->
+    <div id="whistleModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
+      <div class="glass-card border-2 border-amber-500/50 rounded-3xl p-6 sm:p-8 max-w-lg w-full text-center shadow-2xl relative">
+        <button onclick="closeAllModals()" class="absolute top-5 left-5 text-slate-400 hover:text-white text-lg">✕</button>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-black mb-4">
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+          <span id="whistlePlayerIndicator">شوط الحسم: محاولة المتحدي الأول ⚔️</span>
+        </div>
+        <h3 class="text-2xl font-black text-white mb-1">صافرة الـ 90+</h3>
+        <p class="text-xs text-slate-400 mb-2">اقتنص الصافرة بدقة لانتزاع بطاقة المدرج الذكي NFC</p>
+        <div class="inline-block bg-slate-950 px-4 py-1 rounded-xl border border-slate-800 text-amber-300 font-mono text-xs font-bold mb-6">
+          النافذة الصارمة: [ 90:00 - 90:50 ]
+        </div>
+        <div class="py-6 bg-slate-950 rounded-2xl border border-slate-800 mb-6">
+          <div id="whistleTimerDisplay" class="text-6xl font-black font-mono tracking-wider text-slate-100 gold-glow">00:00</div>
+          <div class="text-[11px] text-slate-500 font-mono mt-1">الدقيقة الكروية وأجزاؤها</div>
+        </div>
+        <button id="whistleBtn" onclick="handleWhistleClick()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-black text-lg hover:scale-[1.01] active:scale-95 transition shadow-lg shadow-amber-500/20">
+          إطلاق الصافرة ⏱️
+        </button>
+      </div>
+    </div>
+
+    <!-- نافذة إعلان نتيجة الـ 90+ -->
+    <div id="whistleResultModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
+      <div class="glass-card border border-slate-700 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
+        <div id="whistleResultIcon" class="text-5xl mb-3">⏱️</div>
+        <h4 id="whistleResultTitle" class="text-xl font-black text-white mb-1">نتيجة المحاولة</h4>
+        <div id="whistleResultTime" class="text-3xl font-mono font-black text-amber-400 mb-2">90:35</div>
+        <p id="whistleResultDesc" class="text-xs text-slate-300 leading-relaxed mb-6"></p>
+        <button id="whistleResultBtn" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm transition">متابعة</button>
+      </div>
+    </div>
+
+    <!-- النوافذ الأساسية الأصلية (الفيديو، الاستحقاق، البوابات، الراجحي، النداء، المقاس، الصلاة) -->
+    <div id="promoVideoModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
+      <div class="relative max-w-sm w-full bg-slate-950 rounded-3xl border-2 border-amber-500/40 p-4 shadow-2xl flex flex-col items-center">
+        <button onclick="closePromoVideoModal()" class="absolute top-3 left-3 z-20 w-8 h-8 rounded-full bg-slate-900 text-slate-400 hover:text-white flex items-center justify-center border border-slate-700"><i class="fa-solid fa-xmark text-sm"></i></button>
+        <h3 class="text-sm font-black text-white my-2">شاهد كيف يتصل التيشيرت بجوالك!</h3>
+        <div class="w-full h-[460px] rounded-2xl overflow-hidden bg-black border border-slate-800">
+          <video id="nfcPromoVideo" class="w-full h-full object-cover" playsinline loop muted autoplay preload="auto">
+            <source src="./promo-nfc.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+
+    <div id="qualificationModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4 lg:p-6">
+      <div class="glass-card rounded-3xl p-6 lg:p-8 max-w-lg w-full border-2 border-amber-500/40 text-center relative shadow-2xl overflow-hidden">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        <div id="qualStepNotice" class="space-y-4">
+          <div class="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto text-amber-400 text-2xl"><i class="fa-solid fa-lock"></i></div>
+          <h3 class="text-xl font-black text-white">تنبيه حماية الإصدار المرقم</h3>
+          <p class="text-xs text-slate-300">نظراً لمحدودية دفعة المصمك، تلزمنا السياسة بالتحقق السريع قبل إتاحة الحجز والسداد.</p>
+          <button onclick="startQualificationQuiz()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-xs">بدء معايرة الاستحقاق</button>
+        </div>
+        <div id="qualStepQuiz" class="hidden text-right space-y-4">
+          <div id="question1Container" class="space-y-2">
+            <h4 class="text-xs font-bold text-slate-200">١. ماذا يمثل لك قصر المصمك في هندسة هذا الإصدار؟</h4>
+            <button onclick="recordQuizAnswer(1)" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs hover:border-amber-400 text-right">هيبة ملحمة توحيد وطن وبداية مجد راسخ</button>
+          </div>
+          <div id="question2Container" class="hidden space-y-2">
+            <h4 class="text-xs font-bold text-slate-200">٢. كيف ترى دمج رقاقة الـ NFC بحاشية السدو النجدية؟</h4>
+            <button onclick="recordQuizAnswer(2)" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs hover:border-amber-400 text-right">انتقال حقيقي بالهوية التراثية إلى المستقبل الرقمي</button>
+          </div>
+        </div>
+        <div id="qualStepUnlocked" class="hidden space-y-4">
+          <h3 class="text-xl font-black text-white">كفو! أهلاً بك في نخبة مقتني عِـزوة</h3>
+          <button onclick="proceedToImmediatePurchase()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-xs">تأكيد السداد (179 ريال)</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="fazaaModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-2xl w-full border-2 border-amber-500/40 text-center relative shadow-2xl">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        <h3 class="text-xl font-black text-white">اختر بوابتك.. وجتك فزعة عِـزوة!</h3>
+        <div class="grid grid-cols-4 gap-3 my-6 gate-perspective">
+          <div class="relative h-48 rounded-2xl overflow-hidden border border-amber-500/30 cursor-pointer" onclick="openMasmakGate(1, 'خصم 10% فوري على القطعة', 'price')">
+            <div class="absolute inset-0 bg-slate-900 flex items-center justify-center"><span class="text-xs font-black text-white">فزعة السعر (179 ريال)</span></div>
+            <div id="door1" class="masmak-door absolute inset-0 wood-texture border-2 border-amber-700/60 flex items-center justify-center text-amber-400">بوابة ١</div>
+          </div>
+          <div class="relative h-48 rounded-2xl overflow-hidden border border-amber-500/30 cursor-pointer" onclick="openMasmakGate(2, 'ترقية التغليف مجاناً', 'gift')">
+            <div class="absolute inset-0 bg-slate-900 flex items-center justify-center"><span class="text-xs font-black text-white">فزعة الإهداء</span></div>
+            <div id="door2" class="masmak-door absolute inset-0 wood-texture border-2 border-amber-700/60 flex items-center justify-center text-amber-400">بوابة ٢</div>
+          </div>
+          <div class="relative h-48 rounded-2xl overflow-hidden border border-amber-500/30 cursor-pointer" onclick="openMasmakGate(3, 'تولة مسك عِـزوة مجاناً', 'musk')">
+            <div class="absolute inset-0 bg-slate-900 flex items-center justify-center"><span class="text-xs font-black text-white">فزعة العطر</span></div>
+            <div id="door3" class="masmak-door absolute inset-0 wood-texture border-2 border-amber-700/60 flex items-center justify-center text-amber-400">بوابة ٣</div>
+          </div>
+          <div class="relative h-48 rounded-2xl overflow-hidden border border-amber-500/30 cursor-pointer" onclick="openMasmakGate(4, 'عضوية أركان VIP', 'vip')">
+            <div class="absolute inset-0 bg-slate-900 flex items-center justify-center"><span class="text-xs font-black text-white">فزعة النخبة</span></div>
+            <div id="door4" class="masmak-door absolute inset-0 wood-texture border-2 border-amber-700/60 flex items-center justify-center text-amber-400">بوابة ٤</div>
+          </div>
+        </div>
+        <div id="fazaaResultBanner" class="text-xs font-bold text-emerald-400">انقر فوق أي بوابة لاكتشاف فزعتك</div>
+      </div>
+    </div>
+
+    <div id="nfcVerifyModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-md w-full border-2 border-emerald-500/40 text-center relative shadow-2xl">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        <h3 class="text-xl font-black text-white mt-2">تم توثيق وأصالة القطعة بنجاح!</h3>
+        <p class="text-xs text-slate-300 mt-2">الرقم التسلسلي: EZWA-MSMK-2026-041</p>
+      </div>
+    </div>
+
+    <div id="rajhiModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-md w-full border border-amber-500/40 text-right shadow-2xl relative">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        <h3 class="text-base font-black text-white mb-2">مصرف الراجحي • مؤسسة عِـزوة للتجارة</h3>
+        <div class="p-3 bg-slate-900 rounded-xl text-xs space-y-2">
+          <div class="flex justify-between"><span>المبلغ:</span><span class="text-amber-400 font-bold">179 ريال</span></div>
+          <div class="p-2 bg-black rounded font-mono text-center text-amber-300">SA0380000000000000000000</div>
+        </div>
+        <button onclick="sendReceiptToSeller()" class="mt-3 w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">إرسال إشعار التحويل عبر واتساب</button>
+      </div>
+    </div>
+
+    <div id="callStaffModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-sm w-full border border-rose-500/40 text-center relative shadow-2xl">
+        <button onclick="closeAllModals()" class="absolute top-4 left-4 text-slate-400 hover:text-white text-base"><i class="fa-solid fa-xmark"></i></button>
+        <h3 class="text-lg font-black text-white mb-2">نداء مشرف المعرض</h3>
+        <button onclick="confirmSupervisorWhatsApp()" class="w-full py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs">إشعار المشرف (+966502777884)</button>
+      </div>
+    </div>
+
+    <div id="fitModal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
+      <div class="glass-card rounded-3xl p-6 max-w-lg w-full border border-amber-500/30 text-right shadow-2xl">
+        <button onclick="closeAllModals()" class="text-slate-400 hover:text-white text-sm float-left"><i class="fa-solid fa-xmark"></i></button>
+        <h3 class="text-base font-black text-white mb-2">مستشار قصة البوكس فيت (Boxy Fit)</h3>
+        <div class="p-4 bg-amber-500/10 rounded-2xl border border-amber-500/30 text-center">
+          <span class="text-xs text-amber-400 font-bold">المقاس الهندسي الموصى به:</span>
+          <div class="text-4xl font-black text-amber-400 font-mono mt-1">XL</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="zoomModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
+      <button onclick="closeZoomModal()" class="absolute top-4 left-4 w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+      <img id="zoomedProductImage" src="./model-front.png" class="max-w-full max-h-[80vh] object-contain rounded-2xl">
+    </div>
+
+    <div id="prayerOverlay" class="absolute inset-0 bg-slate-950/95 z-50 backdrop-blur-md flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none">
+      <div class="text-center p-8 glass-card rounded-3xl border border-amber-500/30 max-w-sm mx-4 shadow-2xl">
+        <h2 id="prayerOverlayTitle" class="text-xl font-bold text-white">حان الآن موعد الصلاة</h2>
+        <button onclick="dismissPrayerOverlay()" class="mt-4 px-4 py-2 rounded-xl bg-amber-500 text-slate-950 text-xs font-bold">متابعة المعرض (Esc)</button>
+      </div>
+    </div>
+
+    <div id="firstInteractionNotice" class="absolute bottom-6 right-6 z-50 glass-card border border-amber-500/50 rounded-2xl p-4 shadow-2xl flex items-center gap-3 cursor-pointer" onclick="handleFirstUserInteraction()">
+      <div class="text-right"><h4 class="text-xs font-bold text-white">انقر لتفعيل الصوت والنغمات</h4></div>
+    </div>
+  </main>
+
+  <video id="radarCamera" class="hidden" autoplay playsinline muted></video>
+  <canvas id="radarCanvas" class="hidden"></canvas>
+
+  <!-- ==================== المحرك البرمجي المحدث بالكامل ==================== -->
   <script>
     const SUPERVISOR_PHONE = "966502777884";
     const ADMIN_PIN = "9090";
 
     const RAJHI_ACCOUNT = {
+      bank: "مصرف الراجحي",
       beneficiary: "مؤسسة عِـزوة للتجارة",
       iban: "SA0380000000000000000000",
       amount: "199"
     };
 
     const CHANNELS = {
-      quran: { short: "القرآن", type: "hls", url: "https://win.holol.com/live/quran/playlist.m3u8" },
-      sunnah: { short: "السنة", type: "hls", url: "https://win.holol.com/live/sunnah/playlist.m3u8" },
-      alarabiya: { short: "العربية", type: "hls", url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8" },
-      aljazeera: { short: "الجزيرة", type: "iframe", url: "https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&mute=1&playsinline=1" }
+      quran: { name: "القرآن الكريم", short: "القرآن", type: "hls", url: "https://win.holol.com/live/quran/playlist.m3u8" },
+      sunnah: { name: "السنة النبوية", short: "السنة", type: "hls", url: "https://win.holol.com/live/sunnah/playlist.m3u8" },
+      alarabiya: { name: "العربية", short: "العربية", type: "hls", url: "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8" },
+      aljazeera: { name: "الجزيرة", short: "الجزيرة", type: "iframe", url: "https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&mute=1&playsinline=1" }
     };
 
     const MASMAK_PRODUCT = {
+      title: "قصر المصمك - الإصدار الأول",
       price: "199",
       frontImg: "./model-front.png",
       backImg: "./model-back.png"
     };
 
-    let currentLayout = 'catalog';
+    let currentLayout = 'split';
     let activeChannelKey = 'quran';
     let hlsInstance = null;
     let hasInteracted = false;
+    let currentViewAngle = 'front';
 
+    const audioWelcome = new Audio('./welcome.mp3');
+    const audioPitch1  = new Audio('./pitch1.mp3');
+    const audioPitch2  = new Audio('./pitch2.mp3');
+    const audioPitch3  = new Audio('./pitch3.mp3');
     const storyAudioFile = new Audio('./story.mp3.mp3');
+
     let audioCtx = null;
+    let isAudioChainRunning = false;
+    let activeChainTimeout = null;
 
-    // بنك الأسئلة الثقافية الراقية لقصر المصمك وعِـزوة
-    const culturalQuestions = [
-      {
-        question: "في أي عام تم فتح واستعادة قصر المصمك التاريخي على يد الملك عبدالعزيز طيب الله ثراه؟",
-        options: ["1319 هـ (1902 م)", "1351 هـ (1932 م)", "1302 هـ (1885 م)"],
-        correctIndex: 0
-      },
-      {
-        question: "ما هو الباب الصغير المدمج داخل بوابة قصر المصمك الكبيرة الشهيرة؟",
-        options: ["الخوخة", "الروزنة", "المجلباب"],
-        correctIndex: 0
-      },
-      {
-        question: "أين دُمجت رقاقة الاتصال الذكي (NFC) في تيشيرت قصر المصمك من عِـزوة؟",
-        options: ["في حاشية السدو السفلية المطرزة", "في ملصق الرقبة الداخلي", "في طبعة الصدر الذهبية"],
-        correctIndex: 0
-      }
-    ];
+    // محرك لعبة تفكيك الشيفرة
+    const cipherTarget = ['⚽', '🏆', '⚡', '🎯'];
+    let cipherP1 = [];
+    let cipherP2 = [];
 
-    let currentQuizStep = 0;
-    let quizInterval = null;
-    let quizSecondsLeft = 15;
+    // محرك المساومة الخفية (الخِـوّة أو الغدر)
+    let p1Dilemma = null;
+    let p2Dilemma = null;
 
     // محرك صافرة الـ 90+
+    let whistlePlayer = 1;
     let whistleState = "IDLE";
     let whistleInterval = null;
     let whistleCentiseconds = 0;
 
+    // دالة إشعار سينمائي علوي بديل للـ Alert
     let toastTimeout = null;
-    function showToast(msg, icon = '✨') {
+    function showToast(msg, icon = '⚡') {
       const toast = document.getElementById('toastNotification');
-      document.getElementById('toastMessage').innerHTML = msg;
-      document.getElementById('toastIcon').innerText = icon;
+      const msgEl = document.getElementById('toastMessage');
+      const iconEl = document.getElementById('toastIcon');
+      
+      msgEl.innerHTML = msg;
+      iconEl.innerText = icon;
       toast.classList.remove('opacity-0', 'pointer-events-none');
+      
       if (toastTimeout) clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => toast.classList.add('opacity-0', 'pointer-events-none'), 3500);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 3500);
     }
 
     function unlockAudioContext() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
+
+    function stopAudioChain() {
+      if (activeChainTimeout) { clearTimeout(activeChainTimeout); activeChainTimeout = null; }
+      [audioWelcome, audioPitch1, audioPitch2, audioPitch3, storyAudioFile].forEach(audio => {
+        try { audio.pause(); audio.currentTime = 0; } catch (e) {}
+      });
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      isAudioChainRunning = false;
+    }
+
+    document.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('#firstInteractionNotice')) return;
+      if (e.target.closest('button, input, select, [onclick], .cursor-pointer, header')) {
+        stopAudioChain();
+      }
+    }, true);
+
+    function switchLayoutSafely(mode) {
+      currentLayout = mode;
+      closeAllModals();
+      closeAllDropdowns();
+      const prodSec = document.getElementById('productSection');
+      const tvSec = document.getElementById('tvSection');
+      const btnCatalog = document.getElementById('btnCatalog');
+      const btnSplit = document.getElementById('btnSplit');
+
+      [btnCatalog, btnSplit].forEach(b => {
+        b.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 hover:text-white transition flex items-center gap-1.5 border border-slate-800";
+      });
+
+      if (mode === 'split') {
+        btnSplit.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
+        prodSec.className = "w-1/2 h-full p-4 lg:p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100 overflow-y-auto";
+        tvSec.className = "w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition opacity-100";
+        playStream(CHANNELS[activeChannelKey]);
+      } else if (mode === 'catalog') {
+        btnCatalog.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow-md transition flex items-center gap-1.5";
+        prodSec.className = "w-full h-full p-4 lg:p-6 flex flex-col justify-between absolute inset-0 fade-transition z-20 bg-slate-950 overflow-y-auto opacity-100";
+        tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
+      } else if (mode === 'tv') {
+        tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-100 z-20 bg-black flex items-center justify-center";
+        prodSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
+        playStream(CHANNELS[activeChannelKey]);
+      }
+    }
+
+    function setScreenLayout(mode) { stopAudioChain(); switchLayoutSafely(mode); }
+
+    function openArenaModal() {
+      stopAudioChain();
+      closeAllModals();
+      document.getElementById('arenaModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    // --- 1. الخزنة الزجاجية السرية (مع توضيح مسمى الجائزة الفورية بدقة) ---
+    function openSingleVaultModal() {
+      stopAudioChain();
+      closeAllModals();
+      const input = document.getElementById('vaultPinInput');
+      input.value = "";
+      document.getElementById('vaultStatusMessage').innerText = "";
+      document.getElementById('singleVaultModal').classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => input.focus(), 150);
+    }
+
+    function submitVaultPin() {
+      const code = document.getElementById('vaultPinInput').value;
+      const statusEl = document.getElementById('vaultStatusMessage');
+      if (code === "909" || code === "041") {
+        playLuxuryChime();
+        statusEl.className = "min-h-[22px] text-xs font-black text-emerald-400 leading-relaxed";
+        statusEl.innerHTML = `
+          🎉 كفو! تم فك قفل الخزنة الزجاجية بنجاح!<br>
+          <span class="text-amber-400 font-bold block mt-1">الجائزة المستحقة: تولة مسك عِـزوة الملكي الفاخرة مجاناً 🎁</span>
+          <span class="text-[10px] text-slate-300 block mt-0.5">توجه لمشرف المعرض لاستلام هديتك فوراً</span>
+        `;
+        setTimeout(() => {
+          closeAllModals();
+          showToast("مبروك! ربحت تولة مسك عِـزوة الملكي من الخزنة السرية", "🎁");
+        }, 3000);
+      } else {
+        statusEl.className = "min-h-[22px] text-xs font-bold text-rose-400 shake";
+        statusEl.innerText = "الرمز غير صحيح، صمدت الخزنة الزجاجية!";
+        setTimeout(() => statusEl.classList.remove('shake'), 400);
+      }
+    }
+
+    // --- 2. المساومة الخفية (اختبار الخِـوّة أو الغدر) ---
+    function openBargainingGame() {
+      stopAudioChain();
+      closeAllModals();
+      p1Dilemma = null;
+      p2Dilemma = null;
+      document.getElementById('p1ChoiceStatus').innerText = "في انتظار القرار...";
+      document.getElementById('p1ChoiceStatus').className = "text-xs text-slate-500 mb-4 font-bold";
+      document.getElementById('p2ChoiceStatus').innerText = "في انتظار القرار...";
+      document.getElementById('p2ChoiceStatus').className = "text-xs text-slate-500 mb-4 font-bold";
+      document.getElementById('dilemmaResultBanner').innerText = "";
+      document.getElementById('bargainingGameModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function setPlayerDilemmaChoice(player, choice) {
+      playLuxuryChime();
+      if (player === 1) {
+        p1Dilemma = choice;
+        document.getElementById('p1ChoiceStatus').innerText = "تم حفظ القرار سراً 🔒";
+        document.getElementById('p1ChoiceStatus').className = "text-xs text-blue-400 font-bold mb-4";
+      } else {
+        p2Dilemma = choice;
+        document.getElementById('p2ChoiceStatus').innerText = "تم حفظ القرار سراً 🔒";
+        document.getElementById('p2ChoiceStatus').className = "text-xs text-emerald-400 font-bold mb-4";
+      }
+    }
+
+    function revealDilemmaResult() {
+      const banner = document.getElementById('dilemmaResultBanner');
+      if (!p1Dilemma || !p2Dilemma) {
+        banner.className = "min-h-[30px] mb-4 text-xs font-bold text-rose-400 shake";
+        banner.innerText = "يجب على كلا المتسابقين اختيار (خِـوّة) أو (غدر) أولاً!";
+        setTimeout(() => banner.classList.remove('shake'), 400);
+        return;
+      }
+
+      if (p1Dilemma === 'cooperate' && p2Dilemma === 'cooperate') {
+        playLuxuryChime();
+        banner.className = "min-h-[30px] mb-4 text-sm font-black text-emerald-400";
+        banner.innerText = "🤝 كفو! الاثنان اختارا الخِـوّة.. تقاسم الجائزة بالتساوي!";
+        setTimeout(() => closeAllModals(), 2500);
+      } else if (p1Dilemma === 'betray' && p2Dilemma === 'cooperate') {
+        playLuxuryChime();
+        banner.className = "min-h-[30px] mb-4 text-sm font-black text-amber-400";
+        banner.innerText = "🗡️ غدر! المتحدي الأول اختار الغدر وخطف الجائزة كاملة وحرم الثاني!";
+        setTimeout(() => closeAllModals(), 2500);
+      } else if (p1Dilemma === 'cooperate' && p2Dilemma === 'betray') {
+        playLuxuryChime();
+        banner.className = "min-h-[30px] mb-4 text-sm font-black text-amber-400";
+        banner.innerText = "🗡️ غدر! المتحدي الثاني اختار الغدر وخطف الجائزة كاملة وحرم الأول!";
+        setTimeout(() => closeAllModals(), 2500);
+      } else if (p1Dilemma === 'betray' && p2Dilemma === 'betray') {
+        // تعادل الغدر المدمر -> النقل لشوط الـ 90+
+        playLuxuryChime();
+        banner.className = "min-h-[30px] mb-4 text-xs font-black text-rose-400";
+        banner.innerHTML = "💥 غدر متبادل وخسارة مشتركة!<br><span class='text-amber-400 font-bold'>جارٍ الانتقال لشوط الحسم (صافرة الـ 90+)...</span>";
+        setTimeout(() => {
+          closeAllModals();
+          openAdminPinModal();
+        }, 2200);
+      }
+    }
+
+    // --- 3. تفكيك الشيفرة المشتركة (سباق المفاتيح المتطابقة) ---
+    function openCipherGame() {
+      stopAudioChain();
+      closeAllModals();
+      cipherP1 = [];
+      cipherP2 = [];
+      const d1 = document.getElementById('cipherP1Display');
+      const d2 = document.getElementById('cipherP2Display');
+      d1.className = "h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4 transition-all duration-200";
+      d2.className = "h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4 transition-all duration-200";
+      d1.innerText = "- - - -";
+      d2.innerText = "- - - -";
+      document.getElementById('cipherGameModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function handleCipherInput(playerNum, symbol) {
+      playLuxuryChime();
+      if (playerNum === 1) {
+        if (cipherP1.length < 4) cipherP1.push(symbol);
+        document.getElementById('cipherP1Display').innerText = cipherP1.join(' ');
+        if (cipherP1.length === 4) checkCipherMatch(1, cipherP1);
+      } else {
+        if (cipherP2.length < 4) cipherP2.push(symbol);
+        document.getElementById('cipherP2Display').innerText = cipherP2.join(' ');
+        if (cipherP2.length === 4) checkCipherMatch(2, cipherP2);
+      }
+    }
+
+    function checkCipherMatch(playerNum, inputArr) {
+      const isMatch = inputArr.every((val, index) => val === cipherTarget[index]);
+      const displayEl = document.getElementById(playerNum === 1 ? 'cipherP1Display' : 'cipherP2Display');
+
+      if (isMatch) {
+        playLuxuryChime();
+        displayEl.className = "h-14 bg-emerald-950/70 rounded-xl border-2 border-emerald-400 flex items-center justify-center gap-2 text-sm font-black text-emerald-300 mb-4 transition-all duration-200";
+        displayEl.innerHTML = `🎉 فوز مستحق للمتحدي ${playerNum}!`;
+        setTimeout(() => {
+          closeAllModals();
+          showToast(`🏆 انتصار ساحق للمتحدي ${playerNum} بفك الشيفرة أولاً!`, '🎉');
+        }, 1800);
+      } else {
+        displayEl.className = "h-14 bg-rose-950/70 rounded-xl border-2 border-rose-500 flex items-center justify-center gap-2 text-xs font-bold text-rose-300 mb-4 shake transition-all duration-200";
+        displayEl.innerHTML = "نمط غير مطابق ✖";
+        setTimeout(() => {
+          if (playerNum === 1) cipherP1 = [];
+          else cipherP2 = [];
+          displayEl.className = "h-14 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center gap-2 text-xl font-mono text-white mb-4 transition-all duration-200";
+          displayEl.innerText = "- - - -";
+        }, 850);
+      }
+    }
+
+    // --- 4. شوط كسر التعادل: صافرة الـ 90+ ---
+    function openAdminPinModal() {
+      stopAudioChain();
+      closeAllModals();
+      const modal = document.getElementById('adminPinModal');
+      const input = document.getElementById('adminPinInput');
+      document.getElementById('adminPinError').classList.add('hidden');
+      input.value = "";
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => input.focus(), 150);
+    }
+
+    function verifyAdminPin() {
+      if (document.getElementById('adminPinInput').value === ADMIN_PIN) {
+        closeAllModals();
+        startWhistleDuel();
+      } else {
+        document.getElementById('adminPinError').classList.remove('hidden');
+      }
+    }
+
+    function startWhistleDuel() {
+      whistlePlayer = 1;
+      document.getElementById('whistleModal').classList.remove('opacity-0', 'pointer-events-none');
+      setupWhistleTurn();
+    }
+
+    function setupWhistleTurn() {
+      whistleState = "IDLE";
+      whistleCentiseconds = 0;
+      document.getElementById('whistleTimerDisplay').innerText = "00:00";
+      document.getElementById('whistlePlayerIndicator').innerText = whistlePlayer === 1 
+        ? "شوط الحسم: محاولة المتحدي الأول ⚔️" 
+        : "شوط الحسم: محاولة المتحدي الثاني ⚔️";
+      
+      const btn = document.getElementById('whistleBtn');
+      btn.innerText = "إطلاق الصافرة ⏱️";
+      btn.className = "w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-black text-lg hover:scale-[1.01] active:scale-95 transition shadow-lg shadow-amber-500/20";
+    }
+
+    function handleWhistleClick() {
+      if (whistleState === "IDLE") {
+        whistleState = "RUNNING";
+        const btn = document.getElementById('whistleBtn');
+        btn.innerText = "أوقف العداد الآن! 🛑";
+        btn.className = "w-full py-4 rounded-2xl bg-red-600 text-white font-black text-lg hover:bg-red-500 active:scale-95 transition shadow-lg shadow-red-600/30";
+
+        const start = Date.now();
+        whistleInterval = setInterval(() => {
+          const elapsed = (Date.now() - start) / 1000;
+          let simMins;
+          if (elapsed < 3) simMins = elapsed * 24;
+          else if (elapsed < 6) simMins = 72 + (elapsed - 3) * 5.5;
+          else simMins = 88.5 + (elapsed - 6) * 1.2;
+
+          const mins = Math.floor(simMins);
+          const hundredths = Math.floor((simMins - mins) * 100);
+          whistleCentiseconds = (mins * 100) + hundredths;
+
+          document.getElementById('whistleTimerDisplay').innerText = 
+            `${String(mins).padStart(2, '0')}:${String(hundredths).padStart(2, '0')}`;
+        }, 15);
+
+      } else if (whistleState === "RUNNING") {
+        clearInterval(whistleInterval);
+        whistleState = "STOPPED";
+        evaluateWhistleTurn();
+      }
+    }
+
+    function evaluateWhistleTurn() {
+      const mins = Math.floor(whistleCentiseconds / 100);
+      const hundredths = whistleCentiseconds % 100;
+      const timeStr = `${String(mins).padStart(2, '0')}:${String(hundredths).padStart(2, '0')}`;
+      const isWinner = (mins === 90 && hundredths >= 0 && hundredths <= 50);
+
+      const modal = document.getElementById('whistleResultModal');
+      const icon = document.getElementById('whistleResultIcon');
+      const title = document.getElementById('whistleResultTitle');
+      const timeEl = document.getElementById('whistleResultTime');
+      const desc = document.getElementById('whistleResultDesc');
+      const btn = document.getElementById('whistleResultBtn');
+
+      timeEl.innerText = timeStr;
+
+      if (isWinner) {
+        icon.innerText = "🏆";
+        title.innerText = "معجزة كروية في الـ 90!";
+        desc.innerText = `أصاب المتحدي ${whistlePlayer} النافذة الذهبية بدقة! تُفتح الخزنة وتُسلّم بطاقة المدرج الذكي لليوم فوراً!`;
+        btn.innerText = "تتويج البطل وإنهاء الشوط 🎉";
+        btn.onclick = () => { modal.classList.add('opacity-0', 'pointer-events-none'); closeAllModals(); };
+      } else {
+        icon.innerText = "❌";
+        title.innerText = "مرّت بجوار القائم!";
+        if (whistlePlayer === 1) {
+          desc.innerText = `سجل المتحدي الأول ${timeStr}. الفرصة تنتقل الآن للمتحدي الثاني!`;
+          btn.innerText = "انتقال الدور للمتحدي الثاني ⚔️";
+          btn.onclick = () => {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            whistlePlayer = 2;
+            setupWhistleTurn();
+          };
+        } else {
+          desc.innerText = `سجل المتحدي الثاني ${timeStr}. صمدت الخزنة ولم يحقق أحد التوقيت الصارم؛ تظل بطاقة اليوم في أمان!`;
+          btn.innerText = "إغلاق التحدي والعودة للمعرض 🔒";
+          btn.onclick = () => { modal.classList.add('opacity-0', 'pointer-events-none'); closeAllModals(); };
+        }
+      }
+
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    // دوال المعرض والخدمات العامة
+    function openPromoVideoModal() {
+      stopAudioChain();
+      closeAllModals();
+      const modal = document.getElementById('promoVideoModal');
+      const video = document.getElementById('nfcPromoVideo');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      if (video) { video.currentTime = 0; video.play().catch(e => {}); }
+    }
+
+    function closePromoVideoModal() {
+      const modal = document.getElementById('promoVideoModal');
+      const video = document.getElementById('nfcPromoVideo');
+      if (video) { video.pause(); video.currentTime = 0; }
+      if (modal) modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function openQualificationGate() {
+      stopAudioChain();
+      closeAllModals();
+      document.getElementById('qualStepNotice').classList.remove('hidden');
+      document.getElementById('qualStepQuiz').classList.add('hidden');
+      document.getElementById('qualStepUnlocked').classList.add('hidden');
+      document.getElementById('question1Container').classList.remove('hidden');
+      document.getElementById('question2Container').classList.add('hidden');
+      document.getElementById('qualificationModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function startQualificationQuiz() {
+      document.getElementById('qualStepNotice').classList.add('hidden');
+      document.getElementById('qualStepQuiz').classList.remove('hidden');
+    }
+
+    function recordQuizAnswer(step) {
+      if (step === 1) {
+        document.getElementById('question1Container').classList.add('hidden');
+        document.getElementById('question2Container').classList.remove('hidden');
+      } else {
+        document.getElementById('qualStepQuiz').classList.add('hidden');
+        document.getElementById('qualStepUnlocked').classList.remove('hidden');
+        playLuxuryChime();
+        MASMAK_PRODUCT.price = "179";
+        document.getElementById('productPrice').textContent = "179";
+        document.getElementById('appliedFazaaBadge').classList.remove('hidden');
+        document.getElementById('rajhiFooterPrice').textContent = "179 ريال";
+        initRajhiQR();
+      }
+    }
+
+    function proceedToImmediatePurchase() { closeAllModals(); openRajhiPaymentModal(); }
+
+    function openFazaaModal() {
+      stopAudioChain();
+      closeAllModals();
+      document.getElementById('fazaaModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function openMasmakGate(gateNum, prizeTitle, type) {
+      const door = document.getElementById(`door${gateNum}`);
+      if (door) door.classList.add('open');
+      playLuxuryChime();
+      document.getElementById('fazaaResultBanner').textContent = `مبروك! جتك فزعة عِـزوة: ${prizeTitle}`;
+      if (type === 'price') {
+        MASMAK_PRODUCT.price = "179";
+        document.getElementById('productPrice').textContent = "179";
+        document.getElementById('appliedFazaaBadge').classList.remove('hidden');
+        document.getElementById('rajhiFooterPrice').textContent = "179 ريال";
+        initRajhiQR();
+      }
+    }
+
+    function simulateNfcVerification() {
+      stopAudioChain();
+      closeAllModals();
+      playLuxuryChime();
+      document.getElementById('nfcVerifyModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function initRajhiQR() {
+      const qrData = encodeURIComponent(`مصرف الراجحي - عِـزوة\nالمستفيد: ${RAJHI_ACCOUNT.beneficiary}\nالآيبان: ${RAJHI_ACCOUNT.iban}\nالمبلغ: ${MASMAK_PRODUCT.price} ريال`);
+      document.getElementById('qrPaymentImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${qrData}`;
+    }
+
+    function openRajhiPaymentModal() {
+      stopAudioChain();
+      closeAllModals();
+      document.getElementById('rajhiModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function sendReceiptToSeller() {
+      const msg = encodeURIComponent(`السلام عليكم، تم التحويل لحساب الراجحي بقيمة ${MASMAK_PRODUCT.price} ريال لتيشيرت قصر المصمك.`);
+      window.open(`https://api.whatsapp.com/send?phone=${SUPERVISOR_PHONE}&text=${msg}`, '_blank');
+      closeAllModals();
+    }
+
+    function triggerCallSupervisorModal() {
+      stopAudioChain();
+      closeAllModals();
+      document.getElementById('callStaffModal').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function confirmSupervisorWhatsApp() {
+      const msg = encodeURIComponent("نداء عاجل لمشرف المعرض!\nيوجد عميل عند الشاشة التفاعلية يطلب المساعدة.");
+      window.open(`https://api.whatsapp.com/send?phone=${SUPERVISOR_PHONE}&text=${msg}`, '_blank');
+      closeAllModals();
+    }
+
+    let isRadarActive = false;
+    function renderRadarUI() {
+      const dot = document.getElementById('radarStatusDot');
+      const txt = document.getElementById('radarBtnText');
+      if (isRadarActive) {
+        dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping";
+        txt.textContent = "الرادار: نشط (R)";
+      } else {
+        dot.className = "w-2.5 h-2.5 rounded-full bg-slate-500";
+        txt.textContent = "الرادار: متوقف (R)";
+      }
+    }
+    function togglePresenceRadar() { isRadarActive = !isRadarActive; renderRadarUI(); }
+
+    function openZoomModal(targetView) {
+      stopAudioChain();
+      if (targetView) currentViewAngle = targetView;
+      const zoomModal = document.getElementById('zoomModal');
+      const zoomImg = document.getElementById('zoomedProductImage');
+      zoomImg.src = (currentViewAngle === 'front') ? MASMAK_PRODUCT.frontImg : MASMAK_PRODUCT.backImg;
+      zoomModal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeZoomModal() { document.getElementById('zoomModal').classList.add('opacity-0', 'pointer-events-none'); }
 
     function playLuxuryChime() {
       unlockAudioContext();
@@ -477,239 +1138,28 @@
       } catch (e) {}
     }
 
-    function switchLayoutSafely(mode) {
-      currentLayout = mode;
-      closeAllModals();
-      closeAllDropdowns();
-      const prodSec = document.getElementById('productSection');
-      const tvSec = document.getElementById('tvSection');
-      const btnCatalog = document.getElementById('btnCatalog');
-      const btnSplit = document.getElementById('btnSplit');
-
-      if (mode === 'split') {
-        if (btnSplit) btnSplit.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-500 text-slate-950 transition";
-        if (btnCatalog) btnCatalog.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition";
-        prodSec.classList.remove('hidden');
-        tvSec.classList.remove('hidden');
-        prodSec.className = "w-full lg:w-1/2 p-4 lg:p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-b lg:border-b-0 lg:border-l border-slate-900 fade-transition";
-        tvSec.className = "w-full lg:w-1/2 min-h-[300px] lg:h-full relative z-20 bg-black flex items-center justify-center fade-transition";
-        playStream(CHANNELS[activeChannelKey]);
-      } else if (mode === 'catalog') {
-        if (btnCatalog) btnCatalog.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-500 text-slate-950 transition";
-        if (btnSplit) btnSplit.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition";
-        prodSec.classList.remove('hidden');
-        prodSec.className = "w-full h-full p-4 lg:p-6 flex flex-col justify-between bg-slate-950 overflow-y-auto";
-        tvSec.classList.add('hidden');
-      }
-    }
-
-    function setScreenLayout(mode) { switchLayoutSafely(mode); }
-
-    // ==================== تشغيل المسابقة الثقافية الراقية ====================
-    function openCulturalQuizModal() {
-      closeAllModals();
-      currentQuizStep = 0;
-      document.getElementById('quizContentBox').classList.remove('hidden');
-      document.getElementById('quizSuccessBox').classList.add('hidden');
-      document.getElementById('culturalQuizModal').classList.remove('opacity-0', 'pointer-events-none');
-      renderQuizStep();
-    }
-
-    function renderQuizStep() {
-      if (quizInterval) clearInterval(quizInterval);
-      quizSecondsLeft = 15;
-      document.getElementById('quizTimerText').innerText = `${quizSecondsLeft} ثانية`;
-
-      quizInterval = setInterval(() => {
-        quizSecondsLeft--;
-        document.getElementById('quizTimerText').innerText = `${quizSecondsLeft} ثانية`;
-        if (quizSecondsLeft <= 0) {
-          clearInterval(quizInterval);
-          showToast("انتهى وقت التفكير في السؤال! حاول مجدداً بتأنٍ.", "⏳");
-          closeAllModals();
-        }
-      }, 1000);
-
-      const qData = culturalQuestions[currentQuizStep];
-      document.getElementById('quizStepText').innerText = `السؤال ${currentQuizStep + 1} من ${culturalQuestions.length}`;
-      document.getElementById('questionTitle').innerText = qData.question;
-
-      const optsBox = document.getElementById('optionsContainer');
-      optsBox.innerHTML = "";
-
-      qData.options.forEach((optText, idx) => {
-        const btn = document.createElement('button');
-        btn.className = "w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 text-xs font-bold hover:border-amber-400 hover:bg-slate-800/80 transition flex items-center justify-between";
-        btn.innerHTML = `<span>${optText}</span><i class="fa-regular fa-circle text-slate-600 text-xs"></i>`;
-        btn.onclick = () => handleQuizAnswer(idx, btn);
-        optsBox.appendChild(btn);
-      });
-    }
-
-    function handleQuizAnswer(selectedIdx, btnElement) {
-      const qData = culturalQuestions[currentQuizStep];
-      if (selectedIdx === qData.correctIndex) {
-        clearInterval(quizInterval);
-        playLuxuryChime();
-        btnElement.classList.add('border-emerald-500', 'bg-emerald-950/40', 'text-emerald-300');
-        btnElement.querySelector('i').className = "fa-solid fa-check text-emerald-400 text-xs";
-
-        setTimeout(() => {
-          currentQuizStep++;
-          if (currentQuizStep < culturalQuestions.length) {
-            renderQuizStep();
-          } else {
-            document.getElementById('quizContentBox').classList.add('hidden');
-            document.getElementById('quizSuccessBox').classList.remove('hidden');
-            playLuxuryChime();
-            showToast("مبروك! نلت وسام المعرفة وتستحق تولة المسك الفاخرة 🎁", "🏆");
-          }
-        }, 600);
-      } else {
-        btnElement.classList.add('border-rose-500', 'bg-rose-950/40', 'shake');
-        setTimeout(() => btnElement.classList.remove('shake'), 400);
-        showToast("إجابة غير صحيحة، ركز في تفاصيل التاريخ النجدي!", "❌");
-      }
-    }
-
-    // ==================== شوط الحسم: صافرة الـ 90+ الإداري ====================
-    function openAdminPinModal() {
-      closeAllModals();
-      const modal = document.getElementById('adminPinModal');
-      const input = document.getElementById('adminPinInput');
-      document.getElementById('adminPinError').classList.add('hidden');
-      input.value = "";
-      modal.classList.remove('opacity-0', 'pointer-events-none');
-      setTimeout(() => input.focus(), 150);
-    }
-
-    function verifyAdminPin() {
-      if (document.getElementById('adminPinInput').value === ADMIN_PIN) {
-        closeAllModals();
-        document.getElementById('whistleModal').classList.remove('opacity-0', 'pointer-events-none');
-        whistleState = "IDLE";
-        whistleCentiseconds = 0;
-        document.getElementById('whistleTimerDisplay').innerText = "00:00";
-      } else {
-        document.getElementById('adminPinError').classList.remove('hidden');
-      }
-    }
-
-    function handleWhistleClick() {
-      if (whistleState === "IDLE") {
-        whistleState = "RUNNING";
-        const btn = document.getElementById('whistleBtn');
-        btn.innerText = "أوقف العداد الآن! 🛑";
-        btn.className = "w-full py-3 rounded-xl bg-red-600 text-white font-black text-sm";
-
-        const start = Date.now();
-        whistleInterval = setInterval(() => {
-          const elapsed = (Date.now() - start) / 1000;
-          let simMins = elapsed < 3 ? elapsed * 24 : (elapsed < 6 ? 72 + (elapsed - 3) * 5.5 : 88.5 + (elapsed - 6) * 1.2);
-          const mins = Math.floor(simMins);
-          const hundredths = Math.floor((simMins - mins) * 100);
-          whistleCentiseconds = (mins * 100) + hundredths;
-          document.getElementById('whistleTimerDisplay').innerText = `${String(mins).padStart(2, '0')}:${String(hundredths).padStart(2, '0')}`;
-        }, 15);
-      } else if (whistleState === "RUNNING") {
-        clearInterval(whistleInterval);
-        whistleState = "STOPPED";
-        const mins = Math.floor(whistleCentiseconds / 100);
-        const hundredths = whistleCentiseconds % 100;
-        const isWinner = (mins === 90 && hundredths >= 0 && hundredths <= 50);
-        closeAllModals();
-        if (isWinner) showToast("🏆 معجزة كروية في الـ 90! انتزعت بطاقة المدرج الذكي لليوم!", "🏆");
-        else showToast(`سجلت ${mins}:${hundredths}.. مرّت بجوار القائم وصمدت الخزنة!`, "❌");
-      }
-    }
-
-    // دوال المعرض والتحكم
-    function openQualificationGate() {
-      closeAllModals();
-      document.getElementById('qualificationModal').classList.remove('opacity-0', 'pointer-events-none');
-    }
-
-    function proceedToImmediatePurchase() {
-      closeAllModals();
-      document.getElementById('rajhiModal').classList.remove('opacity-0', 'pointer-events-none');
-    }
-
-    function initRajhiQR() {
-      const qrData = encodeURIComponent(`مصرف الراجحي - عِـزوة\nالآيبان: ${RAJHI_ACCOUNT.iban}\nالمبلغ: ${MASMAK_PRODUCT.price} ريال`);
-      document.getElementById('qrPaymentImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${qrData}`;
-    }
-
-    function sendReceiptToSeller() {
-      const msg = encodeURIComponent(`السلام عليكم، تم التحويل لحساب الراجحي بقيمة ${MASMAK_PRODUCT.price} ريال لتيشيرت قصر المصمك.`);
-      window.open(`https://api.whatsapp.com/send?phone=${SUPERVISOR_PHONE}&text=${msg}`, '_blank');
-      closeAllModals();
-    }
-
-    function triggerCallSupervisorModal() {
-      closeAllModals();
-      document.getElementById('callStaffModal').classList.remove('opacity-0', 'pointer-events-none');
-    }
-
-    function confirmSupervisorWhatsApp() {
-      const msg = encodeURIComponent("نداء عاجل لمشرف المعرض!\nيوجد عميل عند الشاشة التفاعلية يطلب المساعدة.");
-      window.open(`https://api.whatsapp.com/send?phone=${SUPERVISOR_PHONE}&text=${msg}`, '_blank');
-      closeAllModals();
+    function handleFirstUserInteraction() {
+      unlockAudioContext();
+      const notice = document.getElementById('firstInteractionNotice');
+      if (notice) notice.classList.add('hidden');
     }
 
     function openFitAdvisorModal() {
+      stopAudioChain();
       closeAllModals();
       document.getElementById('fitModal').classList.remove('opacity-0', 'pointer-events-none');
     }
 
-    function simulateNfcVerification() {
-      closeAllModals();
-      playLuxuryChime();
-      document.getElementById('nfcVerifyModal').classList.remove('opacity-0', 'pointer-events-none');
-    }
-
-    function openZoomModal(target) {
-      document.getElementById('zoomedProductImage').src = target === 'front' ? MASMAK_PRODUCT.frontImg : MASMAK_PRODUCT.backImg;
-      document.getElementById('zoomModal').classList.remove('opacity-0', 'pointer-events-none');
-    }
-
-    function closeZoomModal() {
-      document.getElementById('zoomModal').classList.add('opacity-0', 'pointer-events-none');
-    }
-
-    function openPromoVideoModal() {
-      const m = document.getElementById('promoVideoModal');
-      m.classList.remove('opacity-0', 'pointer-events-none');
-      const v = document.getElementById('nfcPromoVideo');
-      if (v) { v.currentTime = 0; v.play().catch(() => {}); }
-    }
-
-    function closePromoVideoModal() {
-      const m = document.getElementById('promoVideoModal');
-      if (m) m.classList.add('opacity-0', 'pointer-events-none');
-      const v = document.getElementById('nfcPromoVideo');
-      if (v) v.pause();
-    }
-
-    function playMasmakStoryAudio() {
-      unlockAudioContext();
-      playLuxuryChime();
-      storyAudioFile.currentTime = 0;
-      storyAudioFile.play().then(() => {
-        const lbl = document.getElementById('storyBtnLabel');
-        lbl.textContent = "جاري الاستماع...";
-        setTimeout(() => lbl.textContent = "القصة (30ث)", 30000);
-      }).catch(() => {});
-    }
-
     function toggleDropdown(id) {
+      stopAudioChain();
       const el = document.getElementById(id);
-      const isVis = !el.classList.contains('opacity-0');
+      const isVisible = !el.classList.contains('opacity-0');
       closeAllDropdowns();
-      if (!isVis) el.classList.remove('opacity-0', 'pointer-events-none');
+      if (!isVisible) el.classList.remove('opacity-0', 'pointer-events-none');
     }
 
     function closeAllDropdowns() {
-      ['tvDropdown', 'toolsDropdown'].forEach(id => {
+      ['tvDropdown'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
@@ -742,19 +1192,22 @@
     }
 
     function changeChannel(key) {
+      stopAudioChain();
       if (!CHANNELS[key]) return;
       activeChannelKey = key;
-      document.getElementById('activeChannelLabel').textContent = `${CHANNELS[key].short}`;
-      playStream(CHANNELS[key]);
+      document.getElementById('activeChannelLabel').textContent = `البث: ${CHANNELS[key].short} (3)`;
+      if (currentLayout !== 'catalog') playStream(CHANNELS[key]);
     }
 
     function closeAllModals() {
-      if (quizInterval) { clearInterval(quizInterval); quizInterval = null; }
-      ['callStaffModal', 'rajhiModal', 'fitModal', 'zoomModal', 'nfcVerifyModal', 'qualificationModal', 'adminPinModal', 'whistleModal', 'culturalQuizModal'].forEach(id => {
+      stopAudioChain();
+      ['callStaffModal', 'rajhiModal', 'fitModal', 'zoomModal', 'fazaaModal', 'nfcVerifyModal', 'qualificationModal', 'promoVideoModal', 'arenaModal', 'adminPinModal', 'whistleModal', 'whistleResultModal', 'cipherGameModal', 'bargainingGameModal', 'singleVaultModal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
-      closePromoVideoModal();
+      const video = document.getElementById('nfcPromoVideo');
+      if (video) { video.pause(); video.currentTime = 0; }
+      dismissPrayerOverlay();
     }
 
     function toggleFullScreen() {
@@ -763,19 +1216,32 @@
       else if (document.exitFullscreen) document.exitFullscreen();
     }
 
-    function handleFirstUserInteraction() {
-      unlockAudioContext();
-      if (!hasInteracted) hasInteracted = true;
+    function dismissPrayerOverlay() {
+      const overlay = document.getElementById('prayerOverlay');
+      if (overlay) overlay.classList.add('opacity-0', 'pointer-events-none');
     }
 
-    window.addEventListener('click', (e) => {
-      if (!e.target.closest('#toolsDropdown') && !e.target.closest('button')) {
-        closeAllDropdowns();
-      }
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('liveClock').textContent = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    window.addEventListener('keydown', (e) => {
+      stopAudioChain();
+      unlockAudioContext();
+      const k = e.key.toLowerCase();
+      if (k === '1') setScreenLayout('catalog');
+      if (k === '2') setScreenLayout('split');
+      if (k === '3') setScreenLayout('tv');
+      if (e.key === 'Escape') { closeAllModals(); closeAllDropdowns(); }
+      if (k === 'f') toggleFullScreen();
     });
 
     initRajhiQR();
-    setScreenLayout('catalog');
+    renderRadarUI();
+    setScreenLayout('split');
   </script>
 </body>
 </html>
