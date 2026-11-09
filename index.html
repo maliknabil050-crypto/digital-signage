@@ -157,25 +157,57 @@
         </div>
       </div>
 
-      <!-- صور المودل والنصوص: تم توسيع عمود الصور وزيادة الارتفاع -->
+      <!-- صور المودل والنصوص: سلايدر تفاعلي فردي فائق التكبير -->
       <div class="my-auto py-2">
         <div class="grid grid-cols-12 gap-5 items-center">
           
-          <!-- عمود صور المودل (مكبّر ليشغل 7 أعمدة بارتفاع 470px إلى 520px) -->
+          <!-- عمود السلايدر التفاعلي الأكبر (7 أعمدة بارتفاع سينمائي 500px إلى 540px) -->
           <div class="col-span-7 flex flex-col items-center">
-            <div class="w-full h-[470px] lg:h-[520px] rounded-2xl bg-slate-900/90 border border-slate-800 grid grid-cols-2 p-2 gap-2 relative overflow-hidden shadow-2xl">
-              <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center cursor-zoom-in group/front" onclick="openZoomModal('front')">
-                <img id="mainFrontImage" src="./model-front.png" alt="الواجهة الأمامية" class="w-full h-full object-cover rounded-xl fade-transition group-hover/front:scale-105 transition-transform duration-300">
-                <span class="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-black/85 backdrop-blur-md text-[9px] font-bold text-amber-300 border border-amber-500/30 shadow">الواجهة الأمامية</span>
+            <div class="w-full h-[500px] lg:h-[540px] rounded-2xl bg-slate-900/90 border border-slate-800 relative overflow-hidden shadow-2xl p-2 flex flex-col justify-between group/slider">
+              
+              <!-- مساحة الصورة المعروضة المكبرة بالكامل -->
+              <div class="relative w-full flex-1 rounded-xl overflow-hidden bg-black/40 flex items-center justify-center cursor-pointer" onclick="toggleSliderImage()">
+                <img id="mainSliderImage" src="./model-front.png" alt="تيشيرت قصر المصمك" class="w-full h-full object-cover rounded-xl fade-transition group-hover/slider:scale-105 transition-transform duration-300">
+                
+                <!-- وسم جهة العرض -->
+                <span id="sliderAngleBadge" class="absolute top-3 right-3 px-3 py-1 rounded-lg bg-black/85 backdrop-blur-md text-[10px] font-bold text-amber-300 border border-amber-500/30 shadow">
+                  الواجهة الأمامية
+                </span>
+
+                <!-- تلميح النقر للتبديل -->
+                <div class="absolute bottom-3 left-3 px-2.5 py-1 rounded-lg bg-black/80 backdrop-blur-md text-[9px] font-bold text-slate-300 border border-slate-700/60 flex items-center gap-1.5 opacity-80 group-hover/slider:opacity-100 transition">
+                  <i class="fa-solid fa-arrows-rotate text-amber-400 text-[10px]"></i>
+                  <span>انقر للتبديل السريع</span>
+                </div>
+
+                <!-- زر التكبير العائم -->
+                <button onclick="event.stopPropagation(); openZoomModal(currentActiveAngle);" title="تكبير الصورة" class="absolute top-3 left-3 w-8 h-8 rounded-lg bg-slate-900/90 border border-slate-700 text-amber-400 hover:text-white flex items-center justify-center transition shadow">
+                  <i class="fa-solid fa-expand text-xs"></i>
+                </button>
               </div>
-              <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center cursor-zoom-in group/back" onclick="openZoomModal('back')">
-                <img id="mainBackImage" src="./model-back.png" alt="الواجهة الخلفية" class="w-full h-full object-cover rounded-xl fade-transition group-hover/back:scale-105 transition-transform duration-300">
-                <span class="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-black/85 backdrop-blur-md text-[9px] font-bold text-amber-300 border border-amber-500/30 shadow">الظهر • الطبعة الذهبية</span>
+
+              <!-- شريط التحكم السفلي بالسلايدر (أزرار التبديل السريعة) -->
+              <div class="mt-2 pt-1 flex items-center justify-between px-1">
+                <div class="flex items-center gap-1.5">
+                  <button id="btnAngleFront" onclick="setSliderAngle('front')" class="px-3 py-1 rounded-lg text-[10px] font-bold bg-amber-500 text-slate-950 transition shadow">
+                    الأمامية
+                  </button>
+                  <button id="btnAngleBack" onclick="setSliderAngle('back')" class="px-3 py-1 rounded-lg text-[10px] font-bold bg-slate-800 text-slate-300 hover:text-white transition">
+                    الظهر • الطبعة
+                  </button>
+                </div>
+
+                <!-- مؤشر النقط التفاعلي -->
+                <div class="flex items-center gap-1.5">
+                  <span id="dotFront" onclick="setSliderAngle('front')" class="w-2.5 h-2.5 rounded-full bg-amber-400 cursor-pointer transition"></span>
+                  <span id="dotBack" onclick="setSliderAngle('back')" class="w-2.5 h-2.5 rounded-full bg-slate-700 cursor-pointer hover:bg-slate-500 transition"></span>
+                </div>
               </div>
+
             </div>
           </div>
 
-          <!-- عمود تفاصيل المنتج والوصف والسداد والأزرار المضافة (يشغل 5 أعمدة متناسقة) -->
+          <!-- عمود تفاصيل المنتج والوصف والسداد والأزرار المضافة -->
           <div class="col-span-5 flex flex-col justify-between py-1 space-y-3">
             <div>
               <div class="flex items-center justify-between">
@@ -191,7 +223,7 @@
                     <span id="storyBtnLabel">القصة</span>
                   </button>
 
-                  <button onclick="openPromoVideoModal()" class="px-2 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-110 text-[10px] font-black flex items-center gap-1 transition shadow">
+                  <button onclick="openPromoVideoModal()" class="px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-110 text-[10px] font-black flex items-center gap-1 transition shadow">
                     <i class="fa-solid fa-circle-play text-[11px]"></i>
                     <span>الفيديو</span>
                   </button>
@@ -468,6 +500,43 @@
     let hasInteracted = false;
     let audioCtx = null;
     const storyAudioFile = new Audio('./story.mp3.mp3');
+
+    // حالة سلايدر المودل التفاعلي المكبر
+    let currentActiveAngle = 'front'; // 'front' أو 'back'
+
+    function setSliderAngle(angle) {
+      currentActiveAngle = angle;
+      const img = document.getElementById('mainSliderImage');
+      const badge = document.getElementById('sliderAngleBadge');
+      const btnFront = document.getElementById('btnAngleFront');
+      const btnBack = document.getElementById('btnAngleBack');
+      const dotFront = document.getElementById('dotFront');
+      const dotBack = document.getElementById('dotBack');
+
+      if (angle === 'front') {
+        img.src = MASMAK_PRODUCT.frontImg;
+        badge.innerText = "الواجهة الأمامية";
+        btnFront.className = "px-3 py-1 rounded-lg text-[10px] font-bold bg-amber-500 text-slate-950 transition shadow";
+        btnBack.className = "px-3 py-1 rounded-lg text-[10px] font-bold bg-slate-800 text-slate-300 hover:text-white transition";
+        dotFront.className = "w-2.5 h-2.5 rounded-full bg-amber-400 cursor-pointer transition";
+        dotBack.className = "w-2.5 h-2.5 rounded-full bg-slate-700 cursor-pointer hover:bg-slate-500 transition";
+      } else {
+        img.src = MASMAK_PRODUCT.backImg;
+        badge.innerText = "الظهر • الطبعة الذهبية";
+        btnBack.className = "px-3 py-1 rounded-lg text-[10px] font-bold bg-amber-500 text-slate-950 transition shadow";
+        btnFront.className = "px-3 py-1 rounded-lg text-[10px] font-bold bg-slate-800 text-slate-300 hover:text-white transition";
+        dotBack.className = "w-2.5 h-2.5 rounded-full bg-amber-400 cursor-pointer transition";
+        dotFront.className = "w-2.5 h-2.5 rounded-full bg-slate-700 cursor-pointer hover:bg-slate-500 transition";
+      }
+    }
+
+    function toggleSliderImage() {
+      if (currentActiveAngle === 'front') {
+        setSliderAngle('back');
+      } else {
+        setSliderAngle('front');
+      }
+    }
 
     // محرك ميزان الصقر الفيزيائي
     let balanceState = "IDLE";
