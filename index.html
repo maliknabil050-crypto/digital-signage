@@ -157,13 +157,13 @@
         </div>
       </div>
 
-      <!-- صور المودل والنصوص بجوار بعضها -->
+      <!-- صور المودل والنصوص: تم توسيع عمود الصور وزيادة الارتفاع -->
       <div class="my-auto py-2">
         <div class="grid grid-cols-12 gap-5 items-center">
           
-          <!-- عمود صور المودل -->
-          <div class="col-span-6 flex flex-col items-center">
-            <div class="w-full h-[390px] lg:h-[410px] rounded-2xl bg-slate-900/90 border border-slate-800 grid grid-cols-2 p-1.5 gap-1.5 relative overflow-hidden shadow-2xl">
+          <!-- عمود صور المودل (مكبّر ليشغل 7 أعمدة بارتفاع 470px إلى 520px) -->
+          <div class="col-span-7 flex flex-col items-center">
+            <div class="w-full h-[470px] lg:h-[520px] rounded-2xl bg-slate-900/90 border border-slate-800 grid grid-cols-2 p-2 gap-2 relative overflow-hidden shadow-2xl">
               <div class="relative w-full h-full rounded-xl overflow-hidden bg-black/40 flex items-center justify-center cursor-zoom-in group/front" onclick="openZoomModal('front')">
                 <img id="mainFrontImage" src="./model-front.png" alt="الواجهة الأمامية" class="w-full h-full object-cover rounded-xl fade-transition group-hover/front:scale-105 transition-transform duration-300">
                 <span class="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-black/85 backdrop-blur-md text-[9px] font-bold text-amber-300 border border-amber-500/30 shadow">الواجهة الأمامية</span>
@@ -175,25 +175,25 @@
             </div>
           </div>
 
-          <!-- عمود تفاصيل المنتج والوصف والسداد والأزرار المضافة -->
-          <div class="col-span-6 flex flex-col justify-between py-1 space-y-3">
+          <!-- عمود تفاصيل المنتج والوصف والسداد والأزرار المضافة (يشغل 5 أعمدة متناسقة) -->
+          <div class="col-span-5 flex flex-col justify-between py-1 space-y-3">
             <div>
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-1.5">
-                  <span class="text-xs font-black text-amber-400 bg-amber-500/15 px-2.5 py-0.5 rounded-md border border-amber-500/30">اكتشف الرياض</span>
-                  <span class="text-[10px] font-bold text-slate-300 bg-slate-900 px-2 py-0.5 rounded-md border border-slate-800">الإصدار الأول</span>
+                  <span class="text-xs font-black text-amber-400 bg-amber-500/15 px-2 py-0.5 rounded-md border border-amber-500/30">اكتشف الرياض</span>
+                  <span class="text-[10px] font-bold text-slate-300 bg-slate-900 px-1.5 py-0.5 rounded-md border border-slate-800">الإصدار ١</span>
                 </div>
                 
-                <!-- أزرار الوسائط: قصة التصميم وفيديو NFC بجانب صور المنتج -->
-                <div class="flex items-center gap-1.5">
+                <!-- أزرار الوسائط: قصة التصميم وفيديو NFC -->
+                <div class="flex items-center gap-1">
                   <button onclick="playMasmakStoryAudio()" id="btnStoryAudio" class="px-2 py-1 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 text-[10px] font-bold flex items-center gap-1 transition border border-amber-500/30 shadow">
                     <i class="fa-solid fa-volume-high text-[10px]"></i>
-                    <span id="storyBtnLabel">القصة (30ث)</span>
+                    <span id="storyBtnLabel">القصة</span>
                   </button>
 
-                  <button onclick="openPromoVideoModal()" class="px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-110 text-[10px] font-black flex items-center gap-1.5 transition shadow">
+                  <button onclick="openPromoVideoModal()" class="px-2 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-110 text-[10px] font-black flex items-center gap-1 transition shadow">
                     <i class="fa-solid fa-circle-play text-[11px]"></i>
-                    <span>فيديو NFC</span>
+                    <span>الفيديو</span>
                   </button>
                 </div>
               </div>
@@ -202,7 +202,7 @@
               <div class="flex items-baseline gap-2 mt-1">
                 <span id="productPrice" class="text-3xl font-black text-amber-400">199</span>
                 <span class="text-xs text-slate-400 font-bold">ريال سعودي</span>
-                <span id="appliedFazaaBadge" class="hidden text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-md font-bold">تم تطبيق فزعة عِـزوة (-20 ريال)</span>
+                <span id="appliedFazaaBadge" class="hidden text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-md font-bold">فزعة (-20 ريال)</span>
               </div>
 
               <p class="text-slate-300 text-xs leading-relaxed bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80 mt-2">
@@ -215,26 +215,26 @@
               <div class="flex items-center gap-2">
                 <i class="fa-solid fa-wifi rotate-90 text-amber-400 text-sm"></i>
                 <div class="text-[10px] text-slate-300 leading-tight">
-                  <strong class="text-amber-300 block">شريحة السدو الذكية (NFC)</strong>
-                  المس حاشية التيشيرت لتفعيل التجربة
+                  <strong class="text-amber-300 block">شريحة السدو (NFC)</strong>
+                  المس حاشية التيشيرت للتفعيل
                 </div>
               </div>
-              <button onclick="simulateNfcVerification()" class="px-3 py-1 rounded-lg bg-amber-500 text-slate-950 font-black text-[10px] hover:bg-amber-400 transition shadow">التحقق</button>
+              <button onclick="simulateNfcVerification()" class="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-black text-[10px] hover:bg-amber-400 transition shadow">التحقق</button>
             </div>
 
             <!-- محطة السداد الفوري والتحويل -->
             <div class="border-t border-slate-900 pt-2 flex items-center justify-between">
-              <div class="flex items-center gap-2.5">
+              <div class="flex items-center gap-2">
                 <div class="p-1 bg-white rounded-lg cursor-pointer shadow" onclick="openQualificationGate()">
-                  <img id="qrPaymentImg" src="" alt="باركود الراجحي" class="w-9 h-9 object-contain">
+                  <img id="qrPaymentImg" src="" alt="باركود الراجحي" class="w-8 h-8 object-contain">
                 </div>
                 <div class="text-right">
-                  <span class="text-xs font-black text-white block">مصرف الراجحي - عِـزوة</span>
-                  <span class="text-[10px] text-slate-400 block"><span id="rajhiFooterPrice" class="text-amber-400 font-bold">199 ريال</span></span>
+                  <span class="text-[11px] font-black text-white block">مصرف الراجحي</span>
+                  <span id="rajhiFooterPrice" class="text-[10px] text-amber-400 font-bold block">199 ريال</span>
                 </div>
               </div>
-              <button onclick="openQualificationGate()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 text-xs font-black shadow-md hover:brightness-110 transition">
-                طلب الاقتناء والسداد
+              <button onclick="openQualificationGate()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 text-xs font-black shadow-md hover:brightness-110 transition">
+                طلب الاقتناء
               </button>
             </div>
 
@@ -427,7 +427,7 @@
 
   <div id="zoomModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
     <button onclick="closeZoomModal()" class="absolute top-4 left-4 w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
-    <img id="zoomedProductImage" src="./model-front.png" class="max-w-full max-h-[80vh] object-contain rounded-2xl">
+    <img id="zoomedProductImage" src="./model-front.png" class="max-w-full max-h-[85vh] object-contain rounded-2xl">
   </div>
 
   <div id="nfcVerifyModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
@@ -576,7 +576,7 @@
       } catch (e) {}
     }
 
-    // ==================== دوال الفيديو الترويجي promo-nfc.mp4 ====================
+    // دوال الفيديو الترويجي
     function openPromoVideoModal() {
       closeAllModals();
       const modal = document.getElementById('promoVideoModal');
@@ -593,7 +593,7 @@
       modal.classList.add('opacity-0', 'pointer-events-none');
     }
 
-    // ==================== ميزان الصقر: محرك الحركة الفيزيائي واللمس ====================
+    // ميزان الصقر
     function openFalconBalanceModal() {
       closeAllModals();
       resetFalconGame();
@@ -865,7 +865,7 @@
       storyAudioFile.play().then(() => {
         const lbl = document.getElementById('storyBtnLabel');
         lbl.textContent = "جاري الاستماع...";
-        setTimeout(() => lbl.textContent = "القصة (30ث)", 30000);
+        setTimeout(() => lbl.textContent = "القصة", 30000);
       }).catch(() => {});
     }
 
