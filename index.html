@@ -61,11 +61,11 @@
         </button>
       </div>
 
-      <!-- قائمة القنوات -->
+      <!-- قائمة القنوات التلفزيونية -->
       <div class="relative">
         <button onclick="toggleDropdown('tvDropdown')" id="btnTVTab" class="px-3 py-1 rounded-xl text-xs font-bold bg-slate-900 text-slate-200 hover:text-white border border-slate-800 flex items-center gap-1.5 transition">
           <i class="fa-solid fa-tv text-amber-400 text-xs"></i>
-          <span id="activeChannelLabel">البث (3)</span>
+          <span id="activeChannelLabel">البث (القرآن)</span>
           <i class="fa-solid fa-chevron-down text-[8px] opacity-70"></i>
         </button>
 
@@ -175,7 +175,7 @@
             </div>
           </div>
 
-          <!-- عمود تفاصيل المنتج والوصف والسداد -->
+          <!-- عمود تفاصيل المنتج والوصف والسداد والأزرار المضافة -->
           <div class="col-span-6 flex flex-col justify-between py-1 space-y-3">
             <div>
               <div class="flex items-center justify-between">
@@ -183,10 +183,19 @@
                   <span class="text-xs font-black text-amber-400 bg-amber-500/15 px-2.5 py-0.5 rounded-md border border-amber-500/30">اكتشف الرياض</span>
                   <span class="text-[10px] font-bold text-slate-300 bg-slate-900 px-2 py-0.5 rounded-md border border-slate-800">الإصدار الأول</span>
                 </div>
-                <button onclick="playMasmakStoryAudio()" id="btnStoryAudio" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 text-[10px] font-bold flex items-center gap-1.5 transition border border-amber-500/30 shadow">
-                  <i class="fa-solid fa-volume-high text-[10px]"></i>
-                  <span id="storyBtnLabel">قصة التصميم (30 ثانية)</span>
-                </button>
+                
+                <!-- أزرار الوسائط: قصة التصميم وفيديو NFC بجانب صور المنتج -->
+                <div class="flex items-center gap-1.5">
+                  <button onclick="playMasmakStoryAudio()" id="btnStoryAudio" class="px-2 py-1 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 text-[10px] font-bold flex items-center gap-1 transition border border-amber-500/30 shadow">
+                    <i class="fa-solid fa-volume-high text-[10px]"></i>
+                    <span id="storyBtnLabel">القصة (30ث)</span>
+                  </button>
+
+                  <button onclick="openPromoVideoModal()" class="px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-110 text-[10px] font-black flex items-center gap-1.5 transition shadow">
+                    <i class="fa-solid fa-circle-play text-[11px]"></i>
+                    <span>فيديو NFC</span>
+                  </button>
+                </div>
               </div>
 
               <h2 class="text-2xl font-black text-white mt-2 leading-tight">قصر المصمك</h2>
@@ -263,6 +272,21 @@
     </section>
 
   </main>
+
+  <!-- ==================== نافذة مشغل الفيديو الترويجي promo-nfc.mp4 ==================== -->
+  <div id="promoVideoModal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4 lg:p-8">
+    <div class="relative w-full max-w-4xl max-h-[85vh] rounded-3xl border border-amber-500/40 bg-slate-950 p-2 shadow-2xl flex flex-col items-center overflow-hidden">
+      <!-- زر إغلاق الفيديو -->
+      <button onclick="closePromoVideoModal()" class="absolute top-4 left-4 z-20 w-9 h-9 rounded-full bg-slate-900/90 text-white hover:text-amber-400 border border-slate-800 flex items-center justify-center transition">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+      
+      <video id="promoVideoPlayer" class="w-full h-full max-h-[80vh] object-contain rounded-2xl" playsinline controls preload="metadata">
+        <source src="./promo-nfc.mp4" type="video/mp4">
+        المتصفح لا يدعم تشغيل الفيديو.
+      </video>
+    </div>
+  </div>
 
   <!-- ==================== نافذة التحدي الفيزيائي: ميزان الصقر (15 ثانية) ==================== -->
   <div id="falconBalanceModal" class="fixed inset-0 z-50 bg-black/98 backdrop-blur-2xl flex items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
@@ -445,16 +469,16 @@
     let audioCtx = null;
     const storyAudioFile = new Audio('./story.mp3.mp3');
 
-    // ==================== محرك فيزياء ميزان الصقر الحقيقي ====================
-    let balanceState = "IDLE"; // IDLE, ACTIVE, WON, FAILED
+    // محرك ميزان الصقر الفيزيائي
+    let balanceState = "IDLE";
     let balanceTimer = null;
     let balanceSeconds = 15;
     let orbX = 0, orbY = 0;
     let orbVelX = 0, orbVelY = 0;
     let animationFrameId = null;
-    const ARENA_RADIUS = 144; // نصف قطر الحلبة (288 / 2)
-    const ORB_RADIUS = 24;    // نصف قطر النواة (48 / 2)
-    const MAX_ALLOWED_DISTANCE = ARENA_RADIUS - ORB_RADIUS - 6; // مسافة الاصطدام بالجدار
+    const ARENA_RADIUS = 144;
+    const ORB_RADIUS = 24;
+    const MAX_ALLOWED_DISTANCE = ARENA_RADIUS - ORB_RADIUS - 6;
     let isTouchingOrb = false;
 
     const prayerTimesRiyadh = [
@@ -552,6 +576,23 @@
       } catch (e) {}
     }
 
+    // ==================== دوال الفيديو الترويجي promo-nfc.mp4 ====================
+    function openPromoVideoModal() {
+      closeAllModals();
+      const modal = document.getElementById('promoVideoModal');
+      const player = document.getElementById('promoVideoPlayer');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      player.currentTime = 0;
+      player.play().catch(() => {});
+    }
+
+    function closePromoVideoModal() {
+      const modal = document.getElementById('promoVideoModal');
+      const player = document.getElementById('promoVideoPlayer');
+      player.pause();
+      modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
     // ==================== ميزان الصقر: محرك الحركة الفيزيائي واللمس ====================
     function openFalconBalanceModal() {
       closeAllModals();
@@ -590,7 +631,6 @@
       statusEl.className = "min-h-[22px] text-xs font-black text-emerald-400";
       statusEl.innerText = "التحدي مشتعل! ثبت النواة ولا تفلت إصبعك!";
 
-      // عداد الـ 15 ثانية التنازلي
       balanceTimer = setInterval(() => {
         balanceSeconds--;
         document.getElementById('balanceTimerDisplay').innerText = String(balanceSeconds);
@@ -607,14 +647,11 @@
     function runFalconPhysics() {
       if (balanceState !== "ACTIVE") return;
 
-      // تزداد الصعوبة وقوة الطرد كلما نقصت الثواني
       const difficulty = 1 + (15 - balanceSeconds) * 0.35;
       
-      // نبضات تسارع عشوائية لمحاولة الهروب
       orbVelX += (Math.random() - 0.5) * (1.8 * difficulty);
       orbVelY += (Math.random() - 0.5) * (1.8 * difficulty);
 
-      // احتكاك لضبط الانسيابية
       orbVelX *= 0.94;
       orbVelY *= 0.94;
 
@@ -624,10 +661,8 @@
       const orbEl = document.getElementById('falconOrb');
       orbEl.style.transform = `translate(${orbX}px, ${orbY}px)`;
 
-      // حساب المسافة عن المركز (Pythagoras)
       const currentDist = Math.sqrt(orbX * orbX + orbY * orbY);
 
-      // إذا تجاوزت النواة النطاق واصطدمت بالجدار الخارجي
       if (currentDist >= MAX_ALLOWED_DISTANCE) {
         triggerFalconFail("اصطدمت النواة بالجدار الخارجي! اهتز الميزان.");
         return;
@@ -651,7 +686,6 @@
       const centerX = arena.left + arena.width / 2;
       const centerY = arena.top + arena.height / 2;
 
-      // تحديث موقع يد اللاعب ومقاومته لحركة النواة
       const clientX = e.clientX || (e.touches && e.touches[0].clientX);
       const clientY = e.clientY || (e.touches && e.touches[0].clientY);
 
@@ -659,7 +693,6 @@
         const fingerX = clientX - centerX;
         const fingerY = clientY - centerY;
 
-        // قوة رد فعل إصبع اللاعب تجاه النواة
         orbX = (orbX * 0.8) + (fingerX * 0.2);
         orbY = (orbY * 0.8) + (fingerY * 0.2);
       }
@@ -707,10 +740,7 @@
       document.getElementById('falconBalanceModal').classList.add('opacity-0', 'pointer-events-none');
     }
 
-    // ربط أحداث اللمس والفأرة المباشرة على الحلبة والنواة
     const orbElement = document.getElementById('falconOrb');
-    const arenaElement = document.getElementById('arenaBox');
-
     orbElement.addEventListener('mousedown', handleOrbPointerDown);
     window.addEventListener('mousemove', handleOrbPointerMove);
     window.addEventListener('mouseup', handleOrbPointerUp);
@@ -835,7 +865,7 @@
       storyAudioFile.play().then(() => {
         const lbl = document.getElementById('storyBtnLabel');
         lbl.textContent = "جاري الاستماع...";
-        setTimeout(() => lbl.textContent = "قصة التصميم (30 ثانية)", 30000);
+        setTimeout(() => lbl.textContent = "القصة (30ث)", 30000);
       }).catch(() => {});
     }
 
@@ -887,10 +917,12 @@
     }
 
     function closeAllModals() {
-      ['callStaffModal', 'rajhiModal', 'fitModal', 'zoomModal', 'nfcVerifyModal', 'qualificationModal', 'fazaaModal'].forEach(id => {
+      ['callStaffModal', 'rajhiModal', 'fitModal', 'zoomModal', 'nfcVerifyModal', 'qualificationModal', 'fazaaModal', 'promoVideoModal', 'falconBalanceModal'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('opacity-0', 'pointer-events-none');
       });
+      const promoPlayer = document.getElementById('promoVideoPlayer');
+      if (promoPlayer) promoPlayer.pause();
     }
 
     function toggleFullScreen() {
@@ -913,7 +945,7 @@
       if (k === 's') changeChannel('sunnah');
       if (k === 'a') changeChannel('alarabiya');
       if (k === 'j') changeChannel('aljazeera');
-      if (e.key === 'Escape') { closeAllModals(); closeFalconBalanceModal(); }
+      if (e.key === 'Escape') closeAllModals();
       if (k === 'f') toggleFullScreen();
     });
 
