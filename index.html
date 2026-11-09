@@ -157,17 +157,17 @@
         </div>
       </div>
 
-      <!-- صور المودل والنصوص: سلايدر تفاعلي ذكي مكبر مع زر التوقف التلقائي -->
+      <!-- صور المودل والنصوص: احتواء كامل للصورة دون قص -->
       <div class="my-auto py-2">
         <div class="grid grid-cols-12 gap-5 items-center">
           
           <!-- عمود السلايدر التفاعلي الأكبر -->
           <div class="col-span-7 flex flex-col items-center">
-            <div class="w-full h-[500px] lg:h-[540px] rounded-2xl bg-slate-900/90 border border-slate-800 relative overflow-hidden shadow-2xl p-2 flex flex-col justify-between group/slider">
+            <div id="sliderWrapper" class="w-full h-[520px] lg:h-[580px] rounded-2xl bg-slate-900/90 border border-slate-800 relative overflow-hidden shadow-2xl p-2 flex flex-col justify-between group/slider">
               
-              <!-- مساحة الصورة المعروضة المكبرة بالكامل (أزيلت العبارة التي بقرب وجه المودل) -->
-              <div class="relative w-full flex-1 rounded-xl overflow-hidden bg-black/40 flex items-center justify-center cursor-pointer" onclick="toggleSliderImageManual()">
-                <img id="mainSliderImage" src="./model-front.png" alt="تيشيرت قصر المصمك" class="w-full h-full object-cover rounded-xl fade-transition group-hover/slider:scale-105 transition-transform duration-300">
+              <!-- مساحة الصورة المعروضة مع خاصية الاحتواء الكامل (object-contain) لمنع أي اقتصاص -->
+              <div class="relative w-full flex-1 rounded-xl overflow-hidden bg-black/60 flex items-center justify-center cursor-pointer" onclick="toggleSliderImageManual()">
+                <img id="mainSliderImage" src="./model-front.png" alt="تيشيرت قصر المصمك" class="w-full h-full object-contain rounded-xl fade-transition group-hover/slider:scale-105 transition-transform duration-300">
 
                 <!-- تلميح النقر للتبديل في الزاوية السفلية -->
                 <div class="absolute bottom-3 left-3 px-2.5 py-1 rounded-lg bg-black/80 backdrop-blur-md text-[9px] font-bold text-slate-300 border border-slate-700/60 flex items-center gap-1.5 opacity-80 group-hover/slider:opacity-100 transition">
@@ -175,13 +175,13 @@
                   <span>انقر للتبديل</span>
                 </div>
 
-                <!-- زر التكبير العائم في الزاوية العلوية اليسرى -->
+                <!-- زر التكبير العائم -->
                 <button onclick="event.stopPropagation(); openZoomModal(currentActiveAngle);" title="تكبير الصورة" class="absolute top-3 left-3 w-8 h-8 rounded-lg bg-slate-900/90 border border-slate-700 text-amber-400 hover:text-white flex items-center justify-center transition shadow">
                   <i class="fa-solid fa-expand text-xs"></i>
                 </button>
               </div>
 
-              <!-- شريط التحكم السفلي بالسلايدر (أزرار الزوايا + زر الإيقاف والتشغيل التلقائي) -->
+              <!-- شريط التحكم السفلي بالسلايدر -->
               <div class="mt-2 pt-1 flex items-center justify-between px-1">
                 <div class="flex items-center gap-1.5">
                   <button id="btnAngleFront" onclick="setSliderAngle('front', true)" class="px-3 py-1 rounded-lg text-[10px] font-bold bg-amber-500 text-slate-950 transition shadow">
@@ -191,7 +191,6 @@
                     الظهر • الطبعة
                   </button>
                   
-                  <!-- زر إيقاف / تشغيل التقليب التلقائي الذكي -->
                   <button id="btnAutoSlideToggle" onclick="toggleAutoSlide()" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-800 text-amber-400 border border-amber-500/30 hover:bg-slate-700 flex items-center gap-1 transition shadow" title="إيقاف أو استئناف التقليب التلقائي">
                     <i id="autoSlideIcon" class="fa-solid fa-pause text-[9px]"></i>
                     <span id="autoSlideLabel">توقف</span>
@@ -460,7 +459,7 @@
 
   <div id="zoomModal" class="absolute inset-0 z-50 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center fade-transition opacity-0 pointer-events-none p-4">
     <button onclick="closeZoomModal()" class="absolute top-4 left-4 w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
-    <img id="zoomedProductImage" src="./model-front.png" class="max-w-full max-h-[85vh] object-contain rounded-2xl">
+    <img id="zoomedProductImage" src="./model-front.png" class="max-w-full max-h-[90vh] object-contain rounded-2xl">
   </div>
 
   <div id="nfcVerifyModal" class="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center fade-transition opacity-0 pointer-events-none p-6">
@@ -502,7 +501,7 @@
     let audioCtx = null;
     const storyAudioFile = new Audio('./story.mp3.mp3');
 
-    // ==================== سلايدر المودل الذكي + التقليب التلقائي ====================
+    // سلايدر المودل الذكي
     let currentActiveAngle = 'front';
     let autoSlideInterval = null;
     let isAutoSlideActive = true;
@@ -529,7 +528,6 @@
         dotFront.className = "w-2.5 h-2.5 rounded-full bg-slate-700 cursor-pointer hover:bg-slate-500 transition";
       }
 
-      // إذا تفاعل العميل يدوياً، نعيد تشغيل مؤقت التقليب من جديد
       if (isManual && isAutoSlideActive) {
         startAutoSlide();
       }
@@ -848,7 +846,7 @@
     window.addEventListener('touchmove', handleOrbPointerMove, { passive: false });
     window.addEventListener('touchend', handleOrbPointerUp, { passive: false });
 
-    // تبديل أوضاع العرض
+    // تبديل أوضاع العرض: مع ضبط ارتفاع وحجم الحاوية في وضع المعروض
     function switchLayoutSafely(mode) {
       currentLayout = mode;
       closeAllModals();
@@ -857,6 +855,7 @@
       const tvSec = document.getElementById('tvSection');
       const btnCatalog = document.getElementById('btnCatalog');
       const btnSplit = document.getElementById('btnSplit');
+      const sliderWrapper = document.getElementById('sliderWrapper');
 
       [btnCatalog, btnSplit].forEach(b => {
         b.className = "px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
@@ -866,11 +865,14 @@
         btnSplit.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 transition shadow";
         prodSec.className = "w-1/2 h-full p-4 lg:p-6 flex flex-col justify-between relative z-20 bg-slate-950 border-l border-slate-900 fade-transition opacity-100 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]";
         tvSec.className = "w-1/2 h-full relative z-20 bg-black flex items-center justify-center fade-transition opacity-100";
+        if (sliderWrapper) sliderWrapper.className = "w-full h-[520px] lg:h-[580px] rounded-2xl bg-slate-900/90 border border-slate-800 relative overflow-hidden shadow-2xl p-2 flex flex-col justify-between group/slider";
         playStream(CHANNELS[activeChannelKey]);
       } else if (mode === 'catalog') {
         btnCatalog.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 transition shadow";
-        prodSec.className = "w-full h-full p-4 lg:p-6 flex flex-col justify-between absolute inset-0 fade-transition z-20 bg-slate-950 overflow-y-auto opacity-100";
+        prodSec.className = "w-full h-full p-6 lg:p-8 flex flex-col justify-between absolute inset-0 fade-transition z-20 bg-slate-950 overflow-y-auto opacity-100";
         tvSec.className = "w-full h-full absolute inset-0 fade-transition opacity-0 pointer-events-none z-10";
+        // توسيع واستغلال الارتفاع الكامل في وضع المعروض
+        if (sliderWrapper) sliderWrapper.className = "w-full h-[68vh] lg:h-[72vh] rounded-2xl bg-slate-900/90 border border-slate-800 relative overflow-hidden shadow-2xl p-2 flex flex-col justify-between group/slider";
       }
     }
     function setScreenLayout(mode) { switchLayoutSafely(mode); }
